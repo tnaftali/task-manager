@@ -1,0 +1,1355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tobi's Task Manager</title>
+    <style>
+        @font-face {
+            font-family: 'DM Serif Text';
+            src: url('./fonts/DM_Serif_Text/DMSerifText-Regular.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'DM Serif Text';
+            src: url('./fonts/DM_Serif_Text/DMSerifText-Italic.ttf') format('truetype');
+            font-weight: normal;
+            font-style: italic;
+        }
+
+        @font-face {
+            font-family: 'IBM Plex Sans';
+            src: url('./fonts/IBM_Plex_Sans/IBMPlexSans-VariableFont_wdth,wght.ttf') format('truetype');
+            font-weight: 100 900;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'IBM Plex Sans';
+            src: url('./fonts/IBM_Plex_Sans/IBMPlexSans-Italic-VariableFont_wdth,wght.ttf') format('truetype');
+            font-weight: 100 900;
+            font-style: italic;
+        }
+
+        :root {
+            /* Catppuccin Mocha Colors */
+            --base: #1e1e2e;
+            --mantle: #181825;
+            --crust: #11111b;
+            --surface0: #313244;
+            --surface1: #45475a;
+            --surface2: #585b70;
+            --overlay0: #6c7086;
+            --overlay1: #7f849c;
+            --overlay2: #9399b2;
+            --subtext0: #a6adc8;
+            --subtext1: #bac2de;
+            --text: #cdd6f4;
+            --lavender: #b4befe;
+            --blue: #89b4fa;
+            --sapphire: #74c7ec;
+            --sky: #89dceb;
+            --teal: #94e2d5;
+            --green: #a6e3a1;
+            --yellow: #f9e2af;
+            --peach: #fab387;
+            --maroon: #eba0ac;
+            --red: #f38ba8;
+            --mauve: #cba6f7;
+            --pink: #f5c2e7;
+            --flamingo: #f2cdcd;
+            --rosewater: #f5e0dc;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--base);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--lavender);
+            font-size: 2.5rem;
+            font-weight: 400;
+            font-family: 'DM Serif Text', Georgia, 'Times New Roman', serif;
+        }
+
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            height: calc(100vh - 140px);
+        }
+
+        .column {
+            background-color: var(--surface0);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .column-header {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-align: center;
+            padding: 10px;
+            border-radius: 8px;
+            background-color: var(--surface1);
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .column-header:hover {
+            background-color: var(--surface2);
+        }
+
+        .column-header::after {
+            content: '▼';
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.8rem;
+            opacity: 0.7;
+            transition: transform 0.2s ease;
+        }
+
+        .column.collapsed .column-header::after {
+            transform: translateY(-50%) rotate(-90deg);
+        }
+
+        .column.collapsed .tasks-container,
+        .column.collapsed .add-task-btn {
+            display: none;
+        }
+
+        .column-header.todo { color: var(--yellow); }
+        .column-header.in-progress { color: var(--blue); }
+        .column-header.done { color: var(--green); }
+
+        .tasks-container {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 15px;
+        }
+
+        .task {
+            background-color: var(--surface1);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            cursor: move;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+            position: relative;
+        }
+
+
+        .task:hover {
+            background-color: var(--surface2);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .task.selected {
+            border-color: var(--blue);
+        }
+
+        .task.dragging {
+            opacity: 0.5;
+            transform: rotate(5deg);
+        }
+
+        .task-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text);
+            word-wrap: break-word;
+        }
+
+        .task-url {
+            color: var(--blue);
+            text-decoration: none;
+            font-size: 0.9rem;
+            word-break: break-all;
+        }
+
+        .task-url:hover {
+            color: var(--sapphire);
+            text-decoration: underline;
+        }
+
+        .task-actions {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            display: flex;
+            gap: 5px;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .task:hover .task-actions {
+            opacity: 1;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: var(--subtext0);
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .action-btn:hover {
+            background-color: var(--surface2);
+            color: var(--text);
+        }
+
+        .action-btn.delete:hover {
+            color: var(--red);
+        }
+
+        .action-btn.edit:hover {
+            color: var(--yellow);
+        }
+
+        .add-task-btn {
+            background-color: var(--surface1);
+            color: var(--subtext0);
+            border: 2px dashed var(--surface2);
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+        }
+
+        .add-task-btn:hover {
+            border-color: var(--blue);
+            color: var(--blue);
+            background-color: var(--surface2);
+        }
+
+        .drag-over {
+            border: 2px dashed var(--blue);
+            background-color: rgba(137, 180, 250, 0.1);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: var(--surface0);
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+        }
+
+        .modal h3 {
+            margin-bottom: 20px;
+            color: var(--lavender);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--subtext1);
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--surface2);
+            border-radius: 8px;
+            background-color: var(--surface1);
+            color: var(--text);
+            font-size: 16px;
+            font-family: inherit;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--blue);
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            font-family: inherit;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background-color: var(--blue);
+            color: var(--base);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--sapphire);
+        }
+
+        .btn-secondary {
+            background-color: var(--surface2);
+            color: var(--text);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--overlay0);
+        }
+
+        .loading {
+            color: var(--yellow);
+        }
+
+        .tasks-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .tasks-container::-webkit-scrollbar-track {
+            background: var(--surface0);
+        }
+
+        .tasks-container::-webkit-scrollbar-thumb {
+            background: var(--surface2);
+            border-radius: 3px;
+        }
+
+        .tasks-container::-webkit-scrollbar-thumb:hover {
+            background: var(--overlay0);
+        }
+
+        .help-text {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--surface1);
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            color: var(--subtext0);
+            opacity: 0.7;
+        }
+
+        .task-tags {
+            margin-top: 8px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
+        .task-tag {
+            background-color: var(--surface2);
+            color: var(--text);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .task-notes {
+            margin-top: 8px;
+            font-size: 0.85rem;
+            color: var(--subtext1);
+            font-style: italic;
+            line-height: 1.4;
+        }
+
+        .date-group {
+            margin-bottom: 20px;
+        }
+
+        .date-header {
+            font-size: 0.9rem;
+            color: var(--subtext0);
+            margin-bottom: 10px;
+            padding: 8px 12px;
+            background-color: var(--mantle);
+            border-radius: 6px;
+            font-weight: 600;
+        }
+
+        .tags-input {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            padding: 8px 12px;
+            border: 2px solid var(--surface2);
+            border-radius: 8px;
+            background-color: var(--surface1);
+            min-height: 40px;
+            cursor: text;
+        }
+
+        .tags-input:focus-within {
+            border-color: var(--blue);
+        }
+
+        .tag-item {
+            background-color: var(--blue);
+            color: var(--base);
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .tag-remove {
+            background: none;
+            border: none;
+            color: inherit;
+            cursor: pointer;
+            font-size: 0.7rem;
+            padding: 0;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tag-remove:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .tag-input {
+            border: none;
+            background: none;
+            color: var(--text);
+            outline: none;
+            flex: 1;
+            min-width: 100px;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Tobi's Task Manager</h1>
+
+        <div class="board">
+            <div class="column" data-column="todo">
+                <div class="column-header todo" onclick="toggleColumn('todo')">To Do</div>
+                <div class="tasks-container" id="todo-tasks"></div>
+                <div class="add-task-btn" onclick="openTaskModal('todo')">
+                    + Add Task
+                </div>
+            </div>
+
+            <div class="column" data-column="in-progress">
+                <div class="column-header in-progress" onclick="toggleColumn('in-progress')">In Progress</div>
+                <div class="tasks-container" id="in-progress-tasks"></div>
+                <div class="add-task-btn" onclick="openTaskModal('in-progress')">
+                    + Add Task
+                </div>
+            </div>
+
+            <div class="column" data-column="done">
+                <div class="column-header done" onclick="toggleColumn('done')">Done</div>
+                <div class="tasks-container" id="done-tasks"></div>
+                <div class="add-task-btn" onclick="openTaskModal('done')">
+                    + Add Task
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="task-modal">
+        <div class="modal-content">
+            <h3 id="modal-title">Add Task</h3>
+            <div class="form-group">
+                <label for="task-title">Title</label>
+                <input type="text" id="task-title" placeholder="Enter task title">
+            </div>
+            <div class="form-group">
+                <label for="task-url">URL (optional)</label>
+                <input type="url" id="task-url" placeholder="https://example.com">
+            </div>
+            <div class="form-group">
+                <label for="task-tags">Tags (optional)</label>
+                <div class="tags-input" id="tags-input">
+                    <input type="text" class="tag-input" id="tag-input" placeholder="Type and press Enter to add tags">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="task-notes">Notes (optional)</label>
+                <textarea id="task-notes" placeholder="Add any additional notes..."></textarea>
+            </div>
+            <div class="modal-buttons">
+                <button class="btn btn-secondary" onclick="closeTaskModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveTask()">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="help-text">
+        Tip: Press Cmd+V to paste a URL • Arrow keys to navigate • Shift+Arrow to move tasks • Enter to edit • N for new task
+    </div>
+
+    <script>
+        let tasks = [];
+        let selectedTaskId = null;
+        let currentEditingTask = null;
+        let currentColumn = 'todo';
+        let currentTags = [];
+        let collapsedColumns = new Set();
+        let selectedColumn = 0; // 0=todo, 1=in-progress, 2=done
+        const columnNames = ['todo', 'in-progress', 'done'];
+
+        // Load tasks from localStorage
+        function loadTasks() {
+            const savedTasks = localStorage.getItem('taskManager_tasks');
+            if (savedTasks) {
+                tasks = JSON.parse(savedTasks);
+                renderTasks();
+            }
+        }
+
+        // Save tasks to localStorage
+        function saveTasks() {
+            localStorage.setItem('taskManager_tasks', JSON.stringify(tasks));
+        }
+
+        // Generate unique ID
+        function generateId() {
+            return Date.now().toString(36) + Math.random().toString(36).substr(2);
+        }
+
+        // Render all tasks
+        function renderTasks() {
+            const columns = ['todo', 'in-progress', 'done'];
+
+            columns.forEach(column => {
+                const container = document.getElementById(`${column}-tasks`);
+                container.innerHTML = '';
+
+                let columnTasks = tasks.filter(task => task.column === column);
+
+                if (column === 'done') {
+                    // Group done tasks by completion date
+                    const tasksByDate = groupTasksByDate(columnTasks);
+
+                    Object.keys(tasksByDate)
+                        .sort((a, b) => new Date(b) - new Date(a)) // Sort dates descending
+                        .forEach(date => {
+                            const dateGroup = document.createElement('div');
+                            dateGroup.className = 'date-group';
+
+                            const dateHeader = document.createElement('div');
+                            dateHeader.className = 'date-header';
+                            dateHeader.textContent = formatDateHeader(date);
+                            dateGroup.appendChild(dateHeader);
+
+                            // Sort tasks within date by completion time (descending)
+                            tasksByDate[date]
+                                .sort((a, b) => new Date(b.completedAt || b.createdAt) - new Date(a.completedAt || a.createdAt))
+                                .forEach(task => {
+                                    const taskElement = createTaskElement(task, tasks.indexOf(task));
+                                    dateGroup.appendChild(taskElement);
+                                });
+
+                            container.appendChild(dateGroup);
+                        });
+                } else {
+                    // Sort by order field for todo and in-progress columns
+                    columnTasks.sort((a, b) => (a.order || 0) - (b.order || 0));
+                    columnTasks.forEach((task, index) => {
+                        const taskElement = createTaskElement(task, tasks.indexOf(task));
+                        container.appendChild(taskElement);
+                    });
+                }
+
+            });
+        }
+
+        // Update task order within column based on DOM order
+        function updateTaskOrder(container, column) {
+            const taskElements = [...container.querySelectorAll('.task')];
+            taskElements.forEach((element, index) => {
+                const elementTaskId = element.dataset.taskId;
+                const task = tasks.find(t => t.id === elementTaskId);
+                if (task) {
+                    task.order = index;
+                }
+            });
+        }
+
+        function getDragAfterElement(container, y) {
+            const draggableElements = [...container.querySelectorAll('.task:not(.dragging)')];
+
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2;
+
+                if (offset < 0 && offset > closest.offset) {
+                    return { offset: offset, element: child };
+                } else {
+                    return closest;
+                }
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+        }
+
+        // Group tasks by date
+        function groupTasksByDate(tasks) {
+            const groups = {};
+            tasks.forEach(task => {
+                const date = task.completedAt ?
+                    new Date(task.completedAt).toDateString() :
+                    new Date(task.createdAt).toDateString();
+
+                if (!groups[date]) {
+                    groups[date] = [];
+                }
+                groups[date].push(task);
+            });
+            return groups;
+        }
+
+        // Format date header
+        function formatDateHeader(dateString) {
+            const date = new Date(dateString);
+            const today = new Date();
+            const yesterday = new Date(today);
+            yesterday.setDate(yesterday.getDate() - 1);
+
+            if (date.toDateString() === today.toDateString()) {
+                return 'Today';
+            } else if (date.toDateString() === yesterday.toDateString()) {
+                return 'Yesterday';
+            } else {
+                return date.toLocaleDateString('en-US', {
+                    weekday: 'long',
+                    month: 'short',
+                    day: 'numeric'
+                });
+            }
+        }
+
+        // Toggle column collapse
+        function toggleColumn(columnName) {
+            const column = document.querySelector(`[data-column="${columnName}"]`);
+            if (collapsedColumns.has(columnName)) {
+                collapsedColumns.delete(columnName);
+                column.classList.remove('collapsed');
+            } else {
+                collapsedColumns.add(columnName);
+                column.classList.add('collapsed');
+            }
+            localStorage.setItem('taskManager_collapsedColumns', JSON.stringify([...collapsedColumns]));
+        }
+
+        // Load collapsed state
+        function loadCollapsedState() {
+            const saved = localStorage.getItem('taskManager_collapsedColumns');
+            if (saved) {
+                collapsedColumns = new Set(JSON.parse(saved));
+                collapsedColumns.forEach(columnName => {
+                    const column = document.querySelector(`[data-column="${columnName}"]`);
+                    if (column) column.classList.add('collapsed');
+                });
+            }
+        }
+
+        // Create task element
+        function createTaskElement(task, index) {
+            const taskDiv = document.createElement('div');
+            taskDiv.className = 'task';
+            taskDiv.draggable = true;
+            taskDiv.dataset.taskId = task.id;
+            taskDiv.dataset.index = index;
+
+            taskDiv.innerHTML = `
+                <div class="task-actions">
+                    <button class="action-btn edit" onclick="editTaskByIdFromButton('${task.id}')" title="Edit">✏️</button>
+                    <button class="action-btn delete" onclick="deleteTaskByIdFromButton('${task.id}')" title="Delete">🗑️</button>
+                </div>
+                <div class="task-title">${task.title}</div>
+                ${task.url ? `<a href="${task.url}" target="_blank" class="task-url">${task.url}</a>` : ''}
+                ${task.tags && task.tags.length > 0 ? `<div class="task-tags">${task.tags.map(tag => `<span class="task-tag">${tag}</span>`).join('')}</div>` : ''}
+                ${task.notes ? `<div class="task-notes">${task.notes}</div>` : ''}
+            `;
+
+            // Drag events (all tasks are draggable)
+            taskDiv.addEventListener('dragstart', handleDragStart);
+            taskDiv.addEventListener('dragend', handleDragEnd);
+
+            // Click events
+            taskDiv.addEventListener('click', () => selectTask(task.id));
+            taskDiv.addEventListener('dblclick', () => editTaskByIdFromButton(task.id));
+
+            return taskDiv;
+        }
+
+        // Drag and drop functionality
+        function handleDragStart(e) {
+            e.dataTransfer.setData('text/plain', e.target.dataset.taskId);
+            e.target.classList.add('dragging');
+        }
+
+        function handleDragEnd(e) {
+            e.target.classList.remove('dragging');
+        }
+
+        // Set up drop zones after DOM is loaded
+        function setupDropZones() {
+            document.querySelectorAll('.tasks-container').forEach(container => {
+                container.addEventListener('dragover', handleDragOver);
+                container.addEventListener('drop', handleDrop);
+                container.addEventListener('dragenter', handleDragEnter);
+                container.addEventListener('dragleave', handleDragLeave);
+            });
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+
+            const dragging = document.querySelector('.dragging');
+            if (!dragging) return;
+
+            const container = e.currentTarget;
+            const newColumn = container.id.replace('-tasks', '');
+            const draggingTaskId = dragging.dataset.taskId;
+            const draggingTask = tasks.find(t => t.id === draggingTaskId);
+
+            if (!draggingTask) return;
+
+            // If dragging within the same column and it's not Done, allow reordering
+            if (draggingTask.column === newColumn && newColumn !== 'done') {
+                const afterElement = getDragAfterElement(container, e.clientY);
+                if (afterElement == null) {
+                    container.appendChild(dragging);
+                } else {
+                    container.insertBefore(dragging, afterElement);
+                }
+            }
+        }
+
+        function handleDragEnter(e) {
+            e.preventDefault();
+            e.currentTarget.classList.add('drag-over');
+        }
+
+        function handleDragLeave(e) {
+            if (!e.currentTarget.contains(e.relatedTarget)) {
+                e.currentTarget.classList.remove('drag-over');
+            }
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('drag-over');
+
+            const taskId = e.dataTransfer.getData('text/plain');
+            const newColumn = e.currentTarget.id.replace('-tasks', '');
+            const dragging = document.querySelector('.dragging');
+
+            const taskIndex = tasks.findIndex(task => task.id === taskId);
+            if (taskIndex !== -1) {
+                const oldColumn = tasks[taskIndex].column;
+
+                // Check if we're moving between columns or reordering within column
+                if (oldColumn !== newColumn) {
+                    // Moving between columns
+                    tasks[taskIndex].column = newColumn;
+
+                    // If moving to done, set completion timestamp
+                    if (newColumn === 'done' && oldColumn !== 'done') {
+                        tasks[taskIndex].completedAt = new Date().toISOString();
+                    } else if (oldColumn === 'done' && newColumn !== 'done') {
+                        // If moving out of done, remove completion timestamp
+                        delete tasks[taskIndex].completedAt;
+                    }
+
+                    // Reset order when moving between columns
+                    const columnTasks = tasks.filter(task => task.column === newColumn && task.id !== taskId);
+                    tasks[taskIndex].order = columnTasks.length;
+                } else {
+                    // Reordering within same column (only allowed for todo and in-progress)
+                    if (newColumn !== 'done') {
+                        updateTaskOrder(e.currentTarget, newColumn);
+                    }
+                }
+
+                saveTasks();
+                renderTasks();
+            }
+        }
+
+        // Task modal functions
+        function openTaskModal(column = 'todo') {
+            currentColumn = column;
+            currentEditingTask = null;
+            currentTags = [];
+            document.getElementById('modal-title').textContent = 'Add Task';
+            document.getElementById('task-title').value = '';
+            document.getElementById('task-url').value = '';
+            document.getElementById('task-notes').value = '';
+            renderTagsInput();
+            document.getElementById('task-modal').style.display = 'block';
+            document.getElementById('task-title').focus();
+        }
+
+        function closeTaskModal() {
+            document.getElementById('task-modal').style.display = 'none';
+        }
+
+        function editTask(index) {
+            const task = tasks[index];
+            currentEditingTask = index;
+            currentColumn = task.column;
+            currentTags = task.tags ? [...task.tags] : [];
+            document.getElementById('modal-title').textContent = 'Edit Task';
+            document.getElementById('task-title').value = task.title;
+            document.getElementById('task-url').value = task.url || '';
+            document.getElementById('task-notes').value = task.notes || '';
+            renderTagsInput();
+            document.getElementById('task-modal').style.display = 'block';
+            document.getElementById('task-title').focus();
+        }
+
+        function deleteTask(index) {
+            if (confirm('Are you sure you want to delete this task?')) {
+                tasks.splice(index, 1);
+                saveTasks();
+                renderTasks();
+            }
+        }
+
+        // Helper functions for button clicks that use task IDs
+        function editTaskByIdFromButton(taskId) {
+            const taskIndex = tasks.findIndex(t => t.id === taskId);
+            if (taskIndex >= 0) {
+                editTask(taskIndex);
+            }
+        }
+
+        function deleteTaskByIdFromButton(taskId) {
+            const taskIndex = tasks.findIndex(t => t.id === taskId);
+            if (taskIndex >= 0) {
+                // Clear selection if deleting selected task
+                if (selectedTaskId === taskId) {
+                    selectedTaskId = null;
+                }
+                deleteTask(taskIndex);
+            }
+        }
+
+        function saveTask() {
+            const title = document.getElementById('task-title').value.trim();
+            const url = document.getElementById('task-url').value.trim();
+            const notes = document.getElementById('task-notes').value.trim();
+
+            if (!title) {
+                alert('Please enter a task title');
+                return;
+            }
+
+            if (currentEditingTask !== null) {
+                // Edit existing task
+                tasks[currentEditingTask].title = title;
+                tasks[currentEditingTask].url = url;
+                tasks[currentEditingTask].notes = notes;
+                tasks[currentEditingTask].tags = currentTags;
+            } else {
+                // Create new task
+                const columnTasks = tasks.filter(task => task.column === currentColumn);
+                const maxOrder = columnTasks.length > 0 ? Math.max(...columnTasks.map(t => t.order || 0)) : -1;
+
+                const task = {
+                    id: generateId(),
+                    title: title,
+                    url: url,
+                    notes: notes,
+                    tags: currentTags,
+                    column: currentColumn,
+                    order: maxOrder + 1,
+                    createdAt: new Date().toISOString()
+                };
+                tasks.push(task);
+            }
+
+            saveTasks();
+            renderTasks();
+            closeTaskModal();
+        }
+
+        // Task selection for navigation
+        function selectTask(taskId) {
+            // Remove previous selection
+            document.querySelectorAll('.task.selected').forEach(task => {
+                task.classList.remove('selected');
+            });
+
+            selectedTaskId = taskId;
+            const taskElement = document.querySelector(`[data-task-id="${taskId}"]`);
+            if (taskElement) {
+                taskElement.classList.add('selected');
+                taskElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+                // Update selected column based on task location
+                const task = tasks.find(t => t.id === taskId);
+                if (task) {
+                    selectedColumn = columnNames.indexOf(task.column);
+                }
+            }
+        }
+
+        function clearSelection() {
+            document.querySelectorAll('.task.selected').forEach(task => {
+                task.classList.remove('selected');
+            });
+            selectedTaskId = null;
+        }
+
+        function getSelectedTask() {
+            return selectedTaskId ? tasks.find(t => t.id === selectedTaskId) : null;
+        }
+
+        // Get tasks in visual order for a column
+        function getColumnTasksInOrder(columnName) {
+            const container = document.getElementById(`${columnName}-tasks`);
+            if (!container) return [];
+
+            const taskElements = container.querySelectorAll('.task');
+            return Array.from(taskElements).map(element => {
+                const taskId = element.dataset.taskId;
+                return tasks.find(task => task.id === taskId);
+            }).filter(task => task);
+        }
+
+        // Navigation functions
+        function navigateUp() {
+            const columnName = columnNames[selectedColumn];
+            const columnTasks = getColumnTasksInOrder(columnName);
+            if (columnTasks.length === 0) return;
+
+            if (!selectedTaskId) {
+                selectTask(columnTasks[0].id);
+                return;
+            }
+
+            const currentIndex = columnTasks.findIndex(t => t.id === selectedTaskId);
+            if (currentIndex > 0) {
+                selectTask(columnTasks[currentIndex - 1].id);
+            } else {
+                selectTask(columnTasks[columnTasks.length - 1].id);
+            }
+        }
+
+        function navigateDown() {
+            const columnName = columnNames[selectedColumn];
+            const columnTasks = getColumnTasksInOrder(columnName);
+            if (columnTasks.length === 0) return;
+
+            if (!selectedTaskId) {
+                selectTask(columnTasks[0].id);
+                return;
+            }
+
+            const currentIndex = columnTasks.findIndex(t => t.id === selectedTaskId);
+            if (currentIndex < columnTasks.length - 1) {
+                selectTask(columnTasks[currentIndex + 1].id);
+            } else {
+                selectTask(columnTasks[0].id);
+            }
+        }
+
+        function navigateLeft() {
+            selectedColumn = selectedColumn > 0 ? selectedColumn - 1 : columnNames.length - 1;
+            const columnTasks = getColumnTasksInOrder(columnNames[selectedColumn]);
+            if (columnTasks.length > 0) {
+                selectTask(columnTasks[0].id);
+            } else {
+                clearSelection();
+            }
+        }
+
+        function navigateRight() {
+            selectedColumn = selectedColumn < columnNames.length - 1 ? selectedColumn + 1 : 0;
+            const columnTasks = getColumnTasksInOrder(columnNames[selectedColumn]);
+            if (columnTasks.length > 0) {
+                selectTask(columnTasks[0].id);
+            } else {
+                clearSelection();
+            }
+        }
+
+        // Move task functions
+        function moveTaskUp() {
+            const task = getSelectedTask();
+            if (!task || task.column === 'done') return;
+
+            const columnTasks = getColumnTasksInOrder(task.column);
+            const currentIndex = columnTasks.findIndex(t => t.id === task.id);
+
+            if (currentIndex > 0) {
+                const targetTask = columnTasks[currentIndex - 1];
+                const tempOrder = task.order;
+                task.order = targetTask.order;
+                targetTask.order = tempOrder;
+
+                saveTasks();
+                renderTasks();
+                selectTask(task.id);
+            }
+        }
+
+        function moveTaskDown() {
+            const task = getSelectedTask();
+            if (!task || task.column === 'done') return;
+
+            const columnTasks = getColumnTasksInOrder(task.column);
+            const currentIndex = columnTasks.findIndex(t => t.id === task.id);
+
+            if (currentIndex < columnTasks.length - 1) {
+                const targetTask = columnTasks[currentIndex + 1];
+                const tempOrder = task.order;
+                task.order = targetTask.order;
+                targetTask.order = tempOrder;
+
+                saveTasks();
+                renderTasks();
+                selectTask(task.id);
+            }
+        }
+
+        function moveTaskLeft() {
+            const task = getSelectedTask();
+            if (!task) return;
+
+            const newColumnIndex = selectedColumn > 0 ? selectedColumn - 1 : columnNames.length - 1;
+            const newColumnName = columnNames[newColumnIndex];
+            const oldColumn = task.column;
+
+            task.column = newColumnName;
+
+            if (newColumnName === 'done' && oldColumn !== 'done') {
+                task.completedAt = new Date().toISOString();
+            } else if (oldColumn === 'done' && newColumnName !== 'done') {
+                delete task.completedAt;
+            }
+
+            const newColumnTasks = tasks.filter(t => t.column === newColumnName && t.id !== task.id);
+            task.order = newColumnTasks.length;
+
+            selectedColumn = newColumnIndex;
+            saveTasks();
+            renderTasks();
+            selectTask(task.id);
+        }
+
+        function moveTaskRight() {
+            const task = getSelectedTask();
+            if (!task) return;
+
+            const newColumnIndex = selectedColumn < columnNames.length - 1 ? selectedColumn + 1 : 0;
+            const newColumnName = columnNames[newColumnIndex];
+            const oldColumn = task.column;
+
+            task.column = newColumnName;
+
+            if (newColumnName === 'done' && oldColumn !== 'done') {
+                task.completedAt = new Date().toISOString();
+            } else if (oldColumn === 'done' && newColumnName !== 'done') {
+                delete task.completedAt;
+            }
+
+            const newColumnTasks = tasks.filter(t => t.column === newColumnName && t.id !== task.id);
+            task.order = newColumnTasks.length;
+
+            selectedColumn = newColumnIndex;
+            saveTasks();
+            renderTasks();
+            selectTask(task.id);
+        }
+
+        // URL detection and title fetching
+        function isValidUrl(string) {
+            try {
+                new URL(string);
+                return true;
+            } catch (_) {
+                return false;
+            }
+        }
+
+        async function fetchPageTitle(url) {
+            try {
+                const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`);
+                const data = await response.json();
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(data.contents, 'text/html');
+                const title = doc.querySelector('title');
+                return title ? title.textContent.trim() : new URL(url).hostname;
+            } catch (error) {
+                console.error('Error fetching page title:', error);
+                return new URL(url).hostname;
+            }
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            // Prevent shortcuts when modal is open or in input fields
+            if (document.getElementById('task-modal').style.display === 'block' ||
+                e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+                return;
+            }
+
+            if (e.shiftKey) {
+                // Shift + Arrow = Move task
+                switch (e.key) {
+                    case 'ArrowUp':
+                        moveTaskUp();
+                        e.preventDefault();
+                        break;
+                    case 'ArrowDown':
+                        moveTaskDown();
+                        e.preventDefault();
+                        break;
+                    case 'ArrowLeft':
+                        moveTaskLeft();
+                        e.preventDefault();
+                        break;
+                    case 'ArrowRight':
+                        moveTaskRight();
+                        e.preventDefault();
+                        break;
+                }
+            } else {
+                // Regular navigation and actions
+                switch (e.key) {
+                    case 'ArrowUp':
+                        navigateUp();
+                        e.preventDefault();
+                        break;
+                    case 'ArrowDown':
+                        navigateDown();
+                        e.preventDefault();
+                        break;
+                    case 'ArrowLeft':
+                        navigateLeft();
+                        e.preventDefault();
+                        break;
+                    case 'ArrowRight':
+                        navigateRight();
+                        e.preventDefault();
+                        break;
+                    case 'Enter':
+                        if (selectedTaskId) {
+                            const taskIndex = tasks.findIndex(t => t.id === selectedTaskId);
+                            if (taskIndex >= 0) {
+                                editTask(taskIndex);
+                            }
+                        }
+                        e.preventDefault();
+                        break;
+                    case 'Delete':
+                    case 'Backspace':
+                        if (selectedTaskId) {
+                            const taskIndex = tasks.findIndex(t => t.id === selectedTaskId);
+                            if (taskIndex >= 0) {
+                                deleteTask(taskIndex);
+                            }
+                        }
+                        e.preventDefault();
+                        break;
+                    case 'n':
+                    case 'N':
+                        const columnForNew = columnNames[selectedColumn];
+                        openTaskModal(columnForNew);
+                        e.preventDefault();
+                        break;
+                }
+            }
+        });
+
+        // Paste functionality
+        document.addEventListener('paste', async (e) => {
+            // Only handle paste when not in input fields or modal
+            if (e.target.tagName === 'INPUT' ||
+                document.getElementById('task-modal').style.display === 'block') {
+                return;
+            }
+
+            e.preventDefault();
+            const pastedText = e.clipboardData.getData('text').trim();
+
+            if (isValidUrl(pastedText)) {
+                // Show loading state
+                const loadingDiv = document.createElement('div');
+                loadingDiv.className = 'task loading';
+                loadingDiv.textContent = 'Fetching page title...';
+                document.getElementById('todo-tasks').appendChild(loadingDiv);
+
+                try {
+                    const title = await fetchPageTitle(pastedText);
+                    loadingDiv.remove();
+
+                    // Open modal with pre-filled data
+                    currentColumn = 'todo';
+                    currentEditingTask = null;
+                    document.getElementById('modal-title').textContent = 'Add Task';
+                    currentTags = [];
+                    document.getElementById('task-title').value = title;
+                    document.getElementById('task-url').value = pastedText;
+                    document.getElementById('task-notes').value = '';
+                    renderTagsInput();
+                    document.getElementById('task-modal').style.display = 'block';
+                    document.getElementById('task-title').focus();
+                    document.getElementById('task-title').select();
+                } catch (error) {
+                    loadingDiv.remove();
+                    console.error('Error processing URL:', error);
+                }
+            }
+        });
+
+        // Modal keyboard shortcuts and click outside to close
+        document.getElementById('task-modal').addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeTaskModal();
+            } else if (e.key === 'Enter' && e.target.id !== 'task-notes' && e.target.id !== 'tag-input') {
+                saveTask();
+            } else if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+                saveTask();
+            }
+        });
+
+        // Close modal when clicking outside of it
+        document.getElementById('task-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'task-modal') {
+                closeTaskModal();
+            }
+        });
+
+        // Tags functionality
+        function renderTagsInput() {
+            const container = document.getElementById('tags-input');
+            container.innerHTML = '';
+
+            currentTags.forEach((tag, index) => {
+                const tagElement = document.createElement('div');
+                tagElement.className = 'tag-item';
+                tagElement.innerHTML = `
+                    <span>${tag}</span>
+                    <button class="tag-remove" onclick="removeTag(${index})" type="button">×</button>
+                `;
+                container.appendChild(tagElement);
+            });
+
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'tag-input';
+            input.id = 'tag-input';
+            input.placeholder = currentTags.length === 0 ? 'Type and press Enter to add tags' : '';
+            input.addEventListener('keydown', handleTagInput);
+            container.appendChild(input);
+        }
+
+        function handleTagInput(e) {
+            if (e.key === 'Enter' && e.target.value.trim()) {
+                e.preventDefault();
+                addTag(e.target.value.trim());
+                e.target.value = '';
+            } else if (e.key === 'Backspace' && e.target.value === '' && currentTags.length > 0) {
+                removeTag(currentTags.length - 1);
+            }
+        }
+
+        function addTag(tagText) {
+            if (tagText && !currentTags.includes(tagText)) {
+                currentTags.push(tagText);
+                renderTagsInput();
+                document.getElementById('tag-input').focus();
+            }
+        }
+
+        function removeTag(index) {
+            currentTags.splice(index, 1);
+            renderTagsInput();
+            document.getElementById('tag-input').focus();
+        }
+
+        // Initialize the app
+        loadTasks();
+        loadCollapsedState();
+        setupDropZones();
+
+        // Set initial column focus
+        setTimeout(() => {
+            if (!selectedTaskId && tasks.length > 0) {
+                // Find first column with tasks
+                for (let i = 0; i < columnNames.length; i++) {
+                    const columnTasks = getColumnTasksInOrder(columnNames[i]);
+                    if (columnTasks.length > 0) {
+                        selectedColumn = i;
+                        break;
+                    }
+                }
+            }
+        }, 100);
+    </script>
+</body>
+</html>
