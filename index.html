@@ -5,62 +5,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tobi's Task Manager</title>
     <style>
-        @font-face {
-            font-family: 'DM Serif Text';
-            src: url('./fonts/DM_Serif_Text/DMSerifText-Regular.ttf') format('truetype');
-            font-weight: normal;
-            font-style: normal;
-        }
-
-        @font-face {
-            font-family: 'DM Serif Text';
-            src: url('./fonts/DM_Serif_Text/DMSerifText-Italic.ttf') format('truetype');
-            font-weight: normal;
-            font-style: italic;
-        }
-
-        @font-face {
-            font-family: 'IBM Plex Sans';
-            src: url('./fonts/IBM_Plex_Sans/IBMPlexSans-VariableFont_wdth,wght.ttf') format('truetype');
-            font-weight: 100 900;
-            font-style: normal;
-        }
-
-        @font-face {
-            font-family: 'IBM Plex Sans';
-            src: url('./fonts/IBM_Plex_Sans/IBMPlexSans-Italic-VariableFont_wdth,wght.ttf') format('truetype');
-            font-weight: 100 900;
-            font-style: italic;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&display=swap');
 
         :root {
-            /* Catppuccin Mocha Colors */
-            --base: #1e1e2e;
-            --mantle: #181825;
-            --crust: #11111b;
-            --surface0: #313244;
-            --surface1: #45475a;
-            --surface2: #585b70;
-            --overlay0: #6c7086;
-            --overlay1: #7f849c;
-            --overlay2: #9399b2;
-            --subtext0: #a6adc8;
-            --subtext1: #bac2de;
-            --text: #cdd6f4;
-            --lavender: #b4befe;
-            --blue: #89b4fa;
-            --sapphire: #74c7ec;
-            --sky: #89dceb;
-            --teal: #94e2d5;
-            --green: #a6e3a1;
-            --yellow: #f9e2af;
-            --peach: #fab387;
-            --maroon: #eba0ac;
-            --red: #f38ba8;
-            --mauve: #cba6f7;
-            --pink: #f5c2e7;
-            --flamingo: #f2cdcd;
-            --rosewater: #f5e0dc;
+            /* Modern Beige/Cream Color Scheme */
+            --background: #faf8f5;
+            --surface: #f5f2ed;
+            --surface-elevated: #ffffff;
+            --border: #e8e3da;
+            --border-hover: #d4cfc4;
+
+            /* Text Colors */
+            --text-primary: #2d2a26;
+            --text-secondary: #6b6560;
+            --text-muted: #9a9389;
+
+            /* Column Colors - Subtle differentiation */
+            --todo-accent: #8b7355;
+            --todo-bg: #f9f7f4;
+            --progress-accent: #6b8394;
+            --progress-bg: #f4f7f9;
+            --done-accent: #7a9471;
+            --done-bg: #f6f9f6;
+
+            /* Interactive Elements */
+            --accent: #8b7355;
+            --accent-hover: #6d5a44;
+            --danger: #c85a5a;
+            --danger-hover: #b04545;
+            --success: #7a9471;
+            --warning: #d4a574;
+
+            /* Shadows */
+            --shadow-sm: 0 1px 2px rgba(45, 42, 38, 0.04);
+            --shadow-md: 0 4px 8px rgba(45, 42, 38, 0.08);
+            --shadow-lg: 0 8px 16px rgba(45, 42, 38, 0.12);
         }
 
         * {
@@ -70,11 +49,12 @@
         }
 
         body {
-            font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--base);
-            color: var(--text);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background-color: var(--background);
+            color: var(--text-primary);
             min-height: 100vh;
-            padding: 20px;
+            padding: 32px;
+            line-height: 1.6;
         }
 
         .container {
@@ -84,54 +64,82 @@
 
         h1 {
             text-align: center;
-            margin-bottom: 30px;
-            color: var(--lavender);
-            font-size: 2.5rem;
+            margin-bottom: 48px;
+            color: var(--text-primary);
+            font-size: 2.25rem;
             font-weight: 400;
-            font-family: 'DM Serif Text', Georgia, 'Times New Roman', serif;
+            font-family: 'Fraunces', Georgia, serif;
+            letter-spacing: -0.02em;
         }
 
         .board {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            height: calc(100vh - 140px);
+            gap: 24px;
+            max-width: 1400px;
+            margin: 0 auto;
         }
 
         .column {
-            background-color: var(--surface0);
-            border-radius: 12px;
-            padding: 20px;
+            background-color: var(--surface);
+            border-radius: 16px;
+            padding: 24px;
             display: flex;
             flex-direction: column;
+            min-height: calc(100vh - 200px);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+            transition: all 0.2s ease;
+        }
+
+        .column[data-column="todo"] {
+            background-color: var(--todo-bg);
+            border-color: rgba(139, 115, 85, 0.2);
+        }
+
+        .column[data-column="in-progress"] {
+            background-color: var(--progress-bg);
+            border-color: rgba(107, 131, 148, 0.2);
+        }
+
+        .column[data-column="done"] {
+            background-color: var(--done-bg);
+            border-color: rgba(122, 148, 113, 0.2);
         }
 
         .column-header {
-            font-size: 1.2rem;
+            font-size: 1rem;
             font-weight: 600;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
             text-align: center;
-            padding: 10px;
-            border-radius: 8px;
-            background-color: var(--surface1);
+            padding: 12px 16px;
+            border-radius: 12px;
+            background-color: var(--surface-elevated);
             cursor: pointer;
             user-select: none;
             transition: all 0.2s ease;
             position: relative;
+            border: 1px solid var(--border);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-size: 0.875rem;
         }
 
         .column-header:hover {
-            background-color: var(--surface2);
+            background-color: var(--surface-elevated);
+            border-color: var(--border-hover);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
         }
 
         .column-header::after {
             content: '▼';
             position: absolute;
-            right: 10px;
+            right: 12px;
             top: 50%;
             transform: translateY(-50%);
-            font-size: 0.8rem;
-            opacity: 0.7;
+            font-size: 0.75rem;
+            opacity: 0.5;
             transition: transform 0.2s ease;
         }
 
@@ -144,68 +152,83 @@
             display: none;
         }
 
-        .column-header.todo { color: var(--yellow); }
-        .column-header.in-progress { color: var(--blue); }
-        .column-header.done { color: var(--green); }
+        .column-header.todo {
+            color: var(--todo-accent);
+            border-color: rgba(139, 115, 85, 0.3);
+        }
+        .column-header.in-progress {
+            color: var(--progress-accent);
+            border-color: rgba(107, 131, 148, 0.3);
+        }
+        .column-header.done {
+            color: var(--done-accent);
+            border-color: rgba(122, 148, 113, 0.3);
+        }
 
         .tasks-container {
             flex: 1;
             overflow-y: auto;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
+            padding: 4px;
         }
 
         .task {
-            background-color: var(--surface1);
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 10px;
+            background-color: var(--surface-elevated);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
             cursor: move;
             transition: all 0.2s ease;
-            border: 2px solid transparent;
+            border: 1px solid var(--border);
             position: relative;
+            box-shadow: var(--shadow-sm);
         }
 
-
         .task:hover {
-            background-color: var(--surface2);
+            border-color: var(--border-hover);
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            box-shadow: var(--shadow-md);
         }
 
         .task.selected {
-            border-color: var(--blue);
+            border-color: var(--accent);
+            box-shadow: var(--shadow-md);
         }
 
         .task.dragging {
-            opacity: 0.5;
-            transform: rotate(5deg);
+            opacity: 0.6;
+            transform: rotate(2deg);
+            box-shadow: var(--shadow-lg);
         }
 
         .task-title {
-            font-weight: 600;
+            font-weight: 500;
             margin-bottom: 8px;
-            color: var(--text);
+            color: var(--text-primary);
             word-wrap: break-word;
+            line-height: 1.4;
+            font-size: 0.95rem;
         }
 
         .task-url {
-            color: var(--blue);
+            color: var(--accent);
             text-decoration: none;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             word-break: break-all;
+            transition: color 0.2s ease;
         }
 
         .task-url:hover {
-            color: var(--sapphire);
+            color: var(--accent-hover);
             text-decoration: underline;
         }
 
         .task-actions {
             position: absolute;
-            top: 8px;
-            right: 8px;
+            top: 12px;
+            right: 12px;
             display: flex;
-            gap: 5px;
+            gap: 4px;
             opacity: 0;
             transition: opacity 0.2s ease;
         }
@@ -215,50 +238,63 @@
         }
 
         .action-btn {
-            background: none;
-            border: none;
-            color: var(--subtext0);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
             cursor: pointer;
-            padding: 4px;
-            border-radius: 4px;
-            font-size: 14px;
+            padding: 6px;
+            border-radius: 6px;
+            font-size: 12px;
             transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
         }
 
         .action-btn:hover {
-            background-color: var(--surface2);
-            color: var(--text);
+            background-color: var(--surface-elevated);
+            color: var(--text-primary);
+            border-color: var(--border-hover);
+            transform: translateY(-1px);
         }
 
         .action-btn.delete:hover {
-            color: var(--red);
+            color: var(--danger);
+            border-color: var(--danger);
+            background-color: rgba(200, 90, 90, 0.1);
         }
 
         .action-btn.edit:hover {
-            color: var(--yellow);
+            color: var(--accent);
+            border-color: var(--accent);
+            background-color: rgba(139, 115, 85, 0.1);
         }
 
         .add-task-btn {
-            background-color: var(--surface1);
-            color: var(--subtext0);
-            border: 2px dashed var(--surface2);
-            border-radius: 8px;
-            padding: 15px;
+            background-color: var(--surface-elevated);
+            color: var(--text-muted);
+            border: 1px dashed var(--border);
+            border-radius: 12px;
+            padding: 16px;
             cursor: pointer;
             text-align: center;
             transition: all 0.2s ease;
             font-size: 0.9rem;
+            font-weight: 500;
         }
 
         .add-task-btn:hover {
-            border-color: var(--blue);
-            color: var(--blue);
-            background-color: var(--surface2);
+            border-color: var(--accent);
+            color: var(--accent);
+            background-color: rgba(139, 115, 85, 0.05);
+            transform: translateY(-1px);
         }
 
         .drag-over {
-            border: 2px dashed var(--blue);
-            background-color: rgba(137, 180, 250, 0.1);
+            border: 2px dashed var(--accent);
+            background-color: rgba(139, 115, 85, 0.1);
         }
 
         .modal {
@@ -268,7 +304,8 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
+            background-color: rgba(45, 42, 38, 0.6);
+            backdrop-filter: blur(4px);
             z-index: 1000;
         }
 
@@ -277,16 +314,20 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background-color: var(--surface0);
-            padding: 30px;
-            border-radius: 12px;
+            background-color: var(--surface-elevated);
+            padding: 32px;
+            border-radius: 16px;
             width: 90%;
             max-width: 500px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-lg);
         }
 
         .modal h3 {
-            margin-bottom: 20px;
-            color: var(--lavender);
+            margin-bottom: 24px;
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 1.25rem;
         }
 
         .form-group {
@@ -296,20 +337,22 @@
         .form-group label {
             display: block;
             margin-bottom: 8px;
-            color: var(--subtext1);
+            color: var(--text-secondary);
             font-weight: 500;
+            font-size: 0.9rem;
         }
 
         .form-group input,
         .form-group textarea {
             width: 100%;
             padding: 12px;
-            border: 2px solid var(--surface2);
+            border: 1px solid var(--border);
             border-radius: 8px;
-            background-color: var(--surface1);
-            color: var(--text);
+            background-color: var(--surface);
+            color: var(--text-primary);
             font-size: 16px;
             font-family: inherit;
+            transition: border-color 0.2s ease;
         }
 
         .form-group textarea {
@@ -320,7 +363,7 @@
         .form-group input:focus,
         .form-group textarea:focus {
             outline: none;
-            border-color: var(--blue);
+            border-color: var(--accent);
         }
 
         .modal-buttons {
@@ -330,35 +373,42 @@
         }
 
         .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 6px;
+            padding: 12px 24px;
+            border: 1px solid transparent;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: 500;
             font-family: inherit;
             transition: all 0.2s ease;
+            font-size: 0.9rem;
         }
 
         .btn-primary {
-            background-color: var(--blue);
-            color: var(--base);
+            background-color: var(--accent);
+            color: var(--surface-elevated);
+            border-color: var(--accent);
         }
 
         .btn-primary:hover {
-            background-color: var(--sapphire);
+            background-color: var(--accent-hover);
+            border-color: var(--accent-hover);
+            transform: translateY(-1px);
         }
 
         .btn-secondary {
-            background-color: var(--surface2);
-            color: var(--text);
+            background-color: var(--surface);
+            color: var(--text-secondary);
+            border-color: var(--border);
         }
 
         .btn-secondary:hover {
-            background-color: var(--overlay0);
+            background-color: var(--surface-elevated);
+            color: var(--text-primary);
+            border-color: var(--border-hover);
         }
 
         .loading {
-            color: var(--yellow);
+            color: var(--warning);
         }
 
         .tasks-container::-webkit-scrollbar {
@@ -366,50 +416,53 @@
         }
 
         .tasks-container::-webkit-scrollbar-track {
-            background: var(--surface0);
+            background: transparent;
         }
 
         .tasks-container::-webkit-scrollbar-thumb {
-            background: var(--surface2);
+            background: var(--border);
             border-radius: 3px;
         }
 
         .tasks-container::-webkit-scrollbar-thumb:hover {
-            background: var(--overlay0);
+            background: var(--border-hover);
         }
 
         .help-text {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background-color: var(--surface1);
-            padding: 10px;
-            border-radius: 6px;
+            bottom: 24px;
+            right: 24px;
+            background-color: var(--surface-elevated);
+            padding: 12px 16px;
+            border-radius: 8px;
             font-size: 0.8rem;
-            color: var(--subtext0);
-            opacity: 0.7;
+            color: var(--text-muted);
+            opacity: 0.8;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
         }
 
         .task-tags {
             margin-top: 8px;
             display: flex;
             flex-wrap: wrap;
-            gap: 4px;
+            gap: 6px;
         }
 
         .task-tag {
-            background-color: var(--surface2);
-            color: var(--text);
-            padding: 2px 8px;
+            background-color: var(--surface);
+            color: var(--text-secondary);
+            padding: 4px 8px;
             border-radius: 12px;
             font-size: 0.75rem;
             font-weight: 500;
+            border: 1px solid var(--border);
         }
 
         .task-notes {
             margin-top: 8px;
             font-size: 0.85rem;
-            color: var(--subtext1);
+            color: var(--text-secondary);
             font-style: italic;
             line-height: 1.4;
         }
@@ -419,34 +472,38 @@
         }
 
         .date-header {
-            font-size: 0.9rem;
-            color: var(--subtext0);
-            margin-bottom: 10px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 12px;
             padding: 8px 12px;
-            background-color: var(--mantle);
-            border-radius: 6px;
+            background-color: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
             font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
         .tags-input {
             display: flex;
             flex-wrap: wrap;
-            gap: 4px;
+            gap: 6px;
             padding: 8px 12px;
-            border: 2px solid var(--surface2);
+            border: 1px solid var(--border);
             border-radius: 8px;
-            background-color: var(--surface1);
-            min-height: 40px;
+            background-color: var(--surface);
+            min-height: 44px;
             cursor: text;
+            transition: border-color 0.2s ease;
         }
 
         .tags-input:focus-within {
-            border-color: var(--blue);
+            border-color: var(--accent);
         }
 
         .tag-item {
-            background-color: var(--blue);
-            color: var(--base);
+            background-color: var(--accent);
+            color: var(--surface-elevated);
             padding: 4px 8px;
             border-radius: 12px;
             font-size: 0.8rem;
@@ -477,7 +534,7 @@
         .tag-input {
             border: none;
             background: none;
-            color: var(--text);
+            color: var(--text-primary);
             outline: none;
             flex: 1;
             min-width: 100px;
