@@ -1,0 +1,593 @@
+[
+  {
+    "id": "mgquttak5c4jsaliaig",
+    "title": "Max Drawdown Calculation",
+    "url": "https://3.basecamp.com/4038495/buckets/31969846/card_tables/cards/9169143156",
+    "column": "done",
+    "createdAt": "2025-10-14T17:47:07.532Z",
+    "order": 7,
+    "notes": "Next steps:\n1. fix the returns calculation\n2. check that the internal models are not affected\n3. confirm which external model metrics are affected\n4. for external models, don't discard holidays and weekends?",
+    "tags": [
+      "investigation",
+      "bug"
+    ],
+    "onHold": false,
+    "completedAt": "2025-10-16T12:17:33.473Z"
+  },
+  {
+    "id": "mgqx87z48sx21lleobv",
+    "title": "Client Accounts (Account Ownership) on client delete",
+    "url": "https://3.basecamp.com/4038495/buckets/9590557/messages/9150149352",
+    "notes": "",
+    "tags": [
+      "discussion"
+    ],
+    "column": "todo",
+    "order": 13,
+    "createdAt": "2025-10-14T18:54:18.976Z"
+  },
+  {
+    "id": "mgqx969p42zxz7m6i33",
+    "title": "Run model switch script for accounts",
+    "url": "https://3.basecamp.com/4038495/circles/42857489",
+    "notes": "",
+    "tags": [
+      "investment management"
+    ],
+    "column": "done",
+    "order": 10,
+    "createdAt": "2025-10-14T18:55:03.421Z",
+    "onHold": false,
+    "completedAt": "2025-10-16T15:20:49.248Z"
+  },
+  {
+    "id": "mgqy0bf4rm6nmm3t9ic",
+    "title": "Review Marcelo's PR",
+    "url": "https://github.com/timeline-holdings/core/pull/4364",
+    "notes": "",
+    "tags": [],
+    "column": "done",
+    "order": 0,
+    "createdAt": "2025-10-14T19:16:09.808Z",
+    "completedAt": "2025-10-14T19:16:18.670Z"
+  },
+  {
+    "id": "mgqy0h5yo85eiaaur2j",
+    "title": "Fix broken charts bug",
+    "url": "https://rootly.com/account/incidents/288-analytics-not-displaying-graphs-impacting-all-users",
+    "notes": "",
+    "tags": [],
+    "column": "done",
+    "order": 1,
+    "createdAt": "2025-10-14T19:16:17.254Z",
+    "completedAt": "2025-10-14T19:16:19.718Z"
+  },
+  {
+    "id": "mgro7q5lhgmwhg99iqn",
+    "title": "Fundment Spreadsheet Import",
+    "url": "https://3.basecamp.com/4038495/buckets/44244010/documents/9173477243",
+    "notes": "",
+    "tags": [
+      "feature"
+    ],
+    "column": "done",
+    "order": 21,
+    "createdAt": "2025-10-15T07:29:45.513Z",
+    "onHold": false,
+    "completedAt": "2025-10-23T12:19:17.531Z"
+  },
+  {
+    "id": "mgromi4m4x1qxm9ox09",
+    "title": "Compile a list of all scripts run regularly for the investment team or AST",
+    "url": "https://3.basecamp.com/4038495/buckets/43908759/todos/9094850317",
+    "notes": "",
+    "tags": [
+      "admin"
+    ],
+    "column": "todo",
+    "order": 12,
+    "createdAt": "2025-10-15T07:41:14.950Z"
+  },
+  {
+    "id": "mgromrywpodvhdvuudl",
+    "title": "Fix the rounding error for imported accounts",
+    "url": "https://3.basecamp.com/4038495/buckets/43908759/todos/9135306808",
+    "notes": "",
+    "tags": [
+      "bug"
+    ],
+    "column": "todo",
+    "order": 14,
+    "createdAt": "2025-10-15T07:41:27.704Z"
+  },
+  {
+    "id": "mgrwpr412bcebzi9zxm",
+    "title": "[Portfolios] New Portfolio Centre: portfolio details page initial updates#4366",
+    "url": "https://github.com/timeline-holdings/core/pull/4366/files",
+    "notes": "",
+    "tags": [],
+    "column": "done",
+    "order": 2,
+    "createdAt": "2025-10-15T11:27:43.490Z",
+    "completedAt": "2025-10-15T12:47:00.478Z"
+  },
+  {
+    "id": "mgs5pq2jlyqr0dpd9s",
+    "title": "Answer Michal about Jakub",
+    "url": "https://3.basecamp.com/4038495/circles/43479691",
+    "notes": "",
+    "tags": [
+      "team"
+    ],
+    "column": "done",
+    "order": 12,
+    "createdAt": "2025-10-15T15:39:38.683Z",
+    "completedAt": "2025-10-16T15:45:57.771Z"
+  },
+  {
+    "id": "mgt583uq8nwhesq1hnd",
+    "title": "Call with Kehinde",
+    "url": "",
+    "notes": "",
+    "tags": [
+      "team"
+    ],
+    "column": "done",
+    "order": 6,
+    "createdAt": "2025-10-16T08:13:42.914Z",
+    "completedAt": "2025-10-16T08:41:46.818Z"
+  },
+  {
+    "id": "mgt588htawkpmfec6mi",
+    "title": "Call with Jakub",
+    "url": "",
+    "notes": "",
+    "tags": [
+      "team"
+    ],
+    "column": "done",
+    "order": 5,
+    "createdAt": "2025-10-16T08:13:48.929Z",
+    "completedAt": "2025-10-16T08:13:52.267Z"
+  },
+  {
+    "id": "mgt683u6v79vuwaxr8o",
+    "title": "Discuss Kehinde's visa with Nacho",
+    "url": "",
+    "notes": "",
+    "tags": [
+      "team"
+    ],
+    "column": "done",
+    "order": 8,
+    "createdAt": "2025-10-16T08:41:42.510Z",
+    "completedAt": "2025-10-16T14:20:32.591Z"
+  },
+  {
+    "id": "mgt7j8xuv3xswnh63vq",
+    "title": "Provide database export of custom portfolios",
+    "url": "https://rootly.com/account/incidents/290-for-belle-financial-portfolios-imported-from-intelliflo-with-100-allocations-not-having-alerts",
+    "notes": "Waiting for: Kath to confirm if the CSV helps",
+    "tags": [],
+    "column": "in-progress",
+    "order": 6,
+    "createdAt": "2025-10-16T09:18:21.954Z",
+    "onHold": true
+  },
+  {
+    "id": "mgtilom8ixvufiifhs",
+    "title": "Answer Erol's questions",
+    "url": "https://3.basecamp.com/4038495/buckets/43908759/todos/9183857177",
+    "notes": "",
+    "tags": [
+      "shaping"
+    ],
+    "column": "done",
+    "order": 9,
+    "createdAt": "2025-10-16T14:28:11.360Z",
+    "completedAt": "2025-10-16T14:44:57.606Z"
+  },
+  {
+    "id": "mgtim4b6zd10nyisuf",
+    "title": "[Shaping] Drift Chart without the bar chart",
+    "url": "https://3.basecamp.com/4038495/buckets/43908759/todos/9184002913",
+    "notes": "",
+    "tags": [
+      "shaping"
+    ],
+    "column": "done",
+    "order": 13,
+    "createdAt": "2025-10-16T14:28:31.698Z",
+    "completedAt": "2025-10-16T15:51:39.278Z"
+  },
+  {
+    "id": "mgtimuyg28n763ktpgt",
+    "title": "[Portfolios] Modular Reporting: New Signature Page #4014",
+    "url": "https://github.com/timeline-holdings/core/pull/4014",
+    "notes": "",
+    "tags": [
+      "PR"
+    ],
+    "column": "todo",
+    "order": 11,
+    "createdAt": "2025-10-16T14:29:06.232Z"
+  },
+  {
+    "id": "mgtinv8zgshrpibv6nk",
+    "title": "[Portfolios] New Portfolio Centre: portfolio details page (read-only) #4389",
+    "url": "https://github.com/timeline-holdings/core/pull/4389",
+    "notes": "",
+    "tags": [],
+    "column": "done",
+    "order": 11,
+    "createdAt": "2025-10-16T14:29:53.267Z",
+    "completedAt": "2025-10-16T15:30:30.044Z"
+  },
+  {
+    "id": "mgtk18jcubphaipp4",
+    "title": "Prepare stability plan for cycle",
+    "url": "https://3.basecamp.com/4038495/buckets/44244010/todolists/9144229547",
+    "notes": "",
+    "tags": [
+      "stability"
+    ],
+    "column": "done",
+    "order": 18,
+    "createdAt": "2025-10-16T15:08:16.632Z",
+    "completedAt": "2025-10-22T08:43:29.974Z"
+  },
+  {
+    "id": "mh08vo14u16smmk2j3h",
+    "title": "Funds graphql #4402",
+    "url": "https://github.com/timeline-holdings/core/pull/4402",
+    "notes": "",
+    "tags": [],
+    "column": "done",
+    "order": 13,
+    "createdAt": "2025-10-21T07:30:24.232Z",
+    "completedAt": "2025-10-21T14:39:26.805Z"
+  },
+  {
+    "id": "mh08y2erq8haw2ms2dm",
+    "title": "Future of client-specific pages",
+    "url": "https://3.basecamp.com/4038495/buckets/20392297/card_tables/cards/9130338916",
+    "notes": "",
+    "tags": [],
+    "column": "todo",
+    "order": 8,
+    "createdAt": "2025-10-21T07:32:16.179Z"
+  },
+  {
+    "id": "mh093lz3488pmhq31d9",
+    "title": "\u2728 2026 Company Off-Site - Update",
+    "url": "https://3.basecamp.com/4038495/buckets/8017876/messages/9173513622",
+    "notes": "",
+    "tags": [],
+    "column": "done",
+    "order": 19,
+    "createdAt": "2025-10-21T07:36:34.815Z",
+    "onHold": false,
+    "completedAt": "2025-10-22T17:43:36.957Z"
+  },
+  {
+    "id": "mh09kw3x01la9651hltx",
+    "title": "TM funds Mapping",
+    "url": "https://3.basecamp.com/4038495/buckets/31969846/card_tables/cards/9183699882",
+    "notes": "Waiting for: Kehinde",
+    "tags": [
+      "bug"
+    ],
+    "column": "todo",
+    "order": 9,
+    "createdAt": "2025-10-21T07:50:01.101Z",
+    "onHold": true
+  },
+  {
+    "id": "mh0a886u8h43tjblp6d",
+    "title": "Message Thomas to talk",
+    "url": "",
+    "notes": "",
+    "tags": [],
+    "column": "done",
+    "order": 12,
+    "createdAt": "2025-10-21T08:08:09.846Z",
+    "completedAt": "2025-10-21T08:18:05.558Z"
+  },
+  {
+    "id": "mh0aoka80xk5p90s28w",
+    "title": "Investment Accounts - Account Details Page",
+    "url": "https://3.basecamp.com/4038495/buckets/44379818/documents/9197669016",
+    "notes": "",
+    "tags": [
+      "shaping"
+    ],
+    "column": "done",
+    "order": 16,
+    "createdAt": "2025-10-21T08:20:52.016Z",
+    "completedAt": "2025-10-21T14:47:33.008Z"
+  },
+  {
+    "id": "mh0dkbc0ot9odta0xn",
+    "title": "Fundment accounts linked to the wrong model",
+    "url": "https://3.basecamp.com/4038495/circles/42857489",
+    "notes": "Will be sorted with Fundment spreadsheet import",
+    "tags": [],
+    "column": "done",
+    "order": 22,
+    "createdAt": "2025-10-21T09:41:32.640Z",
+    "onHold": false,
+    "completedAt": "2025-10-23T12:19:20.517Z"
+  },
+  {
+    "id": "mh0dlarnvpv8rkax9l",
+    "title": "Play around with CodeScene",
+    "url": "https://codescene.io/projects",
+    "notes": "",
+    "tags": [
+      "stability"
+    ],
+    "column": "todo",
+    "order": 10,
+    "createdAt": "2025-10-21T09:42:18.563Z"
+  },
+  {
+    "id": "mh0je2gjmml63evow9",
+    "title": "Cooldown Tasks",
+    "url": "https://3.basecamp.com/4038495/buckets/16284476/todolists/4513791512",
+    "notes": "",
+    "tags": [],
+    "column": "done",
+    "order": 29,
+    "createdAt": "2025-10-21T12:24:38.899Z",
+    "completedAt": "2025-10-28T11:26:54.108Z"
+  },
+  {
+    "id": "mh0o7wx6t6j9tv3zk9o",
+    "title": "Shape next cycle tasks with Erol",
+    "url": "",
+    "notes": "",
+    "tags": [
+      "shaping"
+    ],
+    "column": "done",
+    "order": 14,
+    "createdAt": "2025-10-21T14:39:49.867Z",
+    "completedAt": "2025-10-21T14:40:20.594Z"
+  },
+  {
+    "id": "mh0o8fwsjn3jl5rpyp",
+    "title": "Prioritise bugs + double cooldown tasks with Erol",
+    "url": "",
+    "notes": "",
+    "tags": [
+      "shaping"
+    ],
+    "column": "done",
+    "order": 15,
+    "createdAt": "2025-10-21T14:40:14.476Z",
+    "completedAt": "2025-10-21T14:40:21.687Z"
+  },
+  {
+    "id": "mh0wecudwzusfwjms9h",
+    "title": "Job Evaluation Form",
+    "url": "https://3.basecamp.com/4038495/buckets/40988033/todolists/9200153298",
+    "notes": "Waiting for the team to complete the forms.",
+    "tags": [
+      "team"
+    ],
+    "column": "done",
+    "order": 20,
+    "createdAt": "2025-10-21T18:28:47.365Z",
+    "onHold": false,
+    "completedAt": "2025-10-23T07:06:35.901Z"
+  },
+  {
+    "id": "mh1pl9rqq98xmsnsjuk",
+    "title": "Fund Creation Requirements",
+    "url": "https://3.basecamp.com/4038495/buckets/9590557/messages/9200290864",
+    "notes": "",
+    "tags": [],
+    "column": "done",
+    "order": 17,
+    "createdAt": "2025-10-22T08:05:58.838Z",
+    "completedAt": "2025-10-22T08:25:32.164Z"
+  },
+  {
+    "id": "mh34qjyginkmxhmq1",
+    "title": "Incorrect Investment accounts added to the client",
+    "url": "https://rootly.com/account/incidents/307-incorrect-investment-accounts-added-to-the-client",
+    "notes": "Waiting for reporter.",
+    "tags": [
+      "bug"
+    ],
+    "column": "in-progress",
+    "order": 5,
+    "createdAt": "2025-10-23T07:57:45.736Z",
+    "onHold": true
+  },
+  {
+    "id": "mh3fjaamsfj7bhstn1g",
+    "title": "Mis-match in client linked portfolio on the dashboard",
+    "url": "https://rootly.com/account/incidents/231-mis-match-in-client-linked-portfolio-on-the-dashboard-jd",
+    "notes": "Release.",
+    "tags": [
+      "bug"
+    ],
+    "column": "done",
+    "order": 23,
+    "createdAt": "2025-10-23T13:00:02.398Z",
+    "completedAt": "2025-10-23T14:49:34.812Z"
+  },
+  {
+    "id": "mh3jgphymigrmpm3v4",
+    "title": "Unable to edit start date of portfolio",
+    "url": "https://rootly.com/account/incidents/252-unable-to-edit-start-date-of-portfolio",
+    "notes": "",
+    "tags": [],
+    "column": "done",
+    "order": 24,
+    "createdAt": "2025-10-23T14:50:00.598Z",
+    "completedAt": "2025-10-23T14:50:06.874Z"
+  },
+  {
+    "id": "mh4lwxyxtpojhqq0i4",
+    "title": "Set up Claude Code like Nacho suggested",
+    "url": "https://3.basecamp.com/4038495/buckets/16284476/messages/9188894293",
+    "notes": "",
+    "tags": [],
+    "column": "todo",
+    "order": 5,
+    "createdAt": "2025-10-24T08:46:23.481Z"
+  },
+  {
+    "id": "mh4qqqiz6le18qm9pqs",
+    "title": "Go through this and check estimations",
+    "url": "https://3.basecamp.com/4038495/buckets/42128589/messages/9198056258",
+    "notes": "",
+    "tags": [
+      "shaping"
+    ],
+    "column": "done",
+    "order": 30,
+    "createdAt": "2025-10-24T11:01:31.979Z",
+    "completedAt": "2025-10-28T11:50:27.550Z"
+  },
+  {
+    "id": "mh8xkh6r3haimw36srt",
+    "title": "Git Worktrees \u26a1\ufe0f",
+    "url": "https://3.basecamp.com/4038495/buckets/43846395/messages/9211973578",
+    "notes": "",
+    "tags": [],
+    "column": "todo",
+    "order": 4,
+    "createdAt": "2025-10-27T09:23:41.955Z"
+  },
+  {
+    "id": "mh8xkndh3gsoykhojd4",
+    "title": "PR Reviews",
+    "url": "https://3.basecamp.com/4038495/buckets/44244010/chats/9140302630",
+    "notes": "",
+    "tags": [],
+    "column": "done",
+    "order": 26,
+    "createdAt": "2025-10-27T09:23:49.973Z",
+    "completedAt": "2025-10-27T11:18:27.268Z"
+  },
+  {
+    "id": "mh8xkxwti2qep28pm5",
+    "title": "Multi Asset Fund Issues in Models View",
+    "url": "https://3.basecamp.com/4038495/buckets/9590557/messages/9202936776",
+    "notes": "",
+    "tags": [],
+    "column": "done",
+    "order": 25,
+    "createdAt": "2025-10-27T09:24:03.629Z",
+    "completedAt": "2025-10-27T10:26:43.624Z"
+  },
+  {
+    "id": "mh8xlaed7bven71s3et",
+    "title": "Data Validator PoC",
+    "url": "https://3.basecamp.com/4038495/buckets/40988033/chats/8305635286",
+    "notes": "",
+    "tags": [],
+    "column": "todo",
+    "order": 6,
+    "createdAt": "2025-10-27T09:24:19.813Z"
+  },
+  {
+    "id": "mh923w5k7aftx60ousf",
+    "title": "Answer to Nacho about end-of-year off-days",
+    "url": "https://3.basecamp.com/4038495/circles/43778805",
+    "notes": "",
+    "tags": [],
+    "column": "done",
+    "order": 28,
+    "createdAt": "2025-10-27T11:30:46.280Z",
+    "completedAt": "2025-10-28T10:42:09.786Z"
+  },
+  {
+    "id": "mh99u644egf5sg11e1m",
+    "title": "Dates exclusion - Review",
+    "url": "https://3.basecamp.com/4038495/buckets/31969846/card_tables/cards/9183710686",
+    "notes": "Provide data to Noah",
+    "tags": [],
+    "column": "done",
+    "order": 27,
+    "createdAt": "2025-10-27T15:07:09.556Z",
+    "completedAt": "2025-10-27T16:17:38.097Z"
+  },
+  {
+    "id": "mhah4cn4lykn4gkf1oc",
+    "title": "[Small Task] Update the Signature Portfolios Range for Dynamic Planner",
+    "url": "https://3.basecamp.com/4038495/buckets/43908759/todos/9203296252",
+    "notes": "",
+    "tags": [
+      "double cooldown"
+    ],
+    "column": "done",
+    "order": 31,
+    "createdAt": "2025-10-28T11:18:48.064Z",
+    "completedAt": "2025-10-28T14:13:21.916Z"
+  },
+  {
+    "id": "mhahazu9w13ynravvy",
+    "title": "Change the modular reporting template default state to automatically be collapsed",
+    "url": "https://3.basecamp.com/4038495/buckets/43908759/todos/9198696531",
+    "notes": "Ready to be released alongisde UI fixes.",
+    "tags": [
+      "double cooldown"
+    ],
+    "column": "in-progress",
+    "order": 4,
+    "createdAt": "2025-10-28T11:23:58.065Z",
+    "onHold": false
+  },
+  {
+    "id": "mhahc8y06lovdzskvqs",
+    "title": "Small UI changes from Dima, focus on the first two",
+    "url": "https://3.basecamp.com/4038495/buckets/43908759/todos/9198743323",
+    "notes": "Sorting issue with portfolio names, let's have Erol confirm if OK.",
+    "tags": [
+      "double cooldown"
+    ],
+    "column": "in-progress",
+    "order": 2,
+    "createdAt": "2025-10-28T11:24:56.520Z"
+  },
+  {
+    "id": "mhbsmxwip1fo3bkxr6",
+    "title": "Fundment spreadsheet import",
+    "url": "https://github.com/timeline-holdings/core/pull/4492",
+    "notes": "Waiting for code review.",
+    "tags": [
+      "bug"
+    ],
+    "column": "in-progress",
+    "order": 1,
+    "createdAt": "2025-10-29T09:28:57.378Z"
+  },
+  {
+    "id": "mhc6lt7k7xeom8rtk4k",
+    "title": "[Portfolios] DFM Model Management Backend - Core & Graphql Endpoints #4410",
+    "url": "https://github.com/timeline-holdings/core/pull/4410",
+    "notes": "",
+    "tags": [
+      "PR"
+    ],
+    "column": "todo",
+    "order": 1,
+    "createdAt": "2025-10-29T15:59:59.264Z"
+  },
+  {
+    "id": "mhc6o2xdph3nlp8oxh",
+    "title": "Platform: further improve error handling on Seccl account creation #4490",
+    "url": "https://github.com/timeline-holdings/core/pull/4490",
+    "notes": "",
+    "tags": [
+      "PR"
+    ],
+    "column": "todo",
+    "order": 0,
+    "createdAt": "2025-10-29T16:01:45.169Z"
+  }
+]

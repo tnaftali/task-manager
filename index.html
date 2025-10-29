@@ -4,9 +4,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#8b7355">
+  <meta name="description" content="A personal task management application with drag-and-drop functionality">
   <title>Tobi's Task Manager</title>
   <link rel="icon" type="image/svg+xml"
     href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%23ffffff'/%3E%3Cpath d='M9 11l3 3l8-8' fill='none' stroke='%238b7355' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11' fill='none' stroke='%238b7355' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon-192.png">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&display=swap');
 
@@ -464,6 +468,35 @@
       box-shadow: var(--shadow-sm);
     }
 
+    .sync-indicator {
+      position: fixed;
+      bottom: 24px;
+      left: 24px;
+      background-color: var(--surface-elevated);
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      opacity: 1;
+      transition: all 0.3s ease;
+      color: var(--text-muted);
+    }
+
+    .sync-indicator.synced {
+      color: var(--success);
+      border-color: var(--success);
+    }
+
+    .sync-indicator.error {
+      color: var(--warning);
+      border-color: var(--warning);
+    }
+
+    .sync-indicator:hover {
+      opacity: 1;
+    }
+
     .task-tags {
       margin-top: 8px;
       display: flex;
@@ -487,6 +520,29 @@
       color: var(--text-secondary);
       font-style: italic;
       line-height: 1.4;
+    }
+
+    .task.on-hold {
+      opacity: 0.6;
+      border-left: 4px solid var(--warning);
+      background: repeating-linear-gradient(
+        45deg,
+        var(--surface-elevated),
+        var(--surface-elevated) 10px,
+        rgba(212, 165, 116, 0.05) 10px,
+        rgba(212, 165, 116, 0.05) 20px
+      );
+    }
+
+    .task.on-hold .task-title::before {
+      content: '⏸ ';
+      opacity: 0.7;
+    }
+
+    .action-btn.hold:hover {
+      color: var(--warning);
+      border-color: var(--warning);
+      background-color: rgba(212, 165, 116, 0.1);
     }
 
     .date-group {
@@ -653,6 +709,8 @@
     </div>
   </div>
 
+  <div class="sync-indicator" id="sync-indicator">Loading...</div>
+
   <div class="help-text">
     Tip: Press Cmd+V to paste a URL • Arrow keys to navigate • Shift+Arrow to move tasks • Enter to edit • N for new
     task
@@ -669,9 +727,29 @@
     const columnNames = ['todo', 'in-progress', 'done'];
     let allTags = new Set();
     let tagSuggestions = [];
+    let isServerMode = window.location.protocol !== 'file:';
+    let lastSavedTime = null;
 
-    // Load tasks from localStorage
-    function loadTasks() {
+    // Load tasks from server or localStorage
+    async function loadTasks() {
+      if (isServerMode) {
+        try {
+          const response = await fetch('/tasks.json');
+          if (response.ok) {
+            const serverTasks = await response.json();
+            tasks = serverTasks;
+            collectAllTags();
+            renderTasks();
+            // Also sync to localStorage as backup
+            localStorage.setItem('taskManager_tasks', JSON.stringify(tasks));
+            return;
+          }
+        } catch (error) {
+          console.log('Could not load from server, falling back to localStorage');
+        }
+      }
+
+      // Fallback to localStorage
       const savedTasks = localStorage.getItem('taskManager_tasks');
       if (savedTasks) {
         tasks = JSON.parse(savedTasks);
@@ -690,10 +768,91 @@
       });
     }
 
-    // Save tasks to localStorage
-    function saveTasks() {
+    // Save tasks to localStorage and server
+    async function saveTasks() {
       localStorage.setItem('taskManager_tasks', JSON.stringify(tasks));
       collectAllTags();
+
+      // Save to server if in server mode
+      if (isServerMode) {
+        try {
+          const response = await fetch('/save-tasks', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(tasks)
+          });
+
+          if (response.ok) {
+            updateSyncStatus('synced');
+          } else {
+            updateSyncStatus('error');
+          }
+        } catch (error) {
+          console.log('Could not sync to server:', error);
+          updateSyncStatus('error');
+        }
+      }
+    }
+
+    // Format timestamp for display
+    function formatLastSaved(timestamp) {
+      if (!timestamp) return '';
+
+      const date = new Date(timestamp);
+      const now = new Date();
+      const diffMs = now - date;
+      const diffMins = Math.floor(diffMs / 60000);
+
+      if (diffMins < 1) return 'just now';
+      if (diffMins === 1) return '1 min ago';
+      if (diffMins < 60) return `${diffMins} mins ago`;
+
+      const diffHours = Math.floor(diffMins / 60);
+      if (diffHours === 1) return '1 hour ago';
+      if (diffHours < 24) return `${diffHours} hours ago`;
+
+      // Show actual time for older saves
+      return date.toLocaleString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
+      });
+    }
+
+    // Update sync status indicator
+    function updateSyncStatus(status) {
+      const indicator = document.getElementById('sync-indicator');
+      if (!indicator) return;
+
+      indicator.className = 'sync-indicator';
+
+      if (status === 'synced') {
+        lastSavedTime = new Date();
+        indicator.classList.add('synced');
+        indicator.textContent = `✓ Saved ${formatLastSaved(lastSavedTime)}`;
+        localStorage.setItem('taskManager_lastSaved', lastSavedTime.toISOString());
+      } else if (status === 'error') {
+        indicator.classList.add('error');
+        if (lastSavedTime) {
+          indicator.textContent = `⚠ Last saved ${formatLastSaved(lastSavedTime)} (local only)`;
+        } else {
+          indicator.textContent = '⚠ Not synced (local only)';
+        }
+      }
+    }
+
+    // Update the "time ago" text periodically
+    function refreshSyncTimestamp() {
+      if (lastSavedTime) {
+        const indicator = document.getElementById('sync-indicator');
+        if (indicator && indicator.classList.contains('synced')) {
+          indicator.textContent = `✓ Saved ${formatLastSaved(lastSavedTime)}`;
+        }
+      }
     }
 
     // Generate unique ID
@@ -846,6 +1005,7 @@
 
       taskDiv.innerHTML = `
                 <div class="task-actions">
+                    <button class="action-btn hold" onclick="toggleHold('${task.id}')" title="${task.onHold ? 'Resume' : 'Put on Hold'}">${task.onHold ? '▶️' : '⏸'}</button>
                     <button class="action-btn edit" onclick="editTaskByIdFromButton('${task.id}')" title="Edit">✏️</button>
                     <button class="action-btn delete" onclick="deleteTaskByIdFromButton('${task.id}')" title="Delete">🗑️</button>
                 </div>
@@ -854,6 +1014,11 @@
                 ${task.tags && task.tags.length > 0 ? `<div class="task-tags">${task.tags.map(tag => `<span class="task-tag">${tag}</span>`).join('')}</div>` : ''}
                 ${task.notes ? `<div class="task-notes">${task.notes}</div>` : ''}
             `;
+
+      // Add on-hold class if task is on hold
+      if (task.onHold) {
+        taskDiv.classList.add('on-hold');
+      }
 
       // Drag events (all tasks are draggable)
       taskDiv.addEventListener('dragstart', handleDragStart);
@@ -1037,9 +1202,13 @@
         tasks[currentEditingTask].notes = notes;
         tasks[currentEditingTask].tags = currentTags;
       } else {
-        // Create new task
-        const columnTasks = tasks.filter(task => task.column === currentColumn);
-        const maxOrder = columnTasks.length > 0 ? Math.max(...columnTasks.map(t => t.order || 0)) : -1;
+        // Create new task at the top (order 0)
+        // First, increment the order of all existing tasks in this column
+        tasks.forEach(task => {
+          if (task.column === currentColumn) {
+            task.order = (task.order || 0) + 1;
+          }
+        });
 
         const task = {
           id: generateId(),
@@ -1048,7 +1217,7 @@
           notes: notes,
           tags: currentTags,
           column: currentColumn,
-          order: maxOrder + 1,
+          order: 0,
           createdAt: new Date().toISOString()
         };
         tasks.push(task);
@@ -1351,8 +1520,8 @@
             break;
           case 'n':
           case 'N':
-            const columnForNew = columnNames[selectedColumn];
-            openTaskModal(columnForNew);
+            // Always add new tasks to the "todo" column when pressing 'n'
+            openTaskModal('todo');
             e.preventDefault();
             break;
         }
@@ -1558,10 +1727,41 @@
       document.getElementById('tag-input').focus();
     }
 
+    // Toggle on hold status
+    function toggleHold(taskId) {
+      const task = tasks.find(t => t.id === taskId);
+      if (task) {
+        task.onHold = !task.onHold;
+        saveTasks();
+        renderTasks();
+        // Restore selection after render
+        if (selectedTaskId === taskId) {
+          selectTask(taskId);
+        }
+      }
+    }
+
     // Initialize the app
     loadTasks();
     loadCollapsedState();
     setupDropZones();
+
+    // Load last saved time from localStorage
+    const savedTime = localStorage.getItem('taskManager_lastSaved');
+    if (savedTime) {
+      lastSavedTime = new Date(savedTime);
+      updateSyncStatus('synced');
+    } else {
+      // Show initial state if no saved time exists
+      const indicator = document.getElementById('sync-indicator');
+      if (indicator) {
+        indicator.textContent = 'Not yet saved';
+        indicator.className = 'sync-indicator';
+      }
+    }
+
+    // Update timestamp display every minute
+    setInterval(refreshSyncTimestamp, 60000);
 
     // Set initial column focus
     setTimeout(() => {
@@ -1576,6 +1776,19 @@
         }
       }
     }, 100);
+
+    // Register service worker for PWA support
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js')
+          .then((registration) => {
+            console.log('Service Worker registered successfully:', registration.scope);
+          })
+          .catch((error) => {
+            console.log('Service Worker registration failed:', error);
+          });
+      });
+    }
   </script>
 </body>
 
