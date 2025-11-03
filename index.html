@@ -69,14 +69,63 @@
       margin: 0 auto;
     }
 
+    .title-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 48px;
+      position: relative;
+    }
+
     h1 {
       text-align: center;
-      margin-bottom: 48px;
+      margin: 0;
       color: var(--text-primary);
       font-size: 2.25rem;
       font-weight: 400;
       font-family: 'Fraunces', Georgia, serif;
       letter-spacing: -0.02em;
+    }
+
+    .title-edit-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      cursor: pointer;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 0.875rem;
+      transition: all 0.2s ease;
+      opacity: 0.6;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .title-edit-btn:hover {
+      opacity: 1;
+      background-color: var(--surface-elevated);
+      color: var(--text-primary);
+      border-color: var(--border-hover);
+    }
+
+    .title-edit-input {
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 4px 8px;
+      font-size: 2.25rem;
+      font-weight: 400;
+      font-family: 'Fraunces', Georgia, serif;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      min-width: 300px;
+      max-width: 600px;
+      text-align: center;
+      outline: none;
+    }
+
+    .title-edit-input:focus {
+      border-color: var(--accent);
     }
 
     .board {
@@ -525,13 +574,11 @@
     .task.on-hold {
       opacity: 0.6;
       border-left: 4px solid var(--warning);
-      background: repeating-linear-gradient(
-        45deg,
-        var(--surface-elevated),
-        var(--surface-elevated) 10px,
-        rgba(212, 165, 116, 0.05) 10px,
-        rgba(212, 165, 116, 0.05) 20px
-      );
+      background: repeating-linear-gradient(45deg,
+          var(--surface-elevated),
+          var(--surface-elevated) 10px,
+          rgba(212, 165, 116, 0.05) 10px,
+          rgba(212, 165, 116, 0.05) 20px);
     }
 
     .task.on-hold .task-title::before {
@@ -680,13 +727,15 @@
     .task-total-time .time-icon {
       font-size: 0.9rem;
     }
-
   </style>
 </head>
 
 <body>
   <div class="container">
-    <h1>Tobi's Task Manager</h1>
+    <div class="title-container">
+      <h1 id="app-title">Tobi's Task Manager</h1>
+      <button class="title-edit-btn" id="title-edit-btn" onclick="toggleTitleEdit()">Edit</button>
+    </div>
 
     <div class="board">
       <div class="column" data-column="todo">
@@ -1929,7 +1978,107 @@
       }
     }
 
+    // Title editing functions
+    function toggleTitleEdit() {
+      const editBtn = document.getElementById('title-edit-btn');
+      const titleElement = document.getElementById('app-title');
+      const container = document.querySelector('.title-container');
+
+      if (editBtn.textContent === 'Edit') {
+        // Switch to edit mode
+        const currentTitle = titleElement ? titleElement.textContent : "Tobi's Task Manager";
+        const editInput = document.createElement('input');
+        editInput.type = 'text';
+        editInput.className = 'title-edit-input';
+        editInput.value = currentTitle;
+        editInput.id = 'title-edit-input';
+
+        // Replace h1 with input
+        if (titleElement) {
+          container.replaceChild(editInput, titleElement);
+        } else {
+          container.insertBefore(editInput, editBtn);
+        }
+        editBtn.textContent = 'Save';
+
+        // Focus and select the input
+        editInput.focus();
+        editInput.select();
+
+        // Handle Enter key and Escape key
+        editInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            saveTitle();
+          } else if (e.key === 'Escape') {
+            cancelTitleEdit();
+          }
+        });
+      } else {
+        // Save mode
+        saveTitle();
+      }
+    }
+
+    function saveTitle() {
+      const input = document.getElementById('title-edit-input');
+      const editBtn = document.getElementById('title-edit-btn');
+      const container = document.querySelector('.title-container');
+
+      if (!input) return;
+
+      const newTitle = input.value.trim();
+      if (newTitle === '') {
+        alert('Title cannot be empty');
+        return;
+      }
+
+      // Create new h1 element
+      const titleElement = document.createElement('h1');
+      titleElement.id = 'app-title';
+      titleElement.textContent = newTitle;
+
+      // Replace input with h1
+      container.replaceChild(titleElement, input);
+      editBtn.textContent = 'Edit';
+
+      // Save to localStorage
+      localStorage.setItem('taskManager_appName', newTitle);
+
+      // Update document title
+      document.title = newTitle;
+    }
+
+    function cancelTitleEdit() {
+      const input = document.getElementById('title-edit-input');
+      const editBtn = document.getElementById('title-edit-btn');
+      const container = document.querySelector('.title-container');
+
+      if (!input) return;
+
+      // Restore the original title
+      const savedTitle = localStorage.getItem('taskManager_appName') || "Tobi's Task Manager";
+      const titleElement = document.createElement('h1');
+      titleElement.id = 'app-title';
+      titleElement.textContent = savedTitle;
+
+      // Replace input with h1
+      container.replaceChild(titleElement, input);
+      editBtn.textContent = 'Edit';
+    }
+
+    function loadAppName() {
+      const savedName = localStorage.getItem('taskManager_appName');
+      if (savedName) {
+        const titleElement = document.getElementById('app-title');
+        if (titleElement) {
+          titleElement.textContent = savedName;
+        }
+        document.title = savedName;
+      }
+    }
+
     // Initialize the app
+    loadAppName();
     loadTasks();
     loadCollapsedState();
     setupDropZones();
