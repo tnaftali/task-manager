@@ -647,6 +647,40 @@
     .tag-suggestion.selected {
       background-color: var(--surface);
     }
+
+    .task-time-info {
+      margin-top: 12px;
+      padding-top: 8px;
+      border-top: 1px solid var(--border);
+    }
+
+    .time-started {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: color 0.2s ease;
+      display: inline-block;
+    }
+
+    .time-started:hover {
+      color: var(--accent);
+      text-decoration: underline;
+    }
+
+    .task-total-time {
+      margin-top: 8px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-style: italic;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .task-total-time .time-icon {
+      font-size: 0.9rem;
+    }
+
   </style>
 </head>
 
@@ -702,6 +736,10 @@
         <label for="task-notes">Notes (optional)</label>
         <textarea id="task-notes" placeholder="Add any additional notes..."></textarea>
       </div>
+      <div class="form-group">
+        <label for="task-started">Started At (optional)</label>
+        <input type="datetime-local" id="task-started" placeholder="When did you start working on this?">
+      </div>
       <div class="modal-buttons">
         <button class="btn btn-secondary" onclick="closeTaskModal()">Cancel</button>
         <button class="btn btn-primary" onclick="saveTask()">Save</button>
@@ -730,6 +768,17 @@
     let isServerMode = window.location.protocol !== 'file:';
     let lastSavedTime = null;
 
+    // Clean up old time tracking data
+    function migrateTimeTrackingData(task) {
+      // Remove old time tracking fields
+      if (task.timeEntries) delete task.timeEntries;
+      if (task.isTracking) delete task.isTracking;
+      if (task.trackingStartedAt) delete task.trackingStartedAt;
+      if (task.totalTime) delete task.totalTime;
+
+      return task;
+    }
+
     // Load tasks from server or localStorage
     async function loadTasks() {
       if (isServerMode) {
@@ -737,7 +786,7 @@
           const response = await fetch('/tasks.json');
           if (response.ok) {
             const serverTasks = await response.json();
-            tasks = serverTasks;
+            tasks = serverTasks.map(migrateTimeTrackingData);
             collectAllTags();
             renderTasks();
             // Also sync to localStorage as backup
@@ -752,7 +801,7 @@
       // Fallback to localStorage
       const savedTasks = localStorage.getItem('taskManager_tasks');
       if (savedTasks) {
-        tasks = JSON.parse(savedTasks);
+        tasks = JSON.parse(savedTasks).map(migrateTimeTrackingData);
         collectAllTags();
         renderTasks();
       }
@@ -790,9 +839,10 @@
             updateSyncStatus('error');
           }
         } catch (error) {
-          console.log('Could not sync to server:', error);
           updateSyncStatus('error');
         }
+      } else {
+        updateSyncStatus('synced');
       }
     }
 
@@ -814,6 +864,56 @@
       if (diffHours < 24) return `${diffHours} hours ago`;
 
       // Show actual time for older saves
+      return date.toLocaleString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
+      });
+    }
+
+    // Time tracking utility functions
+    function formatTime(milliseconds) {
+      if (!milliseconds || milliseconds < 0) return '0m';
+
+      const seconds = Math.floor(milliseconds / 1000);
+      const minutes = Math.floor(seconds / 60);
+      const hours = Math.floor(minutes / 60);
+      const days = Math.floor(hours / 24);
+
+      if (days > 0) {
+        const remainingHours = hours % 24;
+        if (remainingHours > 0) {
+          return `${days}d ${remainingHours}h`;
+        }
+        return `${days}d`;
+      } else if (hours > 0) {
+        const remainingMinutes = minutes % 60;
+        if (remainingMinutes > 0) {
+          return `${hours}h ${remainingMinutes}m`;
+        }
+        return `${hours}h`;
+      } else if (minutes > 0) {
+        return `${minutes}m`;
+      } else {
+        return `${seconds}s`;
+      }
+    }
+
+    function calculateTaskDuration(task) {
+      // Only calculate duration for tasks that have both start and completion time
+      if (!task.startedAt || !task.completedAt) return 0;
+
+      const start = new Date(task.startedAt).getTime();
+      const end = new Date(task.completedAt).getTime();
+
+      return end - start;
+    }
+
+    function formatDateTime(isoString) {
+      if (!isoString) return '';
+      const date = new Date(isoString);
       return date.toLocaleString('en-US', {
         month: 'short',
         day: 'numeric',
@@ -1003,6 +1103,32 @@
       taskDiv.dataset.taskId = task.id;
       taskDiv.dataset.index = index;
 
+      const isDone = task.column === 'done';
+      const duration = calculateTaskDuration(task);
+
+      // Build time info HTML
+      let timeInfoHTML = '';
+      if (task.startedAt) {
+        const startTimeDisplay = formatDateTime(task.startedAt);
+        timeInfoHTML = `
+          <div class="task-time-info">
+            <span class="time-started" onclick="editStartTime(event, '${task.id}')" title="Click to edit start time">
+              📅 Started: ${startTimeDisplay}
+            </span>
+          </div>
+        `;
+      }
+
+      // For done tasks, show duration
+      if (isDone && duration > 0) {
+        timeInfoHTML += `
+          <div class="task-total-time">
+            <span class="time-icon">⏱</span>
+            <span>Completed in ${formatTime(duration)}</span>
+          </div>
+        `;
+      }
+
       taskDiv.innerHTML = `
                 <div class="task-actions">
                     <button class="action-btn hold" onclick="toggleHold('${task.id}')" title="${task.onHold ? 'Resume' : 'Put on Hold'}">${task.onHold ? '▶️' : '⏸'}</button>
@@ -1013,6 +1139,7 @@
                 ${task.url ? `<div class="task-url-container"><img src="${getFaviconUrl(task.url)}" class="task-favicon" onerror="this.style.display='none'"><a href="${task.url}" target="_blank" class="task-url">${task.url}</a></div>` : ''}
                 ${task.tags && task.tags.length > 0 ? `<div class="task-tags">${task.tags.map(tag => `<span class="task-tag">${tag}</span>`).join('')}</div>` : ''}
                 ${task.notes ? `<div class="task-notes">${task.notes}</div>` : ''}
+                ${timeInfoHTML}
             `;
 
       // Add on-hold class if task is on hold
@@ -1135,6 +1262,7 @@
       document.getElementById('task-title').value = '';
       document.getElementById('task-url').value = '';
       document.getElementById('task-notes').value = '';
+      document.getElementById('task-started').value = '';
       renderTagsInput();
       document.getElementById('task-modal').style.display = 'block';
       document.getElementById('task-title').focus();
@@ -1153,6 +1281,16 @@
       document.getElementById('task-title').value = task.title;
       document.getElementById('task-url').value = task.url || '';
       document.getElementById('task-notes').value = task.notes || '';
+
+      // Set started time if it exists
+      if (task.startedAt) {
+        const date = new Date(task.startedAt);
+        const localDateTime = new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+        document.getElementById('task-started').value = localDateTime;
+      } else {
+        document.getElementById('task-started').value = '';
+      }
+
       renderTagsInput();
       document.getElementById('task-modal').style.display = 'block';
       document.getElementById('task-title').focus();
@@ -1189,11 +1327,15 @@
       const title = document.getElementById('task-title').value.trim();
       const url = document.getElementById('task-url').value.trim();
       const notes = document.getElementById('task-notes').value.trim();
+      const startedValue = document.getElementById('task-started').value;
 
       if (!title) {
         alert('Please enter a task title');
         return;
       }
+
+      // Convert local datetime to ISO string
+      const startedAt = startedValue ? new Date(startedValue).toISOString() : null;
 
       if (currentEditingTask !== null) {
         // Edit existing task
@@ -1201,6 +1343,11 @@
         tasks[currentEditingTask].url = url;
         tasks[currentEditingTask].notes = notes;
         tasks[currentEditingTask].tags = currentTags;
+        if (startedAt) {
+          tasks[currentEditingTask].startedAt = startedAt;
+        } else {
+          delete tasks[currentEditingTask].startedAt;
+        }
       } else {
         // Create new task at the top (order 0)
         // First, increment the order of all existing tasks in this column
@@ -1220,6 +1367,11 @@
           order: 0,
           createdAt: new Date().toISOString()
         };
+
+        if (startedAt) {
+          task.startedAt = startedAt;
+        }
+
         tasks.push(task);
       }
 
@@ -1738,6 +1890,42 @@
         if (selectedTaskId === taskId) {
           selectTask(taskId);
         }
+      }
+    }
+
+    // Edit start time function
+    function editStartTime(event, taskId) {
+      event.stopPropagation();
+
+      const task = tasks.find(t => t.id === taskId);
+      if (!task) return;
+
+      const currentValue = task.startedAt ? new Date(task.startedAt) : new Date();
+      const localDateTime = new Date(currentValue.getTime() - currentValue.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+
+      const newValue = prompt('Edit start time (leave empty to remove):', localDateTime);
+
+      if (newValue === null) return; // User clicked cancel
+
+      if (newValue.trim() === '') {
+        // Remove start time
+        delete task.startedAt;
+      } else {
+        // Update start time
+        try {
+          task.startedAt = new Date(newValue).toISOString();
+        } catch (e) {
+          alert('Invalid date format');
+          return;
+        }
+      }
+
+      saveTasks();
+      renderTasks();
+
+      // Restore selection after render
+      if (selectedTaskId === taskId) {
+        selectTask(taskId);
       }
     }
 
