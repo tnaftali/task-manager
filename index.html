@@ -575,6 +575,7 @@
       color: var(--text-secondary);
       font-style: italic;
       line-height: 1.4;
+      white-space: pre-wrap;
     }
 
     .task.on-hold {
@@ -1015,6 +1016,13 @@
       return Date.now().toString(36) + Math.random().toString(36).substr(2);
     }
 
+    // Escape HTML to prevent XSS
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
     // Render all tasks
     function renderTasks() {
       const columns = ['todo', 'in-progress', 'done'];
@@ -1194,7 +1202,7 @@
                 <div class="task-title">${task.title}</div>
                 ${task.url ? `<div class="task-url-container"><img src="${getFaviconUrl(task.url)}" class="task-favicon" onerror="this.style.display='none'"><a href="${task.url}" target="_blank" class="task-url">${task.url}</a></div>` : ''}
                 ${task.tags && task.tags.length > 0 ? `<div class="task-tags">${task.tags.map(tag => `<span class="task-tag">${tag}</span>`).join('')}</div>` : ''}
-                ${task.notes ? `<div class="task-notes">${task.notes}</div>` : ''}
+                ${task.notes ? `<div class="task-notes">${escapeHtml(task.notes)}</div>` : ''}
                 ${timeInfoHTML}
             `;
 
