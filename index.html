@@ -347,6 +347,12 @@
       background-color: rgba(139, 115, 85, 0.1);
     }
 
+    .action-btn.duplicate:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+      background-color: rgba(139, 115, 85, 0.1);
+    }
+
     .add-task-btn {
       background-color: var(--surface-elevated);
       color: var(--text-muted);
@@ -1182,6 +1188,7 @@
                 <div class="task-actions">
                     <button class="action-btn hold" onclick="toggleHold('${task.id}')" title="${task.onHold ? 'Resume' : 'Put on Hold'}">${task.onHold ? '▶️' : '⏸'}</button>
                     <button class="action-btn edit" onclick="editTaskByIdFromButton('${task.id}')" title="Edit">✏️</button>
+                    <button class="action-btn duplicate" onclick="duplicateTaskByIdFromButton('${task.id}')" title="Duplicate">📋</button>
                     <button class="action-btn delete" onclick="deleteTaskByIdFromButton('${task.id}')" title="Delete">🗑️</button>
                 </div>
                 <div class="task-title">${task.title}</div>
@@ -1370,6 +1377,47 @@
         }
         deleteTask(taskIndex);
       }
+    }
+
+    function duplicateTaskByIdFromButton(taskId) {
+      const taskIndex = tasks.findIndex(t => t.id === taskId);
+      if (taskIndex >= 0) {
+        duplicateTask(taskIndex);
+      }
+    }
+
+    function duplicateTask(index) {
+      const originalTask = tasks[index];
+
+      // Increment order of all existing tasks in the same column
+      tasks.forEach(task => {
+        if (task.column === originalTask.column) {
+          task.order = (task.order || 0) + 1;
+        }
+      });
+
+      // Create duplicate task
+      const duplicatedTask = {
+        id: generateId(),
+        title: originalTask.title,
+        url: originalTask.url || '',
+        notes: originalTask.notes || '',
+        tags: originalTask.tags ? [...originalTask.tags] : [],
+        column: originalTask.column,
+        order: 0,
+        createdAt: new Date().toISOString(),
+        onHold: originalTask.onHold || false
+      };
+
+      // Remove completedAt and startedAt for duplicated task
+      // (they are not copied, so they won't exist in the new task)
+
+      tasks.push(duplicatedTask);
+      saveTasks();
+      renderTasks();
+
+      // Select the newly duplicated task
+      selectTask(duplicatedTask.id);
     }
 
     function saveTask() {
