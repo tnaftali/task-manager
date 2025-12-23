@@ -305,53 +305,57 @@
       right: 12px;
       display: flex;
       gap: 4px;
-      opacity: 0;
-      transition: opacity 0.2s ease;
+    }
+
+    .task:not(:hover) .task-actions {
+      visibility: hidden;
     }
 
     .task:hover .task-actions {
-      opacity: 1;
+      visibility: visible;
     }
 
     .action-btn {
-      background: var(--surface);
+      background: #ffffff;
       border: 1px solid var(--border);
       color: var(--text-secondary);
       cursor: pointer;
       padding: 6px;
       border-radius: 6px;
       font-size: 12px;
-      transition: all 0.2s ease;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
       display: flex;
       align-items: center;
       justify-content: center;
       width: 24px;
       height: 24px;
+      box-shadow: var(--shadow-sm);
     }
 
     .action-btn:hover {
-      background-color: var(--surface-elevated);
+      background: #ffffff;
       color: var(--text-primary);
       border-color: var(--border-hover);
       transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
     }
 
     .action-btn.delete:hover {
       color: var(--danger);
       border-color: var(--danger);
-      background-color: rgba(200, 90, 90, 0.1);
+      background: #ffffff;
     }
 
     .action-btn.edit:hover {
       color: var(--accent);
       border-color: var(--accent);
-      background-color: rgba(139, 115, 85, 0.1);
+      background: #ffffff;
     }
 
     .action-btn.duplicate:hover {
       color: var(--accent);
       border-color: var(--accent);
-      background-color: rgba(139, 115, 85, 0.1);
+      background: #ffffff;
     }
 
     .add-task-btn {
@@ -524,6 +528,122 @@
       box-shadow: var(--shadow-sm);
     }
 
+    .help-button {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 48px;
+      height: 48px;
+      background-color: var(--accent);
+      color: var(--surface-elevated);
+      border: none;
+      border-radius: 50%;
+      font-size: 1.5rem;
+      cursor: pointer;
+      box-shadow: var(--shadow-md);
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+    }
+
+    .help-button:hover {
+      background-color: var(--accent-hover);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .instructions-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(45, 42, 38, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 1001;
+    }
+
+    .instructions-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: var(--surface-elevated);
+      padding: 32px;
+      border-radius: 16px;
+      width: 90%;
+      max-width: 700px;
+      max-height: 85vh;
+      overflow-y: auto;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .instructions-content h2 {
+      margin-bottom: 24px;
+      color: var(--accent-hover);
+      font-size: 1.75rem;
+      font-family: 'Fraunces', Georgia, serif;
+    }
+
+    .instructions-content h3 {
+      margin-top: 24px;
+      margin-bottom: 12px;
+      color: var(--text-primary);
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .instructions-content p {
+      margin-bottom: 12px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .instructions-content ul {
+      margin-bottom: 16px;
+      padding-left: 24px;
+    }
+
+    .instructions-content li {
+      margin-bottom: 8px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .instructions-content kbd {
+      background-color: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9em;
+      color: var(--text-primary);
+    }
+
+    .instructions-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      cursor: pointer;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 1rem;
+      transition: all 0.2s ease;
+    }
+
+    .instructions-close:hover {
+      background-color: var(--surface);
+      color: var(--text-primary);
+      border-color: var(--border-hover);
+    }
+
     .sync-indicator {
       position: fixed;
       bottom: 24px;
@@ -597,7 +717,34 @@
     .action-btn.hold:hover {
       color: var(--warning);
       border-color: var(--warning);
-      background-color: rgba(212, 165, 116, 0.1);
+      background: #ffffff;
+    }
+
+    .task.active {
+      border-left: 4px solid var(--accent);
+      background: linear-gradient(to right,
+          rgba(139, 115, 85, 0.08),
+          var(--surface-elevated) 20px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .task.active .task-title::before {
+      content: '▶ ';
+      color: var(--accent);
+      opacity: 0.9;
+      font-weight: 600;
+    }
+
+    .action-btn.active-btn:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+      background: #ffffff;
+    }
+
+    .action-btn.active-btn.is-active {
+      background: #ffffff;
+      color: var(--accent);
+      border-color: var(--accent);
     }
 
     .date-group {
@@ -735,6 +882,30 @@
     .task-total-time .time-icon {
       font-size: 0.9rem;
     }
+
+    .task-focus-timer {
+      margin-top: 12px;
+      padding-top: 8px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .focus-timer-display {
+      font-size: 0.9rem;
+      color: var(--accent);
+      font-weight: 600;
+      font-family: 'Courier New', monospace;
+      letter-spacing: 0.5px;
+    }
+
+    .task-tomatoes {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 1.1rem;
+    }
   </style>
 </head>
 
@@ -806,9 +977,79 @@
 
   <div class="sync-indicator" id="sync-indicator">Loading...</div>
 
-  <div class="help-text">
-    Tip: Press Cmd+V to paste a URL • Arrow keys to navigate • Shift+Arrow to move tasks • Enter to edit • N for new
-    task
+  <button class="help-button" onclick="openInstructionsModal()" title="Help & Instructions">?</button>
+
+  <div class="instructions-modal" id="instructions-modal">
+    <div class="instructions-content">
+      <button class="instructions-close" onclick="closeInstructionsModal()">✕</button>
+      <h2>Task Manager Instructions</h2>
+
+      <h3>✨ Getting Started</h3>
+      <ul>
+        <li>Create tasks by clicking "+ Add Task" or pressing <kbd>N</kbd></li>
+        <li>Drag and drop tasks between columns to change their status</li>
+        <li>Paste URLs directly with <kbd>Cmd+V</kbd> / <kbd>Ctrl+V</kbd> to create tasks</li>
+      </ul>
+
+      <h3>⌨️ Keyboard Shortcuts</h3>
+      <ul>
+        <li><kbd>N</kbd> - Create new task in To Do column</li>
+        <li><kbd>Arrow Keys</kbd> - Navigate between tasks</li>
+        <li><kbd>Shift + Arrow Keys</kbd> - Move task up/down or to different columns</li>
+        <li><kbd>Enter</kbd> - Edit selected task</li>
+        <li><kbd>Delete</kbd> / <kbd>Backspace</kbd> - Delete selected task</li>
+        <li><kbd>Cmd+V</kbd> / <kbd>Ctrl+V</kbd> - Paste URL to create task</li>
+      </ul>
+
+      <h3>🎯 Focus & Pomodoro Timer</h3>
+      <ul>
+        <li>Click the 🎯 button to mark a task as actively being worked on</li>
+        <li>Timer starts automatically and counts your focus time</li>
+        <li>Earn a 🍅 tomato for every 25 minutes of accumulated focus time</li>
+        <li>Click ⚪ button to deactivate focus (timer pauses but time is saved)</li>
+        <li>Only one task can be active at a time</li>
+      </ul>
+
+      <h3>📋 Task Actions</h3>
+      <p>Hover over any task to see action buttons:</p>
+      <ul>
+        <li>🎯 / ⚪ - Mark as actively working / Stop focus</li>
+        <li>⏸️ - Put task on hold (pauses work without deleting)</li>
+        <li>✏️ - Edit task details</li>
+        <li>📋 - Duplicate task</li>
+        <li>🗑️ - Delete task</li>
+      </ul>
+
+      <h3>🏷️ Tags & Organization</h3>
+      <ul>
+        <li>Add tags to categorize tasks (type and press Enter)</li>
+        <li>Tag suggestions appear based on previously used tags</li>
+        <li>Remove tags by clicking the × button</li>
+      </ul>
+
+      <h3>⏱ Time Tracking</h3>
+      <ul>
+        <li>Set a "Started At" time when creating or editing tasks</li>
+        <li>Click the start time to edit it later</li>
+        <li>Completed tasks show total duration</li>
+        <li>Focus timer tracks active work time separately</li>
+      </ul>
+
+      <h3>📊 Column Management</h3>
+      <ul>
+        <li>Click column headers to collapse/expand them</li>
+        <li>Done tasks are automatically grouped by completion date</li>
+        <li>Task order is maintained within To Do and In Progress columns</li>
+      </ul>
+
+      <h3>💾 Data & Sync</h3>
+      <ul>
+        <li>All data is saved automatically to localStorage</li>
+        <li>If using server mode, data syncs to tasks.json</li>
+        <li>Sync status shown in bottom-left corner</li>
+        <li>Customize the app title by clicking "Edit" next to the header</li>
+      </ul>
+    </div>
   </div>
 
   <script>
@@ -1193,9 +1434,41 @@
         `;
       }
 
+      // Build focus timer HTML (show for all tasks except Done)
+      let focusTimerHTML = '';
+      if (!isDone) {
+        const focusTime = getCurrentFocusTime(task);
+        const tomatoCount = getTomatoCount(focusTime);
+        const tomatoes = formatTomatoes(tomatoCount);
+
+        // Show timer if there's accumulated time OR if task is currently active
+        if (focusTime > 0 || task.isActive) {
+          focusTimerHTML = `
+            <div class="task-focus-timer" data-task-id="${task.id}">
+              <div class="focus-timer-display">⏱ ${formatFocusTime(focusTime)}</div>
+              ${tomatoes ? `<div class="task-tomatoes">${tomatoes}</div>` : ''}
+            </div>
+          `;
+        }
+      } else {
+        // For done tasks, only show tomatoes if they exist
+        const focusTime = task.accumulatedFocusTime || 0;
+        const tomatoCount = getTomatoCount(focusTime);
+        const tomatoes = formatTomatoes(tomatoCount);
+
+        if (tomatoes) {
+          focusTimerHTML = `
+            <div class="task-focus-timer" data-task-id="${task.id}">
+              <div class="task-tomatoes">${tomatoes}</div>
+            </div>
+          `;
+        }
+      }
+
       taskDiv.innerHTML = `
                 <div class="task-actions">
-                    <button class="action-btn hold" onclick="toggleHold('${task.id}')" title="${task.onHold ? 'Resume' : 'Put on Hold'}">${task.onHold ? '▶️' : '⏸'}</button>
+                    <button class="action-btn active-btn ${task.isActive ? 'is-active' : ''}" onclick="toggleActive('${task.id}')" title="${task.isActive ? 'Mark as not active' : 'Mark as actively working'}">${task.isActive ? '⚪' : '🎯'}</button>
+                    <button class="action-btn hold" onclick="toggleHold('${task.id}')" title="${task.onHold ? 'Resume' : 'Put on Hold'}">${task.onHold ? '▶️' : '⏸️'}</button>
                     <button class="action-btn edit" onclick="editTaskByIdFromButton('${task.id}')" title="Edit">✏️</button>
                     <button class="action-btn duplicate" onclick="duplicateTaskByIdFromButton('${task.id}')" title="Duplicate">📋</button>
                     <button class="action-btn delete" onclick="deleteTaskByIdFromButton('${task.id}')" title="Delete">🗑️</button>
@@ -1205,11 +1478,17 @@
                 ${task.tags && task.tags.length > 0 ? `<div class="task-tags">${task.tags.map(tag => `<span class="task-tag">${tag}</span>`).join('')}</div>` : ''}
                 ${task.notes ? `<div class="task-notes">${escapeHtml(task.notes)}</div>` : ''}
                 ${timeInfoHTML}
+                ${focusTimerHTML}
             `;
 
       // Add on-hold class if task is on hold
       if (task.onHold) {
         taskDiv.classList.add('on-hold');
+      }
+
+      // Add active class if task is active
+      if (task.isActive) {
+        taskDiv.classList.add('active');
       }
 
       // Drag events (all tasks are draggable)
@@ -1295,12 +1574,24 @@
           // Moving between columns
           tasks[taskIndex].column = newColumn;
 
-          // If moving to done, set completion timestamp
+          // If moving to done, set completion timestamp and reset focus timer
           if (newColumn === 'done' && oldColumn !== 'done') {
             tasks[taskIndex].completedAt = new Date().toISOString();
+            // Stop focus timer and reset accumulated time (keep tomatoes via accumulatedFocusTime)
+            if (tasks[taskIndex].focusStartTime) {
+              const elapsed = Date.now() - new Date(tasks[taskIndex].focusStartTime).getTime();
+              tasks[taskIndex].accumulatedFocusTime = (tasks[taskIndex].accumulatedFocusTime || 0) + elapsed;
+            }
+            delete tasks[taskIndex].focusStartTime;
+            tasks[taskIndex].isActive = false;
           } else if (oldColumn === 'done' && newColumn !== 'done') {
-            // If moving out of done, remove completion timestamp
+            // If moving out of done, remove completion timestamp and reset focus timer
             delete tasks[taskIndex].completedAt;
+            // Reset accumulated time but keep the task's tomato count in the data
+            // (tomatoes are still visible but timer starts fresh)
+            delete tasks[taskIndex].focusStartTime;
+            tasks[taskIndex].accumulatedFocusTime = 0;
+            tasks[taskIndex].isActive = false;
           }
 
           // Reset order when moving between columns
@@ -1335,6 +1626,15 @@
 
     function closeTaskModal() {
       document.getElementById('task-modal').style.display = 'none';
+    }
+
+    // Instructions modal functions
+    function openInstructionsModal() {
+      document.getElementById('instructions-modal').style.display = 'block';
+    }
+
+    function closeInstructionsModal() {
+      document.getElementById('instructions-modal').style.display = 'none';
     }
 
     function editTask(index) {
@@ -1638,8 +1938,19 @@
 
       if (newColumnName === 'done' && oldColumn !== 'done') {
         task.completedAt = new Date().toISOString();
+        // Stop focus timer and keep accumulated time for tomatoes
+        if (task.focusStartTime) {
+          const elapsed = Date.now() - new Date(task.focusStartTime).getTime();
+          task.accumulatedFocusTime = (task.accumulatedFocusTime || 0) + elapsed;
+        }
+        delete task.focusStartTime;
+        task.isActive = false;
       } else if (oldColumn === 'done' && newColumnName !== 'done') {
         delete task.completedAt;
+        // Reset focus timer but keep tomatoes
+        delete task.focusStartTime;
+        task.accumulatedFocusTime = 0;
+        task.isActive = false;
       }
 
       const newColumnTasks = tasks.filter(t => t.column === newColumnName && t.id !== task.id);
@@ -1663,8 +1974,19 @@
 
       if (newColumnName === 'done' && oldColumn !== 'done') {
         task.completedAt = new Date().toISOString();
+        // Stop focus timer and keep accumulated time for tomatoes
+        if (task.focusStartTime) {
+          const elapsed = Date.now() - new Date(task.focusStartTime).getTime();
+          task.accumulatedFocusTime = (task.accumulatedFocusTime || 0) + elapsed;
+        }
+        delete task.focusStartTime;
+        task.isActive = false;
       } else if (oldColumn === 'done' && newColumnName !== 'done') {
         delete task.completedAt;
+        // Reset focus timer but keep tomatoes
+        delete task.focusStartTime;
+        task.accumulatedFocusTime = 0;
+        task.isActive = false;
       }
 
       const newColumnTasks = tasks.filter(t => t.column === newColumnName && t.id !== task.id);
@@ -1830,6 +2152,19 @@
       }
     });
 
+    // Instructions modal keyboard shortcuts and click outside to close
+    document.getElementById('instructions-modal').addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeInstructionsModal();
+      }
+    });
+
+    document.getElementById('instructions-modal').addEventListener('click', (e) => {
+      if (e.target.id === 'instructions-modal') {
+        closeInstructionsModal();
+      }
+    });
+
     // Tags functionality
     function renderTagsInput() {
       const container = document.getElementById('tags-input');
@@ -1985,6 +2320,47 @@
       document.getElementById('tag-input').focus();
     }
 
+    // Focus timer helper functions
+    function getCurrentFocusTime(task) {
+      if (!task) return 0;
+
+      let totalTime = task.accumulatedFocusTime || 0;
+
+      // If currently active, add the time since focus started
+      if (task.isActive && task.focusStartTime) {
+        const elapsed = Date.now() - new Date(task.focusStartTime).getTime();
+        totalTime += elapsed;
+      }
+
+      return totalTime;
+    }
+
+    function formatFocusTime(milliseconds) {
+      const totalSeconds = Math.floor(milliseconds / 1000);
+      const hours = Math.floor(totalSeconds / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+
+      if (hours > 0) {
+        return `${hours}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+      } else {
+        return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+      }
+    }
+
+    function getTomatoCount(milliseconds) {
+      const POMODORO_DURATION = 25 * 60 * 1000; // 25 minutes in milliseconds
+      return Math.floor(milliseconds / POMODORO_DURATION);
+    }
+
+    function formatTomatoes(count) {
+      if (count === 0) return '';
+      if (count <= 4) {
+        return '🍅'.repeat(count);
+      }
+      return `🍅 x${count}`;
+    }
+
     // Toggle on hold status
     function toggleHold(taskId) {
       const task = tasks.find(t => t.id === taskId);
@@ -1996,6 +2372,48 @@
         if (selectedTaskId === taskId) {
           selectTask(taskId);
         }
+      }
+    }
+
+    // Toggle active status (only one task can be active at a time)
+    function toggleActive(taskId) {
+      const task = tasks.find(t => t.id === taskId);
+      if (!task) return;
+
+      // If this task is already active, deactivate it and stop timer
+      if (task.isActive) {
+        // Stop the timer and accumulate the time
+        if (task.focusStartTime) {
+          const elapsed = Date.now() - new Date(task.focusStartTime).getTime();
+          task.accumulatedFocusTime = (task.accumulatedFocusTime || 0) + elapsed;
+          delete task.focusStartTime;
+        }
+        task.isActive = false;
+      } else {
+        // Deactivate all other tasks and stop their timers
+        tasks.forEach(t => {
+          if (t.isActive) {
+            if (t.focusStartTime) {
+              const elapsed = Date.now() - new Date(t.focusStartTime).getTime();
+              t.accumulatedFocusTime = (t.accumulatedFocusTime || 0) + elapsed;
+              delete t.focusStartTime;
+            }
+            t.isActive = false;
+          }
+        });
+        // Activate this task and start timer
+        task.isActive = true;
+        task.focusStartTime = new Date().toISOString();
+        if (!task.accumulatedFocusTime) {
+          task.accumulatedFocusTime = 0;
+        }
+      }
+
+      saveTasks();
+      renderTasks();
+      // Restore selection after render
+      if (selectedTaskId === taskId) {
+        selectTask(taskId);
       }
     }
 
@@ -2156,6 +2574,39 @@
 
     // Update timestamp display every minute
     setInterval(refreshSyncTimestamp, 60000);
+
+    // Update focus timer display every second
+    function updateFocusTimers() {
+      const activeTask = tasks.find(t => t.isActive);
+      if (activeTask) {
+        const timerElements = document.querySelectorAll('.task-focus-timer');
+        timerElements.forEach(element => {
+          const taskId = element.dataset.taskId;
+          const task = tasks.find(t => t.id === taskId);
+          if (task && task.isActive) {
+            const focusTime = getCurrentFocusTime(task);
+            const tomatoCount = getTomatoCount(focusTime);
+            const tomatoes = formatTomatoes(tomatoCount);
+
+            const timerDisplay = element.querySelector('.focus-timer-display');
+            if (timerDisplay) {
+              timerDisplay.textContent = `⏱ ${formatFocusTime(focusTime)}`;
+            }
+
+            // Update tomatoes if count changed
+            const tomatoDisplay = element.querySelector('.task-tomatoes');
+            if (tomatoes && !tomatoDisplay) {
+              // Add tomato display if it doesn't exist
+              element.innerHTML += `<div class="task-tomatoes">${tomatoes}</div>`;
+            } else if (tomatoes && tomatoDisplay) {
+              // Update existing tomato display
+              tomatoDisplay.textContent = tomatoes;
+            }
+          }
+        });
+      }
+    }
+    setInterval(updateFocusTimers, 1000);
 
     // Set initial column focus
     setTimeout(() => {
