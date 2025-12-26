@@ -4,15 +4,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#8b7355">
+  <meta name="theme-color" content="#c06842">
   <meta name="description" content="A personal task management application with drag-and-drop functionality">
   <title>Tobi's Task Manager</title>
   <link rel="icon" type="image/svg+xml"
-    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%23ffffff'/%3E%3Cpath d='M9 11l3 3l8-8' fill='none' stroke='%238b7355' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11' fill='none' stroke='%238b7355' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%23ffffff'/%3E%3Cpath d='M9 11l3 3l8-8' fill='none' stroke='%23c06842' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11' fill='none' stroke='%23c06842' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..600&display=swap');
 
     :root {
       /* Modern Beige/Cream Color Scheme */
@@ -28,7 +28,7 @@
       --text-muted: #9a9389;
 
       /* Column Colors - Subtle differentiation */
-      --todo-accent: #8b7355;
+      --todo-accent: #c06842;
       --todo-bg: #f9f7f4;
       --progress-accent: #6b8394;
       --progress-bg: #f4f7f9;
@@ -36,8 +36,8 @@
       --done-bg: #f6f9f6;
 
       /* Interactive Elements */
-      --accent: #8b7355;
-      --accent-hover: #6d5a44;
+      --accent: #c06842;
+      --accent-hover: #a35636;
       --danger: #c85a5a;
       --danger-hover: #b04545;
       --success: #7a9471;
@@ -47,6 +47,24 @@
       --shadow-sm: 0 1px 2px rgba(45, 42, 38, 0.04);
       --shadow-md: 0 4px 8px rgba(45, 42, 38, 0.08);
       --shadow-lg: 0 8px 16px rgba(45, 42, 38, 0.12);
+
+      /* Tag Colors - Colorful with good contrast */
+      --tag-color-0: #fca5a5; /* Red */
+      --tag-color-1: #fdba74; /* Orange */
+      --tag-color-2: #fcd34d; /* Amber */
+      --tag-color-3: #bef264; /* Lime */
+      --tag-color-4: #86efac; /* Green */
+      --tag-color-5: #5eead4; /* Teal */
+      --tag-color-6: #67e8f9; /* Cyan */
+      --tag-color-7: #7dd3fc; /* Sky */
+      --tag-color-8: #93c5fd; /* Blue */
+      --tag-color-9: #a5b4fc; /* Indigo */
+      --tag-color-10: #c4b5fd; /* Violet */
+      --tag-color-11: #d8b4fe; /* Purple */
+      --tag-color-12: #f0abfc; /* Fuchsia */
+      --tag-color-13: #f9a8d4; /* Pink */
+      --tag-color-14: #fda4af; /* Rose */
+      --tag-color-15: #cbd5e1; /* Slate */
     }
 
     * {
@@ -56,7 +74,7 @@
     }
 
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
       background-color: var(--background);
       color: var(--text-primary);
       min-height: 100vh;
@@ -81,11 +99,11 @@
     h1 {
       text-align: center;
       margin: 0;
-      color: var(--accent-hover);
+      color: rgb(61, 61, 58);
       font-size: 2.25rem;
-      font-weight: 400;
+      font-weight: 500;
       font-family: 'Fraunces', Georgia, serif;
-      letter-spacing: -0.02em;
+      letter-spacing: -0.01em;
     }
 
     .title-edit-btn {
@@ -98,7 +116,7 @@
       font-size: 0.875rem;
       transition: all 0.2s ease;
       opacity: 0.6;
-      font-family: 'Inter', sans-serif;
+      font-family: inherit;
     }
 
     .title-edit-btn:hover {
@@ -114,10 +132,10 @@
       border-radius: 6px;
       padding: 4px 8px;
       font-size: 2.25rem;
-      font-weight: 400;
+      font-weight: 500;
       font-family: 'Fraunces', Georgia, serif;
-      letter-spacing: -0.02em;
-      color: var(--accent-hover);
+      letter-spacing: -0.01em;
+      color: rgb(61, 61, 58);
       min-width: 300px;
       max-width: 600px;
       text-align: center;
@@ -584,8 +602,9 @@
 
     .instructions-content h2 {
       margin-bottom: 24px;
-      color: var(--accent-hover);
+      color: rgb(61, 61, 58);
       font-size: 1.75rem;
+      font-weight: 500;
       font-family: 'Fraunces', Georgia, serif;
     }
 
@@ -812,6 +831,43 @@
       background-color: rgba(255, 255, 255, 0.2);
     }
 
+    .tag {
+      color: #4a4a4a;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-weight: 500;
+    }
+
+    .tag button {
+      background: none;
+      border: none;
+      color: inherit;
+      cursor: pointer;
+      font-size: 0.9rem;
+      padding: 0;
+      line-height: 1;
+      opacity: 0.7;
+    }
+
+    .tag button:hover {
+      opacity: 1;
+    }
+
+    .tag-color-btn {
+      font-size: 0.6rem !important;
+      opacity: 0.5;
+      transition: transform 0.2s ease;
+    }
+
+    .tag-color-btn:hover {
+      opacity: 1 !important;
+      transform: scale(1.2);
+    }
+
     .tag-input {
       border: none;
       background: none;
@@ -906,6 +962,787 @@
       gap: 4px;
       font-size: 1.1rem;
     }
+
+    /* View Navigation */
+    .view-nav {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 32px;
+    }
+
+    .view-nav-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-secondary);
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+
+    .view-nav-btn:hover {
+      border-color: var(--border-hover);
+      color: var(--text-primary);
+      background: var(--surface-elevated);
+    }
+
+    .view-nav-btn.active {
+      background: var(--accent);
+      color: var(--surface-elevated);
+      border-color: var(--accent);
+    }
+
+    .view-nav-btn.active:hover {
+      background: var(--accent-hover);
+      border-color: var(--accent-hover);
+    }
+
+    /* Simple List View */
+    .list-view {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .list-container {
+      background: var(--surface);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .list-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface-elevated);
+      border-radius: 16px 16px 0 0;
+    }
+
+    .list-header-left {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+    }
+
+    .list-header h2 {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 500;
+      font-family: 'Fraunces', Georgia, serif;
+      color: rgb(61, 61, 58);
+    }
+
+    .list-count {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
+    .add-list-item-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 18px;
+      background: var(--accent);
+      color: var(--surface-elevated);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .add-list-item-btn:hover {
+      background: var(--accent-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+
+    .add-list-item-btn svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .list-filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 16px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      z-index: 50;
+      overflow: visible;
+    }
+
+    .list-filter-multiselect {
+      position: relative;
+      flex: 1;
+      max-width: 400px;
+    }
+
+    .list-filter-trigger {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 12px;
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      cursor: pointer;
+      min-height: 38px;
+      transition: all 0.2s ease;
+    }
+
+    .list-filter-trigger:hover {
+      border-color: var(--border-hover);
+    }
+
+    .list-filter-multiselect.open .list-filter-trigger {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(192, 104, 66, 0.1);
+    }
+
+    .list-filter-placeholder {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    .list-filter-selected {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      flex: 1;
+    }
+
+    .list-filter-selected:not(:empty) + .list-filter-placeholder {
+      display: none;
+    }
+
+    .list-filter-selected ~ .list-filter-placeholder {
+      flex: 1;
+    }
+
+    .list-filter-chevron {
+      width: 16px;
+      height: 16px;
+      color: var(--text-muted);
+      transition: transform 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .list-filter-multiselect.open .list-filter-chevron {
+      transform: rotate(180deg);
+    }
+
+    .list-filter-dropdown {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      right: 0;
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      box-shadow: var(--shadow-lg);
+      z-index: 100;
+      display: none;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .list-filter-multiselect.open .list-filter-dropdown {
+      display: block;
+    }
+
+    .list-filter-options {
+      padding: 4px;
+    }
+
+    .list-filter-option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: background 0.15s ease;
+    }
+
+    .list-filter-option:hover {
+      background: var(--surface);
+    }
+
+    .list-filter-option-color {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .list-filter-option-check {
+      width: 16px;
+      height: 16px;
+      margin-left: auto;
+      color: var(--accent);
+      opacity: 0;
+    }
+
+    .list-filter-option.selected .list-filter-option-check {
+      opacity: 1;
+    }
+
+    .list-filter-tag {
+      font-size: 0.7rem;
+      padding: 2px 6px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      color: #444;
+      font-weight: 500;
+    }
+
+    .list-filter-tag button {
+      background: none;
+      border: none;
+      color: inherit;
+      cursor: pointer;
+      font-size: 0.8rem;
+      padding: 0;
+      line-height: 1;
+      opacity: 0.5;
+      margin-left: 1px;
+    }
+
+    .list-filter-tag button:hover {
+      opacity: 1;
+    }
+
+    .list-no-results {
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    .list-no-results-text {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 12px;
+    }
+
+    .list-no-results-clear {
+      font-size: 0.8rem;
+      padding: 6px 14px;
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .list-no-results-clear:hover {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    .list-items {
+      padding: 12px;
+    }
+
+    .list-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 6px;
+      cursor: grab;
+      transition: all 0.2s ease;
+      animation: fadeInItem 0.3s ease;
+    }
+
+    @keyframes fadeInItem {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .list-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .list-item:hover {
+      border-color: var(--border-hover);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+      background: linear-gradient(to right, var(--surface-elevated), rgba(255,255,255,0.8));
+    }
+
+    .list-item.selected {
+      border-color: var(--accent);
+      box-shadow: var(--shadow-md);
+    }
+
+    .list-item.completed .title-text {
+      color: var(--text-muted);
+    }
+
+    .list-item.completed .title-text > a,
+    .list-item.completed .title-text:not(:has(a))::before {
+      text-decoration: line-through;
+      text-decoration-color: var(--text-muted);
+    }
+
+    .list-item.completing .title-text {
+      animation: strikethrough 0.3s ease forwards;
+    }
+
+    @keyframes strikethrough {
+      0% {
+        color: var(--text-primary);
+      }
+      100% {
+        color: var(--text-muted);
+      }
+    }
+
+    .list-item.dragging {
+      opacity: 0.5;
+      transform: rotate(1deg);
+    }
+
+    .list-item .drag-handle {
+      display: grid;
+      grid-template-columns: repeat(2, 4px);
+      gap: 3px;
+      padding: 4px 2px;
+      cursor: grab;
+      flex-shrink: 0;
+      opacity: 0.4;
+      transition: opacity 0.2s ease;
+    }
+
+    .list-item:hover .drag-handle {
+      opacity: 0.7;
+    }
+
+    .list-item .drag-handle:active {
+      cursor: grabbing;
+    }
+
+    .drag-handle-dot {
+      width: 4px;
+      height: 4px;
+      background: var(--text-muted);
+      border-radius: 50%;
+    }
+
+    .list-checkbox {
+      width: 18px;
+      height: 18px;
+      border: 2px solid var(--border-hover);
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.2s ease;
+    }
+
+    .list-checkbox:hover {
+      border-color: var(--accent);
+      background: rgba(192, 104, 66, 0.1);
+    }
+
+    .list-checkbox.checked {
+      background: var(--accent);
+      border-color: var(--accent);
+      animation: checkboxPop 0.2s ease;
+    }
+
+    @keyframes checkboxPop {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+      100% { transform: scale(1); }
+    }
+
+    .list-checkbox.checked svg {
+      stroke: white;
+      animation: checkmark 0.25s ease forwards;
+    }
+
+    @keyframes checkmark {
+      0% {
+        stroke-dashoffset: 20;
+        opacity: 0;
+      }
+      100% {
+        stroke-dashoffset: 0;
+        opacity: 1;
+      }
+    }
+
+    .list-checkbox svg {
+      width: 12px;
+      height: 12px;
+      stroke: transparent;
+      stroke-width: 2.5;
+      fill: none;
+      stroke-dasharray: 20;
+      stroke-dashoffset: 0;
+    }
+
+    .list-favicon-wrapper {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: grab;
+    }
+
+    .list-favicon-wrapper:active {
+      cursor: grabbing;
+    }
+
+    .list-favicon {
+      width: 16px;
+      height: 16px;
+      border-radius: 3px;
+      background: var(--surface);
+    }
+
+    .list-favicon-placeholder {
+      width: 16px;
+      height: 16px;
+      color: var(--text-muted);
+    }
+
+    .no-url-indicator {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      background: var(--surface);
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-left: 8px;
+    }
+
+    .list-link {
+      flex: 1;
+      color: var(--text-primary);
+      text-decoration: none;
+      font-size: 0.9rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      transition: color 0.2s ease;
+    }
+
+    .list-link:hover {
+      color: var(--accent);
+    }
+
+    .list-item-title {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      overflow: hidden;
+    }
+
+    .list-item-title .title-text {
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      font-weight: 500;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      line-height: 1.4;
+      cursor: grab;
+    }
+
+    .list-item-title .title-text:active {
+      cursor: grabbing;
+    }
+
+    .list-item-title .title-text a {
+      color: inherit;
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .list-item-title .title-text a:hover {
+      color: var(--accent);
+    }
+
+    .list-item-title .url-text {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .list-item-actions {
+      display: flex;
+      gap: 4px;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .list-item:hover .list-item-actions {
+      opacity: 1;
+    }
+
+    .list-item-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      width: 30px;
+      height: 30px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+
+    .list-item-btn svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .list-item-btn:hover {
+      background: var(--surface-elevated);
+      border-color: var(--border-hover);
+      color: var(--text-primary);
+    }
+
+    .list-item-btn.delete:hover {
+      color: var(--danger);
+      border-color: var(--danger);
+    }
+
+    .list-item-btn.edit:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .list-empty {
+      padding: 60px 24px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    .list-empty-icon {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 16px;
+      color: var(--border-hover);
+    }
+
+    .list-empty-text {
+      margin-bottom: 8px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .list-empty-hint {
+      font-size: 0.85rem;
+    }
+
+    .list-items-container.drag-over {
+      background: rgba(192, 104, 66, 0.05);
+    }
+
+    /* Completed Section */
+    .list-completed-section {
+      margin-top: 16px;
+      position: relative;
+    }
+
+    .list-completed-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 16px;
+      right: 16px;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--border), transparent);
+    }
+
+    .list-completed-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 16px 10px;
+      cursor: pointer;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      user-select: none;
+      letter-spacing: 0.02em;
+    }
+
+    .list-completed-header:hover {
+      color: var(--text-secondary);
+    }
+
+    .list-completed-header svg {
+      width: 16px;
+      height: 16px;
+      transition: transform 0.2s ease;
+    }
+
+    .list-completed-header.collapsed svg {
+      transform: rotate(-90deg);
+    }
+
+    .list-completed-count {
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
+    .list-completed-items {
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+
+    .list-completed-items.collapsed {
+      max-height: 0 !important;
+    }
+
+    .list-date-group-header {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 12px 16px 6px;
+      margin-top: 4px;
+    }
+
+    .list-date-group-header:first-child {
+      margin-top: 0;
+      padding-top: 8px;
+    }
+
+    .list-item.completed {
+      opacity: 0.7;
+    }
+
+    .list-item.completed:hover {
+      opacity: 1;
+    }
+
+    .list-item .completed-time {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .list-item-tags {
+      display: inline-flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-left: 8px;
+    }
+
+    .list-item-tag {
+      font-size: 0.65rem;
+      padding: 1px 6px;
+      color: #5a5a5a;
+      border-radius: 8px;
+      font-weight: 500;
+    }
+
+    .list-item-notes {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      font-weight: 400;
+      margin-left: 6px;
+      font-style: italic;
+    }
+
+    .list-item-notes::before {
+      content: '—';
+      margin-right: 6px;
+      opacity: 0.5;
+    }
+
+    /* List Modal */
+    .list-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(45, 42, 38, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+    }
+
+    .list-modal-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: var(--surface-elevated);
+      padding: 28px;
+      border-radius: 16px;
+      width: 90%;
+      max-width: 450px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .list-modal-content h3 {
+      margin: 0 0 20px 0;
+      color: var(--text-primary);
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+
+    .list-modal-content .form-group {
+      margin-bottom: 16px;
+    }
+
+    .list-modal-content .form-group:last-of-type {
+      margin-bottom: 20px;
+    }
+
+    .list-modal-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+    }
   </style>
 </head>
 
@@ -916,7 +1753,26 @@
       <button class="title-edit-btn" id="title-edit-btn" onclick="toggleTitleEdit()">Edit</button>
     </div>
 
-    <div class="board">
+    <nav class="view-nav">
+      <button class="view-nav-btn active" data-view="kanban" onclick="switchView('kanban')">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="1" y="1" width="4" height="14" rx="1"/>
+          <rect x="6" y="1" width="4" height="9" rx="1"/>
+          <rect x="11" y="1" width="4" height="6" rx="1"/>
+        </svg>
+        Kanban Board
+      </button>
+      <button class="view-nav-btn" data-view="list" onclick="switchView('list')">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="1" y1="3" x2="15" y2="3"/>
+          <line x1="1" y1="8" x2="15" y2="8"/>
+          <line x1="1" y1="13" x2="15" y2="13"/>
+        </svg>
+        Simple List
+      </button>
+    </nav>
+
+    <div class="board" id="board">
       <div class="column" data-column="todo">
         <div class="column-header todo" onclick="toggleColumn('todo')">To Do</div>
         <div class="tasks-container" id="todo-tasks"></div>
@@ -939,6 +1795,78 @@
         <div class="add-task-btn" onclick="openTaskModal('done')">
           + Add Task
         </div>
+      </div>
+    </div>
+
+    <div class="list-view" id="list-view" style="display: none;">
+      <div class="list-container">
+        <div class="list-header">
+          <div class="list-header-left">
+            <h2>My Tasks</h2>
+            <span class="list-count" id="list-count"></span>
+          </div>
+          <button class="add-list-item-btn" onclick="openListModal()">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <line x1="8" y1="3" x2="8" y2="13"/>
+              <line x1="3" y1="8" x2="13" y2="8"/>
+            </svg>
+            Add Task
+          </button>
+        </div>
+        <div class="list-filter-bar" id="list-filter-bar" style="display: none;">
+          <div class="list-filter-multiselect" id="list-filter-multiselect">
+            <div class="list-filter-trigger" id="list-filter-trigger" onclick="toggleFilterDropdown()">
+              <span class="list-filter-placeholder" id="list-filter-placeholder">Filter by tags...</span>
+              <div class="list-filter-selected" id="list-filter-selected"></div>
+              <svg class="list-filter-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"/>
+              </svg>
+            </div>
+            <div class="list-filter-dropdown" id="list-filter-dropdown">
+              <div class="list-filter-options" id="list-filter-options"></div>
+            </div>
+          </div>
+        </div>
+        <div class="list-items" id="list-items"></div>
+        <div class="list-empty" id="list-empty">
+          <svg class="list-empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/>
+            <rect x="9" y="3" width="6" height="4" rx="1"/>
+            <line x1="9" y1="12" x2="15" y2="12"/>
+            <line x1="9" y1="16" x2="13" y2="16"/>
+          </svg>
+          <div class="list-empty-text">No tasks yet</div>
+          <div class="list-empty-hint">Click "Add Task" or press <kbd>N</kbd> to get started</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="list-modal" id="list-modal">
+    <div class="list-modal-content">
+      <h3 id="list-modal-title">Add Task</h3>
+      <div class="form-group">
+        <label for="list-item-title">Title</label>
+        <input type="text" id="list-item-title" placeholder="Enter a title for this task" required>
+      </div>
+      <div class="form-group">
+        <label for="list-item-url">URL (optional)</label>
+        <input type="url" id="list-item-url" placeholder="https://example.com">
+      </div>
+      <div class="form-group">
+        <label>Tags</label>
+        <div class="tags-input" id="list-tags-input">
+          <input type="text" id="list-tag-input" placeholder="Add tag...">
+        </div>
+        <div class="tag-suggestions" id="list-tag-suggestions"></div>
+      </div>
+      <div class="form-group">
+        <label for="list-item-notes">Notes (optional)</label>
+        <textarea id="list-item-notes" placeholder="Add any notes..." rows="3"></textarea>
+      </div>
+      <div class="list-modal-actions">
+        <button class="btn btn-secondary" onclick="closeListModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="saveListItem()">Save</button>
       </div>
     </div>
   </div>
@@ -982,73 +1910,120 @@
   <div class="instructions-modal" id="instructions-modal">
     <div class="instructions-content">
       <button class="instructions-close" onclick="closeInstructionsModal()">✕</button>
-      <h2>Task Manager Instructions</h2>
 
-      <h3>✨ Getting Started</h3>
-      <ul>
-        <li>Create tasks by clicking "+ Add Task" or pressing <kbd>N</kbd></li>
-        <li>Drag and drop tasks between columns to change their status</li>
-        <li>Paste URLs directly with <kbd>Cmd+V</kbd> / <kbd>Ctrl+V</kbd> to create tasks</li>
-      </ul>
+      <!-- Kanban Board Instructions -->
+      <div id="kanban-instructions">
+        <h2>Kanban Board Instructions</h2>
 
-      <h3>⌨️ Keyboard Shortcuts</h3>
-      <ul>
-        <li><kbd>N</kbd> - Create new task in To Do column</li>
-        <li><kbd>Arrow Keys</kbd> - Navigate between tasks</li>
-        <li><kbd>Shift + Arrow Keys</kbd> - Move task up/down or to different columns</li>
-        <li><kbd>Enter</kbd> - Edit selected task</li>
-        <li><kbd>Delete</kbd> / <kbd>Backspace</kbd> - Delete selected task</li>
-        <li><kbd>Cmd+V</kbd> / <kbd>Ctrl+V</kbd> - Paste URL to create task</li>
-      </ul>
+        <h3>✨ Getting Started</h3>
+        <ul>
+          <li>Create tasks by clicking "+ Add Task" or pressing <kbd>N</kbd></li>
+          <li>Drag and drop tasks between columns to change their status</li>
+          <li>Paste URLs directly with <kbd>Cmd+V</kbd> / <kbd>Ctrl+V</kbd> to create tasks</li>
+        </ul>
 
-      <h3>🎯 Focus & Pomodoro Timer</h3>
-      <ul>
-        <li>Click the 🎯 button to mark a task as actively being worked on</li>
-        <li>Timer starts automatically and counts your focus time</li>
-        <li>Earn a 🍅 tomato for every 25 minutes of accumulated focus time</li>
-        <li>Click ⚪ button to deactivate focus (timer pauses but time is saved)</li>
-        <li>Only one task can be active at a time</li>
-      </ul>
+        <h3>⌨️ Keyboard Shortcuts</h3>
+        <ul>
+          <li><kbd>N</kbd> - Create new task in To Do column</li>
+          <li><kbd>Arrow Keys</kbd> - Navigate between tasks</li>
+          <li><kbd>Shift + Arrow Keys</kbd> - Move task up/down or to different columns</li>
+          <li><kbd>Enter</kbd> - Edit selected task</li>
+          <li><kbd>Delete</kbd> / <kbd>Backspace</kbd> - Delete selected task</li>
+          <li><kbd>Cmd+V</kbd> / <kbd>Ctrl+V</kbd> - Paste URL to create task</li>
+        </ul>
 
-      <h3>📋 Task Actions</h3>
-      <p>Hover over any task to see action buttons:</p>
-      <ul>
-        <li>🎯 / ⚪ - Mark as actively working / Stop focus</li>
-        <li>⏸️ - Put task on hold (pauses work without deleting)</li>
-        <li>✏️ - Edit task details</li>
-        <li>📋 - Duplicate task</li>
-        <li>🗑️ - Delete task</li>
-      </ul>
+        <h3>🎯 Focus & Pomodoro Timer</h3>
+        <ul>
+          <li>Click the 🎯 button to mark a task as actively being worked on</li>
+          <li>Timer starts automatically and counts your focus time</li>
+          <li>Earn a 🍅 tomato for every 25 minutes of accumulated focus time</li>
+          <li>Click ⚪ button to deactivate focus (timer pauses but time is saved)</li>
+          <li>Only one task can be active at a time</li>
+        </ul>
 
-      <h3>🏷️ Tags & Organization</h3>
-      <ul>
-        <li>Add tags to categorize tasks (type and press Enter)</li>
-        <li>Tag suggestions appear based on previously used tags</li>
-        <li>Remove tags by clicking the × button</li>
-      </ul>
+        <h3>📋 Task Actions</h3>
+        <p>Hover over any task to see action buttons:</p>
+        <ul>
+          <li>🎯 / ⚪ - Mark as actively working / Stop focus</li>
+          <li>⏸️ - Put task on hold (pauses work without deleting)</li>
+          <li>✏️ - Edit task details</li>
+          <li>📋 - Duplicate task</li>
+          <li>🗑️ - Delete task</li>
+        </ul>
 
-      <h3>⏱ Time Tracking</h3>
-      <ul>
-        <li>Set a "Started At" time when creating or editing tasks</li>
-        <li>Click the start time to edit it later</li>
-        <li>Completed tasks show total duration</li>
-        <li>Focus timer tracks active work time separately</li>
-      </ul>
+        <h3>🏷️ Tags & Organization</h3>
+        <ul>
+          <li>Add tags to categorize tasks (type and press Enter)</li>
+          <li>Tag suggestions appear based on previously used tags</li>
+          <li>Remove tags by clicking the × button</li>
+        </ul>
 
-      <h3>📊 Column Management</h3>
-      <ul>
-        <li>Click column headers to collapse/expand them</li>
-        <li>Done tasks are automatically grouped by completion date</li>
-        <li>Task order is maintained within To Do and In Progress columns</li>
-      </ul>
+        <h3>⏱ Time Tracking</h3>
+        <ul>
+          <li>Set a "Started At" time when creating or editing tasks</li>
+          <li>Click the start time to edit it later</li>
+          <li>Completed tasks show total duration</li>
+          <li>Focus timer tracks active work time separately</li>
+        </ul>
 
-      <h3>💾 Data & Sync</h3>
-      <ul>
-        <li>All data is saved automatically to localStorage</li>
-        <li>If using server mode, data syncs to tasks.json</li>
-        <li>Sync status shown in bottom-left corner</li>
-        <li>Customize the app title by clicking "Edit" next to the header</li>
-      </ul>
+        <h3>📊 Column Management</h3>
+        <ul>
+          <li>Click column headers to collapse/expand them</li>
+          <li>Done tasks are automatically grouped by completion date</li>
+          <li>Task order is maintained within To Do and In Progress columns</li>
+        </ul>
+
+        <h3>💾 Data & Sync</h3>
+        <ul>
+          <li>All data is saved automatically to localStorage</li>
+          <li>If using server mode, data syncs to tasks.json</li>
+          <li>Sync status shown in bottom-left corner</li>
+          <li>Customize the app title by clicking "Edit" next to the header</li>
+        </ul>
+      </div>
+
+      <!-- Simple List Instructions -->
+      <div id="list-instructions" style="display: none;">
+        <h2>Simple List Instructions</h2>
+
+        <h3>✨ Getting Started</h3>
+        <ul>
+          <li>Add tasks by clicking "+ Add Task" or pressing <kbd>N</kbd></li>
+          <li>Each task has a URL that opens in a new tab when clicked</li>
+          <li>Drag and drop tasks to reorder them</li>
+        </ul>
+
+        <h3>⌨️ Keyboard Shortcuts</h3>
+        <ul>
+          <li><kbd>N</kbd> - Add new task</li>
+          <li><kbd>↑</kbd> / <kbd>↓</kbd> - Navigate between tasks</li>
+          <li><kbd>Enter</kbd> - Open selected task's URL in new tab</li>
+          <li><kbd>E</kbd> - Edit selected task</li>
+          <li><kbd>Delete</kbd> / <kbd>Backspace</kbd> - Delete selected task</li>
+        </ul>
+
+        <h3>📋 Task Actions</h3>
+        <p>Hover over any task to see action buttons:</p>
+        <ul>
+          <li>✏️ - Edit task title and URL</li>
+          <li>🗑️ - Delete task</li>
+        </ul>
+
+        <h3>🔗 URLs & Favicons</h3>
+        <ul>
+          <li>URL is optional - add one to make the task clickable</li>
+          <li>Favicons are automatically fetched from the URL</li>
+          <li>Click the task title to open the URL in a new tab</li>
+          <li>Paste a URL with <kbd>Cmd+V</kbd> / <kbd>Ctrl+V</kbd> to quickly add a task</li>
+        </ul>
+
+        <h3>💾 Data Storage</h3>
+        <ul>
+          <li>Simple List has its own separate task data</li>
+          <li>Data is saved automatically to localStorage</li>
+          <li>Tasks persist between sessions</li>
+        </ul>
+      </div>
     </div>
   </div>
 
@@ -1065,6 +2040,15 @@
     let tagSuggestions = [];
     let isServerMode = window.location.protocol !== 'file:';
     let lastSavedTime = null;
+
+    // Simple List state
+    let listItems = [];
+    let selectedListItemId = null;
+    let currentEditingListItem = null;
+    let currentView = localStorage.getItem('taskManager_currentView') || 'kanban';
+    let currentListTags = [];
+    let allListTags = new Set();
+    let activeTagFilters = new Set();
 
     // Clean up old time tracking data
     function migrateTimeTrackingData(task) {
@@ -1630,6 +2614,18 @@
 
     // Instructions modal functions
     function openInstructionsModal() {
+      // Show the appropriate instructions based on current view
+      const kanbanInstructions = document.getElementById('kanban-instructions');
+      const listInstructions = document.getElementById('list-instructions');
+
+      if (currentView === 'list') {
+        kanbanInstructions.style.display = 'none';
+        listInstructions.style.display = 'block';
+      } else {
+        kanbanInstructions.style.display = 'block';
+        listInstructions.style.display = 'none';
+      }
+
       document.getElementById('instructions-modal').style.display = 'block';
     }
 
@@ -2036,10 +3032,52 @@
     document.addEventListener('keydown', (e) => {
       // Prevent shortcuts when modal is open or in input fields
       if (document.getElementById('task-modal').style.display === 'block' ||
+        document.getElementById('list-modal').style.display === 'block' ||
         e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
         return;
       }
 
+      // Handle list view keyboard shortcuts
+      if (currentView === 'list') {
+        switch (e.key) {
+          case 'ArrowUp':
+            navigateListUp();
+            e.preventDefault();
+            break;
+          case 'ArrowDown':
+            navigateListDown();
+            e.preventDefault();
+            break;
+          case 'Enter':
+            if (selectedListItemId) {
+              openSelectedListItemUrl();
+            }
+            e.preventDefault();
+            break;
+          case 'e':
+          case 'E':
+            if (selectedListItemId) {
+              editListItem(selectedListItemId);
+            }
+            e.preventDefault();
+            break;
+          case 'Delete':
+          case 'Backspace':
+            if (selectedListItemId) {
+              deleteListItem(selectedListItemId);
+            }
+            e.preventDefault();
+            break;
+          case 'n':
+          case 'N':
+            openListModal();
+            e.preventDefault();
+            break;
+        }
+        return;
+      }
+
+      // Handle Kanban view keyboard shortcuts
       if (e.shiftKey) {
         // Shift + Arrow = Move task
         switch (e.key) {
@@ -2110,27 +3148,39 @@
 
     // Paste functionality
     document.addEventListener('paste', async (e) => {
-      // Only handle paste when not in input fields or modal
-      if (e.target.tagName === 'INPUT' ||
-        document.getElementById('task-modal').style.display === 'block') {
+      // Only handle paste when not in input fields or modals
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' ||
+        document.getElementById('task-modal').style.display === 'block' ||
+        document.getElementById('list-modal').style.display === 'block') {
         return;
       }
 
-      e.preventDefault();
       const pastedText = e.clipboardData.getData('text').trim();
 
       if (isValidUrl(pastedText)) {
-        // Open modal immediately with URL pre-filled
-        currentColumn = 'todo';
-        currentEditingTask = null;
-        document.getElementById('modal-title').textContent = 'Add Task';
-        currentTags = [];
-        document.getElementById('task-title').value = '';
-        document.getElementById('task-url').value = pastedText;
-        document.getElementById('task-notes').value = '';
-        renderTagsInput();
-        document.getElementById('task-modal').style.display = 'block';
-        document.getElementById('task-title').focus();
+        e.preventDefault();
+
+        if (currentView === 'list') {
+          // Open list modal with URL pre-filled
+          currentEditingListItem = null;
+          document.getElementById('list-modal-title').textContent = 'Add Task';
+          document.getElementById('list-item-title').value = '';
+          document.getElementById('list-item-url').value = pastedText;
+          document.getElementById('list-modal').style.display = 'block';
+          document.getElementById('list-item-title').focus();
+        } else {
+          // Open kanban modal with URL pre-filled
+          currentColumn = 'todo';
+          currentEditingTask = null;
+          document.getElementById('modal-title').textContent = 'Add Task';
+          currentTags = [];
+          document.getElementById('task-title').value = '';
+          document.getElementById('task-url').value = pastedText;
+          document.getElementById('task-notes').value = '';
+          renderTagsInput();
+          document.getElementById('task-modal').style.display = 'block';
+          document.getElementById('task-title').focus();
+        }
       }
     });
 
@@ -2552,11 +3602,889 @@
       }
     }
 
+    // ==========================================
+    // SIMPLE LIST FUNCTIONS
+    // ==========================================
+
+    // Load list items from localStorage
+    function loadListItems() {
+      const saved = localStorage.getItem('taskManager_listItems');
+      if (saved) {
+        listItems = JSON.parse(saved);
+        // Populate allListTags from existing items
+        listItems.forEach(item => {
+          if (item.tags) {
+            item.tags.forEach(tag => allListTags.add(tag));
+          }
+        });
+      }
+    }
+
+    // Save list items to localStorage
+    function saveListItems() {
+      localStorage.setItem('taskManager_listItems', JSON.stringify(listItems));
+    }
+
+    // Generate unique ID for list items
+    function generateListItemId() {
+      return 'li_' + Date.now().toString(36) + Math.random().toString(36).substr(2);
+    }
+
+    // Switch between Kanban and List views
+    function switchView(view) {
+      currentView = view;
+      localStorage.setItem('taskManager_currentView', view);
+
+      // Toggle visibility
+      const board = document.getElementById('board');
+      const listView = document.getElementById('list-view');
+
+      if (view === 'kanban') {
+        board.style.display = 'grid';
+        listView.style.display = 'none';
+      } else {
+        board.style.display = 'none';
+        listView.style.display = 'block';
+        renderListItems();
+      }
+
+      // Update nav buttons
+      document.querySelectorAll('.view-nav-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.view === view);
+      });
+
+      // Clear selections when switching views
+      clearSelection();
+      selectedListItemId = null;
+    }
+
+    // Initialize view on page load
+    function initializeView() {
+      if (currentView === 'list') {
+        switchView('list');
+      }
+    }
+
+    // State for collapsed completed section
+    let listCompletedCollapsed = localStorage.getItem('taskManager_listCompletedCollapsed') === 'true';
+
+    // Render all list items
+    function renderListItems() {
+      const container = document.getElementById('list-items');
+      const emptyState = document.getElementById('list-empty');
+      const countBadge = document.getElementById('list-count');
+
+      container.innerHTML = '';
+
+      // Render tag filter bar
+      renderTagFilterBar();
+
+      // Separate active and completed items
+      let activeItems = listItems.filter(i => !i.completed).sort((a, b) => (a.order || 0) - (b.order || 0));
+      let completedItems = listItems.filter(i => i.completed).sort((a, b) => {
+        // Sort by completedAt descending (most recent first)
+        return new Date(b.completedAt || 0) - new Date(a.completedAt || 0);
+      });
+
+      // Apply tag filter
+      activeItems = filterByTags(activeItems);
+      completedItems = filterByTags(completedItems);
+
+      const totalFiltered = activeItems.length + completedItems.length;
+
+      // Update count badge
+      if (listItems.length > 0) {
+        if (activeTagFilters.size > 0) {
+          countBadge.textContent = `${totalFiltered} of ${listItems.length} shown`;
+        } else if (completedItems.length > 0) {
+          countBadge.textContent = `${completedItems.length}/${listItems.length} done`;
+        } else {
+          countBadge.textContent = `${listItems.length} task${listItems.length !== 1 ? 's' : ''}`;
+        }
+      } else {
+        countBadge.textContent = '';
+      }
+
+      if (listItems.length === 0) {
+        emptyState.style.display = 'block';
+        container.style.display = 'none';
+        return;
+      }
+
+      emptyState.style.display = 'none';
+      container.style.display = 'block';
+
+      // Show message if filter has no results
+      if (totalFiltered === 0 && activeTagFilters.size > 0) {
+        const noResults = document.createElement('div');
+        noResults.className = 'list-no-results';
+        noResults.innerHTML = `
+          <div class="list-no-results-text">No tasks match the selected tags</div>
+          <button class="list-no-results-clear" onclick="clearTagFilters()">Clear filters</button>
+        `;
+        container.appendChild(noResults);
+        return;
+      }
+
+      // Render active items
+      activeItems.forEach(item => {
+        const element = createListItemElement(item);
+        container.appendChild(element);
+      });
+
+      // Render completed section if there are completed items
+      if (completedItems.length > 0) {
+        const completedSection = document.createElement('div');
+        completedSection.className = 'list-completed-section';
+
+        const completedHeader = document.createElement('div');
+        completedHeader.className = `list-completed-header ${listCompletedCollapsed ? 'collapsed' : ''}`;
+        completedHeader.innerHTML = `
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+          Completed
+          <span class="list-completed-count">(${completedItems.length})</span>
+        `;
+        completedHeader.onclick = toggleListCompletedSection;
+
+        const completedContainer = document.createElement('div');
+        completedContainer.className = `list-completed-items ${listCompletedCollapsed ? 'collapsed' : ''}`;
+        completedContainer.id = 'list-completed-items';
+
+        // Group completed items by date
+        const groupOrder = ['today', 'yesterday', 'last7days', 'last30days', 'older'];
+        const groupedItems = {};
+
+        completedItems.forEach(item => {
+          const group = getDateGroup(item.completedAt);
+          if (!groupedItems[group]) groupedItems[group] = [];
+          groupedItems[group].push(item);
+        });
+
+        // Render grouped items
+        groupOrder.forEach(group => {
+          if (groupedItems[group] && groupedItems[group].length > 0) {
+            const groupHeader = document.createElement('div');
+            groupHeader.className = 'list-date-group-header';
+            groupHeader.textContent = getDateGroupLabel(group);
+            completedContainer.appendChild(groupHeader);
+
+            groupedItems[group].forEach(item => {
+              const element = createListItemElement(item);
+              completedContainer.appendChild(element);
+            });
+          }
+        });
+
+        // Set max-height for animation
+        if (!listCompletedCollapsed) {
+          setTimeout(() => {
+            completedContainer.style.maxHeight = completedContainer.scrollHeight + 'px';
+          }, 0);
+        }
+
+        completedSection.appendChild(completedHeader);
+        completedSection.appendChild(completedContainer);
+        container.appendChild(completedSection);
+      }
+
+      // Set up drag and drop for list
+      setupListDragAndDrop();
+    }
+
+    // Toggle completed section collapse
+    function toggleListCompletedSection() {
+      listCompletedCollapsed = !listCompletedCollapsed;
+      localStorage.setItem('taskManager_listCompletedCollapsed', listCompletedCollapsed);
+
+      const header = document.querySelector('.list-completed-header');
+      const items = document.getElementById('list-completed-items');
+
+      if (header) header.classList.toggle('collapsed', listCompletedCollapsed);
+      if (items) {
+        if (listCompletedCollapsed) {
+          items.classList.add('collapsed');
+        } else {
+          items.classList.remove('collapsed');
+          items.style.maxHeight = items.scrollHeight + 'px';
+        }
+      }
+    }
+
+    // Get date group for completed task
+    function getDateGroup(dateString) {
+      if (!dateString) return 'older';
+
+      const date = new Date(dateString);
+      const now = new Date();
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const yesterday = new Date(today);
+      yesterday.setDate(yesterday.getDate() - 1);
+      const lastWeekStart = new Date(today);
+      lastWeekStart.setDate(lastWeekStart.getDate() - 7);
+      const lastMonthStart = new Date(today);
+      lastMonthStart.setDate(lastMonthStart.getDate() - 30);
+
+      const taskDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+
+      if (taskDate >= today) {
+        return 'today';
+      } else if (taskDate >= yesterday) {
+        return 'yesterday';
+      } else if (taskDate >= lastWeekStart) {
+        return 'last7days';
+      } else if (taskDate >= lastMonthStart) {
+        return 'last30days';
+      } else {
+        return 'older';
+      }
+    }
+
+    function getDateGroupLabel(group) {
+      const labels = {
+        'today': 'Today',
+        'yesterday': 'Yesterday',
+        'last7days': 'Last 7 days',
+        'last30days': 'Last 30 days',
+        'older': 'Older'
+      };
+      return labels[group] || group;
+    }
+
+    // Render tag filter bar
+    function renderTagFilterBar() {
+      const filterBar = document.getElementById('list-filter-bar');
+      const selectedContainer = document.getElementById('list-filter-selected');
+      const optionsContainer = document.getElementById('list-filter-options');
+      const placeholder = document.getElementById('list-filter-placeholder');
+
+      // Only show if there are tags
+      if (allListTags.size === 0) {
+        filterBar.style.display = 'none';
+        return;
+      }
+
+      filterBar.style.display = 'flex';
+
+      // Render selected tags in trigger
+      selectedContainer.innerHTML = '';
+      activeTagFilters.forEach(tag => {
+        const tagEl = document.createElement('span');
+        tagEl.className = 'list-filter-tag';
+        tagEl.style.background = getTagColor(tag);
+        tagEl.innerHTML = `${escapeHtml(tag)}<button onclick="event.stopPropagation(); toggleTagFilter('${escapeHtml(tag)}')">&times;</button>`;
+        selectedContainer.appendChild(tagEl);
+      });
+
+      // Show/hide placeholder
+      placeholder.style.display = activeTagFilters.size > 0 ? 'none' : 'block';
+
+      // Render all tags in dropdown
+      const sortedTags = [...allListTags].sort();
+      optionsContainer.innerHTML = '';
+      sortedTags.forEach(tag => {
+        const isSelected = activeTagFilters.has(tag);
+        const optionEl = document.createElement('div');
+        optionEl.className = `list-filter-option ${isSelected ? 'selected' : ''}`;
+        optionEl.onclick = (e) => {
+          e.stopPropagation();
+          toggleTagFilter(tag);
+        };
+        optionEl.innerHTML = `
+          <span class="list-filter-option-color" style="background: ${getTagColor(tag)}"></span>
+          <span>${escapeHtml(tag)}</span>
+          <svg class="list-filter-option-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        `;
+        optionsContainer.appendChild(optionEl);
+      });
+    }
+
+    // Toggle filter dropdown open/close
+    function toggleFilterDropdown() {
+      const multiselect = document.getElementById('list-filter-multiselect');
+      multiselect.classList.toggle('open');
+    }
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+      const multiselect = document.getElementById('list-filter-multiselect');
+      if (multiselect && !multiselect.contains(e.target)) {
+        multiselect.classList.remove('open');
+      }
+    });
+
+    // Toggle a tag filter
+    function toggleTagFilter(tag) {
+      if (activeTagFilters.has(tag)) {
+        activeTagFilters.delete(tag);
+      } else {
+        activeTagFilters.add(tag);
+      }
+      renderTagFilterBar();
+      renderListItems();
+    }
+
+    // Clear all tag filters
+    function clearTagFilters() {
+      activeTagFilters.clear();
+      renderTagFilterBar();
+      renderListItems();
+    }
+
+    // Filter items by active tags (OR logic)
+    function filterByTags(items) {
+      if (activeTagFilters.size === 0) return items;
+
+      return items.filter(item => {
+        if (!item.tags || item.tags.length === 0) return false;
+        return item.tags.some(tag => activeTagFilters.has(tag));
+      });
+    }
+
+    // Create a list item element
+    function createListItemElement(item) {
+      const div = document.createElement('div');
+      div.className = 'list-item';
+      if (item.completed) div.classList.add('completed');
+      div.draggable = true;
+      div.dataset.itemId = item.id;
+
+      if (selectedListItemId === item.id) {
+        div.classList.add('selected');
+      }
+
+      const hasUrl = item.url && item.url.trim();
+      const faviconUrl = hasUrl ? getFaviconUrl(item.url) : '';
+
+      // Build title content
+      let titleContent;
+      const completedTimeHtml = item.completed && item.completedAt
+        ? `<div class="completed-time">Completed ${formatCompletedTime(item.completedAt)}</div>`
+        : '';
+
+      // Build tags HTML
+      const tagsHtml = item.tags && item.tags.length > 0
+        ? `<div class="list-item-tags">${item.tags.map(tag => `<span class="list-item-tag" style="background: ${getTagColor(tag)}">${escapeHtml(tag)}</span>`).join('')}</div>`
+        : '';
+
+      // Build notes HTML (inline)
+      const notesHtml = item.notes && item.notes.trim()
+        ? `<span class="list-item-notes">${escapeHtml(item.notes)}</span>`
+        : '';
+
+      if (hasUrl) {
+        titleContent = `
+          <div class="title-text">
+            <a href="${escapeHtml(item.url)}" target="_blank" draggable="false">${escapeHtml(item.title)}</a>${tagsHtml}${notesHtml}
+          </div>
+          ${completedTimeHtml}
+        `;
+      } else {
+        titleContent = `
+          <div class="title-text">
+            ${escapeHtml(item.title)}${tagsHtml}${notesHtml}
+          </div>
+          ${completedTimeHtml}
+        `;
+      }
+
+      // Build favicon/placeholder
+      let faviconContent;
+      if (hasUrl) {
+        faviconContent = `
+          <div class="list-favicon-wrapper" draggable="false">
+            <img src="${faviconUrl}" class="list-favicon" draggable="false" onerror="this.parentElement.innerHTML='<svg class=\\'list-favicon-placeholder\\' viewBox=\\'0 0 24 24\\' fill=\\'none\\' stroke=\\'currentColor\\' stroke-width=\\'1.5\\'><path d=\\'M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71\\'/><path d=\\'M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71\\'/></svg>'" alt="">
+          </div>
+        `;
+      } else {
+        faviconContent = `
+          <div class="list-favicon-wrapper">
+            <svg class="list-favicon-placeholder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/>
+              <rect x="9" y="3" width="6" height="4" rx="1"/>
+            </svg>
+          </div>
+        `;
+      }
+
+      div.innerHTML = `
+        <div class="drag-handle">
+          <span class="drag-handle-dot"></span>
+          <span class="drag-handle-dot"></span>
+          <span class="drag-handle-dot"></span>
+          <span class="drag-handle-dot"></span>
+          <span class="drag-handle-dot"></span>
+          <span class="drag-handle-dot"></span>
+        </div>
+        <div class="list-checkbox ${item.completed ? 'checked' : ''}" onclick="toggleListItemComplete('${item.id}')">
+          <svg viewBox="0 0 12 12">
+            <polyline points="2,6 5,9 10,3"/>
+          </svg>
+        </div>
+        ${faviconContent}
+        <div class="list-item-title">
+          ${titleContent}
+        </div>
+        <div class="list-item-actions">
+          <button class="list-item-btn edit" onclick="editListItem('${item.id}')" title="Edit">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
+              <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+            </svg>
+          </button>
+          <button class="list-item-btn delete" onclick="deleteListItem('${item.id}')" title="Delete">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="3 6 5 6 21 6"/>
+              <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
+            </svg>
+          </button>
+        </div>
+      `;
+
+      // Click to select
+      div.addEventListener('click', (e) => {
+        if (!e.target.closest('a') && !e.target.closest('button') && !e.target.closest('.list-checkbox')) {
+          selectListItem(item.id);
+        }
+      });
+
+      // Double-click to edit
+      div.addEventListener('dblclick', (e) => {
+        if (!e.target.closest('a') && !e.target.closest('.list-checkbox')) {
+          editListItem(item.id);
+        }
+      });
+
+      return div;
+    }
+
+    // Toggle list item completion
+    function toggleListItemComplete(itemId) {
+      const item = listItems.find(i => i.id === itemId);
+      if (item) {
+        item.completed = !item.completed;
+        if (item.completed) {
+          item.completedAt = new Date().toISOString();
+        } else {
+          delete item.completedAt;
+        }
+        saveListItems();
+        renderListItems();
+      }
+    }
+
+    // Format completion time for display
+    function formatCompletedTime(isoString) {
+      if (!isoString) return '';
+      const date = new Date(isoString);
+      const now = new Date();
+      const diffMs = now - date;
+      const diffMins = Math.floor(diffMs / 60000);
+      const diffHours = Math.floor(diffMs / 3600000);
+      const diffDays = Math.floor(diffMs / 86400000);
+
+      if (diffMins < 1) return 'Just now';
+      if (diffMins < 60) return `${diffMins}m ago`;
+      if (diffHours < 24) return `${diffHours}h ago`;
+      if (diffDays === 1) return 'Yesterday';
+      if (diffDays < 7) return `${diffDays}d ago`;
+
+      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    }
+
+    // Extract domain from URL for display
+    function extractDomain(url) {
+      try {
+        const urlObj = new URL(url);
+        return urlObj.hostname.replace('www.', '');
+      } catch (_) {
+        return url;
+      }
+    }
+
+    // Select a list item
+    function selectListItem(itemId) {
+      document.querySelectorAll('.list-item.selected').forEach(el => {
+        el.classList.remove('selected');
+      });
+
+      selectedListItemId = itemId;
+      const element = document.querySelector(`[data-item-id="${itemId}"]`);
+      if (element) {
+        element.classList.add('selected');
+        element.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }
+
+    // Custom tag colors storage
+    let customTagColors = JSON.parse(localStorage.getItem('taskManager_tagColors') || '{}');
+
+    function saveTagColors() {
+      localStorage.setItem('taskManager_tagColors', JSON.stringify(customTagColors));
+    }
+
+    // Get consistent color for a tag based on its name
+    function getTagColor(tagName) {
+      // Check for custom color first
+      if (customTagColors[tagName] !== undefined) {
+        return `var(--tag-color-${customTagColors[tagName]})`;
+      }
+      // Fall back to hash-based color
+      let hash = 5381;
+      for (let i = 0; i < tagName.length; i++) {
+        hash = ((hash << 5) + hash) ^ tagName.charCodeAt(i);
+      }
+      const colorIndex = Math.abs(hash) % 16;
+      return `var(--tag-color-${colorIndex})`;
+    }
+
+    // Get current color index for a tag
+    function getTagColorIndex(tagName) {
+      if (customTagColors[tagName] !== undefined) {
+        return customTagColors[tagName];
+      }
+      let hash = 5381;
+      for (let i = 0; i < tagName.length; i++) {
+        hash = ((hash << 5) + hash) ^ tagName.charCodeAt(i);
+      }
+      return Math.abs(hash) % 16;
+    }
+
+    // Cycle tag color to next color
+    function cycleTagColor(tagName) {
+      const currentIndex = getTagColorIndex(tagName);
+      const nextIndex = (currentIndex + 1) % 16;
+      customTagColors[tagName] = nextIndex;
+      saveTagColors();
+      renderListTagsInput();
+      renderListItems();
+    }
+
+    // Render list tags input
+    function renderListTagsInput() {
+      const container = document.getElementById('list-tags-input');
+      const input = document.getElementById('list-tag-input');
+
+      // Remove existing tags (keep input)
+      const existingTags = container.querySelectorAll('.tag');
+      existingTags.forEach(tag => tag.remove());
+
+      // Add current tags before input
+      currentListTags.forEach(tag => {
+        const tagElement = document.createElement('span');
+        tagElement.className = 'tag';
+        tagElement.style.background = getTagColor(tag);
+        tagElement.innerHTML = `
+          <button type="button" class="tag-color-btn" onclick="cycleTagColor('${escapeHtml(tag)}')" title="Change color">●</button>
+          ${escapeHtml(tag)}
+          <button type="button" onclick="removeListTag('${escapeHtml(tag)}')">&times;</button>
+        `;
+        container.insertBefore(tagElement, input);
+      });
+    }
+
+    // Add a tag to list item
+    function addListTag(tag) {
+      const trimmedTag = tag.trim().toLowerCase();
+      if (trimmedTag && !currentListTags.includes(trimmedTag)) {
+        currentListTags.push(trimmedTag);
+        allListTags.add(trimmedTag);
+        renderListTagsInput();
+      }
+      document.getElementById('list-tag-input').value = '';
+      hideListTagSuggestions();
+    }
+
+    // Remove a tag from list item
+    function removeListTag(tag) {
+      currentListTags = currentListTags.filter(t => t !== tag);
+      renderListTagsInput();
+    }
+
+    // Show list tag suggestions
+    function showListTagSuggestions(filter) {
+      const suggestionsContainer = document.getElementById('list-tag-suggestions');
+      const matchingTags = [...allListTags].filter(tag =>
+        tag.includes(filter.toLowerCase()) && !currentListTags.includes(tag)
+      );
+
+      if (matchingTags.length === 0 || !filter) {
+        suggestionsContainer.style.display = 'none';
+        return;
+      }
+
+      suggestionsContainer.innerHTML = matchingTags.map(tag =>
+        `<div class="tag-suggestion" onclick="addListTag('${escapeHtml(tag)}')">${escapeHtml(tag)}</div>`
+      ).join('');
+      suggestionsContainer.style.display = 'block';
+    }
+
+    // Hide list tag suggestions
+    function hideListTagSuggestions() {
+      document.getElementById('list-tag-suggestions').style.display = 'none';
+    }
+
+    // Open list modal for adding
+    function openListModal() {
+      currentEditingListItem = null;
+      currentListTags = [];
+      document.getElementById('list-modal-title').textContent = 'Add Task';
+      document.getElementById('list-item-title').value = '';
+      document.getElementById('list-item-url').value = '';
+      document.getElementById('list-item-notes').value = '';
+      document.getElementById('list-tag-input').value = '';
+      renderListTagsInput();
+      document.getElementById('list-modal').style.display = 'block';
+      document.getElementById('list-item-title').focus();
+    }
+
+    // Close list modal
+    function closeListModal() {
+      document.getElementById('list-modal').style.display = 'none';
+      currentEditingListItem = null;
+      currentListTags = [];
+      hideListTagSuggestions();
+    }
+
+    // Edit a list item
+    function editListItem(itemId) {
+      const item = listItems.find(i => i.id === itemId);
+      if (!item) return;
+
+      currentEditingListItem = itemId;
+      currentListTags = item.tags ? [...item.tags] : [];
+      document.getElementById('list-modal-title').textContent = 'Edit Task';
+      document.getElementById('list-item-title').value = item.title || '';
+      document.getElementById('list-item-url').value = item.url || '';
+      document.getElementById('list-item-notes').value = item.notes || '';
+      document.getElementById('list-tag-input').value = '';
+      renderListTagsInput();
+      document.getElementById('list-modal').style.display = 'block';
+      document.getElementById('list-item-title').focus();
+    }
+
+    // Delete a list item
+    function deleteListItem(itemId) {
+      if (confirm('Are you sure you want to delete this task?')) {
+        listItems = listItems.filter(i => i.id !== itemId);
+        if (selectedListItemId === itemId) {
+          selectedListItemId = null;
+        }
+        saveListItems();
+        renderListItems();
+      }
+    }
+
+    // Save list item (add or edit)
+    function saveListItem() {
+      const title = document.getElementById('list-item-title').value.trim();
+      const url = document.getElementById('list-item-url').value.trim();
+      const notes = document.getElementById('list-item-notes').value.trim();
+
+      if (!title) {
+        alert('Please enter a title');
+        return;
+      }
+
+      if (url && !isValidUrl(url)) {
+        alert('Please enter a valid URL');
+        return;
+      }
+
+      if (currentEditingListItem) {
+        // Edit existing item
+        const item = listItems.find(i => i.id === currentEditingListItem);
+        if (item) {
+          item.title = title;
+          item.url = url;
+          item.notes = notes;
+          item.tags = [...currentListTags];
+        }
+      } else {
+        // Add new item at the top
+        listItems.forEach(item => {
+          item.order = (item.order || 0) + 1;
+        });
+
+        const newItem = {
+          id: generateListItemId(),
+          title: title,
+          url: url,
+          notes: notes,
+          tags: [...currentListTags],
+          order: 0,
+          createdAt: new Date().toISOString()
+        };
+        listItems.push(newItem);
+      }
+
+      saveListItems();
+      renderListItems();
+      closeListModal();
+    }
+
+    // Set up drag and drop for list items
+    function setupListDragAndDrop() {
+      const container = document.getElementById('list-items');
+      const items = container.querySelectorAll('.list-item');
+
+      items.forEach(item => {
+        item.addEventListener('dragstart', handleListDragStart);
+        item.addEventListener('dragend', handleListDragEnd);
+      });
+
+      container.addEventListener('dragover', handleListDragOver);
+      container.addEventListener('drop', handleListDrop);
+    }
+
+    function handleListDragStart(e) {
+      e.dataTransfer.setData('text/plain', e.target.dataset.itemId);
+      e.target.classList.add('dragging');
+    }
+
+    function handleListDragEnd(e) {
+      e.target.classList.remove('dragging');
+    }
+
+    function handleListDragOver(e) {
+      e.preventDefault();
+      const dragging = document.querySelector('.list-item.dragging');
+      if (!dragging) return;
+
+      const container = document.getElementById('list-items');
+      const afterElement = getListDragAfterElement(container, e.clientY);
+
+      if (afterElement == null) {
+        container.appendChild(dragging);
+      } else {
+        container.insertBefore(dragging, afterElement);
+      }
+    }
+
+    function getListDragAfterElement(container, y) {
+      const draggableElements = [...container.querySelectorAll('.list-item:not(.dragging)')];
+
+      return draggableElements.reduce((closest, child) => {
+        const box = child.getBoundingClientRect();
+        const offset = y - box.top - box.height / 2;
+
+        if (offset < 0 && offset > closest.offset) {
+          return { offset: offset, element: child };
+        } else {
+          return closest;
+        }
+      }, { offset: Number.NEGATIVE_INFINITY }).element;
+    }
+
+    function handleListDrop(e) {
+      e.preventDefault();
+
+      // Update order based on DOM order
+      const container = document.getElementById('list-items');
+      const items = container.querySelectorAll('.list-item');
+
+      items.forEach((element, index) => {
+        const itemId = element.dataset.itemId;
+        const item = listItems.find(i => i.id === itemId);
+        if (item) {
+          item.order = index;
+        }
+      });
+
+      saveListItems();
+    }
+
+    // Navigate list items with keyboard
+    function navigateListUp() {
+      const sortedItems = [...listItems].sort((a, b) => (a.order || 0) - (b.order || 0));
+      if (sortedItems.length === 0) return;
+
+      if (!selectedListItemId) {
+        selectListItem(sortedItems[0].id);
+        return;
+      }
+
+      const currentIndex = sortedItems.findIndex(i => i.id === selectedListItemId);
+      if (currentIndex > 0) {
+        selectListItem(sortedItems[currentIndex - 1].id);
+      } else {
+        selectListItem(sortedItems[sortedItems.length - 1].id);
+      }
+    }
+
+    function navigateListDown() {
+      const sortedItems = [...listItems].sort((a, b) => (a.order || 0) - (b.order || 0));
+      if (sortedItems.length === 0) return;
+
+      if (!selectedListItemId) {
+        selectListItem(sortedItems[0].id);
+        return;
+      }
+
+      const currentIndex = sortedItems.findIndex(i => i.id === selectedListItemId);
+      if (currentIndex < sortedItems.length - 1) {
+        selectListItem(sortedItems[currentIndex + 1].id);
+      } else {
+        selectListItem(sortedItems[0].id);
+      }
+    }
+
+    // Open selected list item's URL
+    function openSelectedListItemUrl() {
+      if (!selectedListItemId) return;
+      const item = listItems.find(i => i.id === selectedListItemId);
+      if (item && item.url && item.url.trim()) {
+        window.open(item.url, '_blank');
+      }
+    }
+
+    // List modal event handlers
+    document.getElementById('list-modal').addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeListModal();
+      } else if (e.key === 'Enter' && !e.shiftKey && e.target.id !== 'list-tag-input') {
+        e.preventDefault();
+        saveListItem();
+      }
+    });
+
+    document.getElementById('list-modal').addEventListener('click', (e) => {
+      if (e.target.id === 'list-modal') {
+        closeListModal();
+      }
+    });
+
+    // List tag input event handlers
+    document.getElementById('list-tag-input').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        const value = e.target.value.trim();
+        if (value) {
+          addListTag(value);
+        }
+      } else if (e.key === 'Backspace' && e.target.value === '' && currentListTags.length > 0) {
+        removeListTag(currentListTags[currentListTags.length - 1]);
+      }
+    });
+
+    document.getElementById('list-tag-input').addEventListener('input', (e) => {
+      showListTagSuggestions(e.target.value);
+    });
+
+    document.getElementById('list-tag-input').addEventListener('blur', () => {
+      setTimeout(hideListTagSuggestions, 200);
+    });
+
     // Initialize the app
     loadAppName();
     loadTasks();
+    loadListItems();
     loadCollapsedState();
     setupDropZones();
+    initializeView();
 
     // Load last saved time from localStorage
     const savedTime = localStorage.getItem('taskManager_lastSaved');
