@@ -48,23 +48,8 @@
       --shadow-md: 0 4px 8px rgba(45, 42, 38, 0.08);
       --shadow-lg: 0 8px 16px rgba(45, 42, 38, 0.12);
 
-      /* Tag Colors - Colorful with good contrast */
-      --tag-color-0: #fca5a5; /* Red */
-      --tag-color-1: #fdba74; /* Orange */
-      --tag-color-2: #fcd34d; /* Amber */
-      --tag-color-3: #bef264; /* Lime */
-      --tag-color-4: #86efac; /* Green */
-      --tag-color-5: #5eead4; /* Teal */
-      --tag-color-6: #67e8f9; /* Cyan */
-      --tag-color-7: #7dd3fc; /* Sky */
-      --tag-color-8: #93c5fd; /* Blue */
-      --tag-color-9: #a5b4fc; /* Indigo */
-      --tag-color-10: #c4b5fd; /* Violet */
-      --tag-color-11: #d8b4fe; /* Purple */
-      --tag-color-12: #f0abfc; /* Fuchsia */
-      --tag-color-13: #f9a8d4; /* Pink */
-      --tag-color-14: #fda4af; /* Rose */
-      --tag-color-15: #cbd5e1; /* Slate */
+      /* Tag Colors - Muted orange accent */
+      --tag-color: #d4956a;
     }
 
     * {
@@ -832,7 +817,7 @@
     }
 
     .tag {
-      color: #4a4a4a;
+      color: #ffffff;
       padding: 4px 8px;
       border-radius: 12px;
       font-size: 0.8rem;
@@ -855,17 +840,6 @@
 
     .tag button:hover {
       opacity: 1;
-    }
-
-    .tag-color-btn {
-      font-size: 0.6rem !important;
-      opacity: 0.5;
-      transition: transform 0.2s ease;
-    }
-
-    .tag-color-btn:hover {
-      opacity: 1 !important;
-      transform: scale(1.2);
     }
 
     .tag-input {
@@ -1061,18 +1035,84 @@
       font-size: 0.9rem;
       font-weight: 500;
       transition: all 0.2s ease;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     .add-list-item-btn:hover {
       background: var(--accent-hover);
       transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
     }
 
     .add-list-item-btn svg {
       width: 16px;
       height: 16px;
+    }
+
+    .list-search-box {
+      position: relative;
+      width: 280px;
+      flex-shrink: 0;
+    }
+
+    .list-search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 16px;
+      height: 16px;
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    .list-search-box input {
+      width: 100%;
+      padding: 8px 32px 8px 36px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface-elevated);
+      font-family: inherit;
+      font-size: 0.85rem;
+      color: var(--text-primary);
+      transition: all 0.2s ease;
+      min-height: 38px;
+      box-sizing: border-box;
+    }
+
+    .list-search-box input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(192, 104, 66, 0.1);
+    }
+
+    .list-search-box input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .list-search-clear {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 20px;
+      height: 20px;
+      border: none;
+      background: var(--surface);
+      color: var(--text-muted);
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1rem;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+    }
+
+    .list-search-clear:hover {
+      background: var(--border);
+      color: var(--text-primary);
     }
 
     .list-filter-bar {
@@ -1089,8 +1129,8 @@
 
     .list-filter-multiselect {
       position: relative;
-      flex: 1;
-      max-width: 400px;
+      width: 280px;
+      flex-shrink: 0;
     }
 
     .list-filter-trigger {
@@ -1104,6 +1144,8 @@
       cursor: pointer;
       min-height: 38px;
       transition: all 0.2s ease;
+      width: 100%;
+      box-sizing: border-box;
     }
 
     .list-filter-trigger:hover {
@@ -1127,11 +1169,11 @@
       flex: 1;
     }
 
-    .list-filter-selected:not(:empty) + .list-filter-placeholder {
+    .list-filter-selected:not(:empty)+.list-filter-placeholder {
       display: none;
     }
 
-    .list-filter-selected ~ .list-filter-placeholder {
+    .list-filter-selected~.list-filter-placeholder {
       flex: 1;
     }
 
@@ -1211,7 +1253,7 @@
       display: flex;
       align-items: center;
       gap: 3px;
-      color: #444;
+      color: #ffffff;
       font-weight: 500;
     }
 
@@ -1229,6 +1271,22 @@
 
     .list-filter-tag button:hover {
       opacity: 1;
+    }
+
+    .list-filter-clear {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 4px;
+      transition: color 0.15s ease, background 0.15s ease;
+    }
+
+    .list-filter-clear:hover {
+      color: var(--text-primary);
+      background: var(--surface-elevated);
     }
 
     .list-no-results {
@@ -1282,6 +1340,7 @@
         opacity: 0;
         transform: translateY(-10px);
       }
+
       to {
         opacity: 1;
         transform: translateY(0);
@@ -1296,7 +1355,7 @@
       border-color: var(--border-hover);
       transform: translateY(-1px);
       box-shadow: var(--shadow-md);
-      background: linear-gradient(to right, var(--surface-elevated), rgba(255,255,255,0.8));
+      background: linear-gradient(to right, var(--surface-elevated), rgba(255, 255, 255, 0.8));
     }
 
     .list-item.selected {
@@ -1308,7 +1367,7 @@
       color: var(--text-muted);
     }
 
-    .list-item.completed .title-text > a,
+    .list-item.completed .title-text>a,
     .list-item.completed .title-text:not(:has(a))::before {
       text-decoration: line-through;
       text-decoration-color: var(--text-muted);
@@ -1322,6 +1381,7 @@
       0% {
         color: var(--text-primary);
       }
+
       100% {
         color: var(--text-muted);
       }
@@ -1383,9 +1443,17 @@
     }
 
     @keyframes checkboxPop {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.15); }
-      100% { transform: scale(1); }
+      0% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.15);
+      }
+
+      100% {
+        transform: scale(1);
+      }
     }
 
     .list-checkbox.checked svg {
@@ -1398,6 +1466,7 @@
         stroke-dashoffset: 20;
         opacity: 0;
       }
+
       100% {
         stroke-dashoffset: 0;
         opacity: 1;
@@ -1677,7 +1746,7 @@
     .list-item-tag {
       font-size: 0.65rem;
       padding: 1px 6px;
-      color: #5a5a5a;
+      color: #ffffff;
       border-radius: 8px;
       font-weight: 500;
     }
@@ -1743,6 +1812,220 @@
       gap: 10px;
       justify-content: flex-end;
     }
+
+    /* Pomodoro Timer Widget */
+    .pomodoro-widget {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: var(--shadow-lg);
+      z-index: 1000;
+      overflow: hidden;
+      min-width: 180px;
+    }
+
+    .pomodoro-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.15s ease;
+    }
+
+    .pomodoro-header:hover {
+      background: var(--surface);
+    }
+
+    .pomodoro-icon {
+      width: 24px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+
+    .pomodoro-title {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--text-primary);
+      flex: 1;
+    }
+
+    .pomodoro-expand-icon {
+      width: 16px;
+      height: 16px;
+      color: var(--text-muted);
+      transition: transform 0.2s ease;
+    }
+
+    .pomodoro-widget.collapsed .pomodoro-expand-icon {
+      transform: rotate(180deg);
+    }
+
+    .pomodoro-body {
+      padding: 0 16px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .pomodoro-widget.collapsed .pomodoro-body {
+      display: none;
+    }
+
+    .pomodoro-display {
+      font-size: 2.5rem;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+      color: var(--text-primary);
+      letter-spacing: -1px;
+    }
+
+    .pomodoro-widget.running .pomodoro-display {
+      color: #e74c3c;
+    }
+
+    .pomodoro-widget.paused .pomodoro-display {
+      color: var(--warning);
+    }
+
+    .pomodoro-presets {
+      display: flex;
+      gap: 6px;
+    }
+
+    .pomodoro-preset {
+      padding: 4px 10px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface);
+      color: var(--text-secondary);
+      font-size: 0.75rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .pomodoro-preset:hover {
+      border-color: var(--border-hover);
+      background: var(--surface-elevated);
+    }
+
+    .pomodoro-preset.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+
+    .pomodoro-controls {
+      display: flex;
+      gap: 8px;
+    }
+
+    .pomodoro-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+    }
+
+    .pomodoro-btn svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .pomodoro-start {
+      background: #e74c3c;
+      color: white;
+    }
+
+    .pomodoro-start:hover {
+      background: #c0392b;
+    }
+
+    .pomodoro-widget.running .pomodoro-start svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .pomodoro-reset {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+
+    .pomodoro-reset:hover {
+      background: var(--surface-elevated);
+      border-color: var(--border-hover);
+    }
+
+    /* Daily Tomatoes Counter */
+    .pomodoro-tomatoes {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 6px 12px;
+      background: linear-gradient(135deg, #fff5f5 0%, #ffe8e8 100%);
+      border: 1px solid rgba(231, 76, 60, 0.15);
+      border-radius: 20px;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      min-height: 32px;
+    }
+
+    .pomodoro-tomatoes-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .pomodoro-tomatoes-icons {
+      display: flex;
+      gap: 2px;
+      flex-wrap: wrap;
+      justify-content: center;
+      max-width: 120px;
+    }
+
+    .pomodoro-tomato {
+      font-size: 1rem;
+      line-height: 1;
+      transition: transform 0.2s ease;
+    }
+
+    .pomodoro-tomato.new {
+      animation: tomatoPop 0.4s ease-out;
+    }
+
+    @keyframes tomatoPop {
+      0% {
+        transform: scale(0);
+      }
+
+      50% {
+        transform: scale(1.4);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    .pomodoro-tomatoes-count {
+      font-weight: 600;
+      color: #e74c3c;
+      font-size: 0.8rem;
+    }
   </style>
 </head>
 
@@ -1755,18 +2038,20 @@
 
     <nav class="view-nav">
       <button class="view-nav-btn active" data-view="kanban" onclick="switchView('kanban')">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="1" y="1" width="4" height="14" rx="1"/>
-          <rect x="6" y="1" width="4" height="9" rx="1"/>
-          <rect x="11" y="1" width="4" height="6" rx="1"/>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"
+          stroke-linecap="round" stroke-linejoin="round">
+          <rect x="1" y="1" width="4" height="14" rx="1" />
+          <rect x="6" y="1" width="4" height="9" rx="1" />
+          <rect x="11" y="1" width="4" height="6" rx="1" />
         </svg>
         Kanban Board
       </button>
       <button class="view-nav-btn" data-view="list" onclick="switchView('list')">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="1" y1="3" x2="15" y2="3"/>
-          <line x1="1" y1="8" x2="15" y2="8"/>
-          <line x1="1" y1="13" x2="15" y2="13"/>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"
+          stroke-linecap="round" stroke-linejoin="round">
+          <line x1="1" y1="3" x2="15" y2="3" />
+          <line x1="1" y1="8" x2="15" y2="8" />
+          <line x1="1" y1="13" x2="15" y2="13" />
         </svg>
         Simple List
       </button>
@@ -1807,33 +2092,46 @@
           </div>
           <button class="add-list-item-btn" onclick="openListModal()">
             <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-              <line x1="8" y1="3" x2="8" y2="13"/>
-              <line x1="3" y1="8" x2="13" y2="8"/>
+              <line x1="8" y1="3" x2="8" y2="13" />
+              <line x1="3" y1="8" x2="13" y2="8" />
             </svg>
             Add Task
           </button>
         </div>
-        <div class="list-filter-bar" id="list-filter-bar" style="display: none;">
+        <div class="list-filter-bar" id="list-filter-bar">
+          <div class="list-search-box">
+            <svg class="list-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8" />
+              <path d="M21 21l-4.35-4.35" />
+            </svg>
+            <input type="text" id="list-search-input" placeholder="Search tasks..." oninput="filterListTasks()">
+            <button class="list-search-clear" id="list-search-clear" onclick="clearListSearch()"
+              style="display: none;">×</button>
+          </div>
           <div class="list-filter-multiselect" id="list-filter-multiselect">
             <div class="list-filter-trigger" id="list-filter-trigger" onclick="toggleFilterDropdown()">
               <span class="list-filter-placeholder" id="list-filter-placeholder">Filter by tags...</span>
               <div class="list-filter-selected" id="list-filter-selected"></div>
               <svg class="list-filter-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="6 9 12 15 18 9"/>
+                <polyline points="6 9 12 15 18 9" />
               </svg>
             </div>
             <div class="list-filter-dropdown" id="list-filter-dropdown">
               <div class="list-filter-options" id="list-filter-options"></div>
             </div>
           </div>
+          <button class="list-filter-clear" id="list-filter-clear" onclick="clearAllTagFilters()"
+            style="display: none;">Clear</button>
         </div>
         <div class="list-items" id="list-items"></div>
         <div class="list-empty" id="list-empty">
-          <svg class="list-empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/>
-            <rect x="9" y="3" width="6" height="4" rx="1"/>
-            <line x1="9" y1="12" x2="15" y2="12"/>
-            <line x1="9" y1="16" x2="13" y2="16"/>
+          <svg class="list-empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" />
+            <rect x="9" y="3" width="6" height="4" rx="1" />
+            <line x1="9" y1="12" x2="15" y2="12" />
+            <line x1="9" y1="16" x2="13" y2="16" />
           </svg>
           <div class="list-empty-text">No tasks yet</div>
           <div class="list-empty-hint">Click "Add Task" or press <kbd>N</kbd> to get started</div>
@@ -3686,15 +3984,20 @@
         return new Date(b.completedAt || 0) - new Date(a.completedAt || 0);
       });
 
+      // Apply search filter
+      activeItems = filterBySearch(activeItems);
+      completedItems = filterBySearch(completedItems);
+
       // Apply tag filter
       activeItems = filterByTags(activeItems);
       completedItems = filterByTags(completedItems);
 
       const totalFiltered = activeItems.length + completedItems.length;
+      const hasFilters = activeTagFilters.size > 0 || listSearchQuery;
 
       // Update count badge
       if (listItems.length > 0) {
-        if (activeTagFilters.size > 0) {
+        if (hasFilters) {
           countBadge.textContent = `${totalFiltered} of ${listItems.length} shown`;
         } else if (completedItems.length > 0) {
           countBadge.textContent = `${completedItems.length}/${listItems.length} done`;
@@ -3715,12 +4018,17 @@
       container.style.display = 'block';
 
       // Show message if filter has no results
-      if (totalFiltered === 0 && activeTagFilters.size > 0) {
+      if (totalFiltered === 0 && hasFilters) {
         const noResults = document.createElement('div');
         noResults.className = 'list-no-results';
+        const message = listSearchQuery && activeTagFilters.size > 0
+          ? 'No tasks match your search and filters'
+          : listSearchQuery
+            ? 'No tasks match your search'
+            : 'No tasks match the selected tags';
         noResults.innerHTML = `
-          <div class="list-no-results-text">No tasks match the selected tags</div>
-          <button class="list-no-results-clear" onclick="clearTagFilters()">Clear filters</button>
+          <div class="list-no-results-text">${message}</div>
+          <button class="list-no-results-clear" onclick="clearAllListFilters()">Clear filters</button>
         `;
         container.appendChild(noResults);
         return;
@@ -3858,14 +4166,12 @@
       const selectedContainer = document.getElementById('list-filter-selected');
       const optionsContainer = document.getElementById('list-filter-options');
       const placeholder = document.getElementById('list-filter-placeholder');
+      const clearBtn = document.getElementById('list-filter-clear');
 
-      // Only show if there are tags
-      if (allListTags.size === 0) {
-        filterBar.style.display = 'none';
-        return;
-      }
-
+      // Always show filter bar (for search), but hide tag multiselect if no tags
       filterBar.style.display = 'flex';
+      const multiselect = document.getElementById('list-filter-multiselect');
+      multiselect.style.display = allListTags.size === 0 ? 'none' : 'block';
 
       // Render selected tags in trigger
       selectedContainer.innerHTML = '';
@@ -3877,8 +4183,9 @@
         selectedContainer.appendChild(tagEl);
       });
 
-      // Show/hide placeholder
+      // Show/hide placeholder and clear button
       placeholder.style.display = activeTagFilters.size > 0 ? 'none' : 'block';
+      clearBtn.style.display = activeTagFilters.size > 0 ? 'block' : 'none';
 
       // Render all tags in dropdown
       const sortedTags = [...allListTags].sort();
@@ -3900,6 +4207,13 @@
         `;
         optionsContainer.appendChild(optionEl);
       });
+    }
+
+    // Clear all tag filters
+    function clearAllTagFilters() {
+      activeTagFilters.clear();
+      renderTagFilterBar();
+      renderListItems();
     }
 
     // Toggle filter dropdown open/close
@@ -3932,6 +4246,51 @@
       activeTagFilters.clear();
       renderTagFilterBar();
       renderListItems();
+    }
+
+    // List search state
+    let listSearchQuery = '';
+
+    function filterListTasks() {
+      const searchInput = document.getElementById('list-search-input');
+      const clearBtn = document.getElementById('list-search-clear');
+
+      listSearchQuery = searchInput.value.toLowerCase().trim();
+      clearBtn.style.display = listSearchQuery ? 'flex' : 'none';
+
+      renderListItems();
+    }
+
+    function clearListSearch() {
+      const searchInput = document.getElementById('list-search-input');
+      searchInput.value = '';
+      listSearchQuery = '';
+      document.getElementById('list-search-clear').style.display = 'none';
+      renderListItems();
+    }
+
+    function clearAllListFilters() {
+      // Clear search
+      const searchInput = document.getElementById('list-search-input');
+      if (searchInput) {
+        searchInput.value = '';
+        listSearchQuery = '';
+        document.getElementById('list-search-clear').style.display = 'none';
+      }
+      // Clear tag filters
+      activeTagFilters.clear();
+      renderListItems();
+    }
+
+    // Filter items by search query
+    function filterBySearch(items) {
+      if (!listSearchQuery) return items;
+
+      return items.filter(item => {
+        const titleMatch = item.title && item.title.toLowerCase().includes(listSearchQuery);
+        const notesMatch = item.notes && item.notes.toLowerCase().includes(listSearchQuery);
+        return titleMatch || notesMatch;
+      });
     }
 
     // Filter items by active tags (OR logic)
@@ -4000,14 +4359,7 @@
           </div>
         `;
       } else {
-        faviconContent = `
-          <div class="list-favicon-wrapper">
-            <svg class="list-favicon-placeholder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/>
-              <rect x="9" y="3" width="6" height="4" rx="1"/>
-            </svg>
-          </div>
-        `;
+        faviconContent = '';
       }
 
       div.innerHTML = `
@@ -4119,48 +4471,9 @@
       }
     }
 
-    // Custom tag colors storage
-    let customTagColors = JSON.parse(localStorage.getItem('taskManager_tagColors') || '{}');
-
-    function saveTagColors() {
-      localStorage.setItem('taskManager_tagColors', JSON.stringify(customTagColors));
-    }
-
-    // Get consistent color for a tag based on its name
+    // Get tag color (single muted orange for all tags)
     function getTagColor(tagName) {
-      // Check for custom color first
-      if (customTagColors[tagName] !== undefined) {
-        return `var(--tag-color-${customTagColors[tagName]})`;
-      }
-      // Fall back to hash-based color
-      let hash = 5381;
-      for (let i = 0; i < tagName.length; i++) {
-        hash = ((hash << 5) + hash) ^ tagName.charCodeAt(i);
-      }
-      const colorIndex = Math.abs(hash) % 16;
-      return `var(--tag-color-${colorIndex})`;
-    }
-
-    // Get current color index for a tag
-    function getTagColorIndex(tagName) {
-      if (customTagColors[tagName] !== undefined) {
-        return customTagColors[tagName];
-      }
-      let hash = 5381;
-      for (let i = 0; i < tagName.length; i++) {
-        hash = ((hash << 5) + hash) ^ tagName.charCodeAt(i);
-      }
-      return Math.abs(hash) % 16;
-    }
-
-    // Cycle tag color to next color
-    function cycleTagColor(tagName) {
-      const currentIndex = getTagColorIndex(tagName);
-      const nextIndex = (currentIndex + 1) % 16;
-      customTagColors[tagName] = nextIndex;
-      saveTagColors();
-      renderListTagsInput();
-      renderListItems();
+      return 'var(--tag-color)';
     }
 
     // Render list tags input
@@ -4178,7 +4491,6 @@
         tagElement.className = 'tag';
         tagElement.style.background = getTagColor(tag);
         tagElement.innerHTML = `
-          <button type="button" class="tag-color-btn" onclick="cycleTagColor('${escapeHtml(tag)}')" title="Change color">●</button>
           ${escapeHtml(tag)}
           <button type="button" onclick="removeListTag('${escapeHtml(tag)}')">&times;</button>
         `;
@@ -4550,6 +4862,356 @@
       }
     }, 100);
 
+    // Pomodoro Timer
+    let pomodoroInterval = null;
+    let pomodoroSeconds = 25 * 60;
+    let pomodoroRunning = false;
+    let pomodoroSelectedMinutes = 25;
+    let pomodoroStartedAt = null; // Timestamp when timer was started
+
+    // Pomodoro State Persistence
+    function savePomodoroState() {
+      const state = {
+        selectedMinutes: pomodoroSelectedMinutes,
+        running: pomodoroRunning,
+        startedAt: pomodoroStartedAt,
+        pausedSecondsRemaining: pomodoroRunning ? null : pomodoroSeconds
+      };
+      localStorage.setItem('pomodoroState', JSON.stringify(state));
+    }
+
+    function loadPomodoroState() {
+      try {
+        const state = JSON.parse(localStorage.getItem('pomodoroState'));
+        if (!state) return;
+
+        pomodoroSelectedMinutes = state.selectedMinutes || 25;
+
+        if (state.running && state.startedAt) {
+          // Timer was running - calculate remaining time
+          const elapsed = Math.floor((Date.now() - state.startedAt) / 1000);
+          const totalSeconds = pomodoroSelectedMinutes * 60;
+          pomodoroSeconds = Math.max(0, totalSeconds - elapsed);
+
+          if (pomodoroSeconds > 0) {
+            // Resume running
+            pomodoroStartedAt = state.startedAt;
+            pomodoroRunning = true;
+            startPomodoroInterval();
+            const widget = document.getElementById('pomodoro-widget');
+            widget.classList.add('running');
+            updateStartButton(true);
+          } else {
+            // Timer completed while away - award tomato and reset
+            if (pomodoroSelectedMinutes === 25) {
+              incrementTomato();
+            }
+            pomodoroComplete();
+            pomodoroSeconds = pomodoroSelectedMinutes * 60;
+            pomodoroRunning = false;
+            pomodoroStartedAt = null;
+          }
+        } else if (state.pausedSecondsRemaining !== null) {
+          // Timer was paused
+          pomodoroSeconds = state.pausedSecondsRemaining;
+          pomodoroRunning = false;
+          if (pomodoroSeconds < pomodoroSelectedMinutes * 60) {
+            const widget = document.getElementById('pomodoro-widget');
+            widget.classList.add('paused');
+          }
+        }
+
+        // Update preset button UI
+        document.querySelectorAll('.pomodoro-preset').forEach(btn => {
+          btn.classList.toggle('active', parseInt(btn.dataset.minutes) === pomodoroSelectedMinutes);
+        });
+
+        // Update display with restored state
+        updatePomodoroDisplay();
+      } catch (e) {
+        console.log('Could not load pomodoro state:', e);
+      }
+    }
+
+    function clearPomodoroState() {
+      localStorage.removeItem('pomodoroState');
+    }
+
+    // Daily Tomatoes Tracking
+    function getTodayKey() {
+      return new Date().toISOString().split('T')[0]; // "2025-12-29"
+    }
+
+    function loadDailyTomatoes() {
+      try {
+        const data = JSON.parse(localStorage.getItem('dailyTomatoes') || '{}');
+        return data[getTodayKey()] || 0;
+      } catch (e) {
+        return 0;
+      }
+    }
+
+    function saveDailyTomatoes(count) {
+      try {
+        const data = JSON.parse(localStorage.getItem('dailyTomatoes') || '{}');
+        const today = getTodayKey();
+        data[today] = count;
+        // Clean up old entries (keep last 30 days)
+        const cutoff = new Date();
+        cutoff.setDate(cutoff.getDate() - 30);
+        Object.keys(data).forEach(key => {
+          if (new Date(key) < cutoff) delete data[key];
+        });
+        localStorage.setItem('dailyTomatoes', JSON.stringify(data));
+      } catch (e) {
+        console.log('Could not save tomatoes:', e);
+      }
+    }
+
+    function incrementTomato() {
+      const count = loadDailyTomatoes() + 1;
+      saveDailyTomatoes(count);
+      updateTomatoDisplay(true);
+    }
+
+    function updateTomatoDisplay(isNew = false) {
+      const container = document.getElementById('pomodoro-tomatoes');
+      if (!container) return;
+
+      const count = loadDailyTomatoes();
+
+      if (count === 0) {
+        container.style.display = 'none';
+      } else {
+        container.style.display = 'flex';
+        // Show up to 8 tomato icons, then show count
+        const maxIcons = 8;
+        const iconsToShow = Math.min(count, maxIcons);
+        let html = '<span class="pomodoro-tomatoes-label">Today:</span><span class="pomodoro-tomatoes-icons">';
+        for (let i = 0; i < iconsToShow; i++) {
+          const isLastAndNew = isNew && i === iconsToShow - 1;
+          html += `<span class="pomodoro-tomato${isLastAndNew ? ' new' : ''}">🍅</span>`;
+        }
+        html += '</span>';
+        if (count > maxIcons) {
+          html += `<span class="pomodoro-tomatoes-count">+${count - maxIcons}</span>`;
+        }
+        container.innerHTML = html;
+      }
+    }
+
+    function updatePomodoroDisplay() {
+      const display = document.getElementById('pomodoro-display');
+      const minutes = Math.floor(pomodoroSeconds / 60);
+      const seconds = pomodoroSeconds % 60;
+      display.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+
+    function togglePomodoroExpand() {
+      const widget = document.getElementById('pomodoro-widget');
+      widget.classList.toggle('collapsed');
+    }
+
+    function setPomodoroTime(minutes) {
+      pomodoroSelectedMinutes = minutes;
+      pomodoroSeconds = minutes * 60;
+      pomodoroRunning = false;
+      pomodoroStartedAt = null;
+      clearInterval(pomodoroInterval);
+      pomodoroInterval = null;
+
+      // Update UI
+      const widget = document.getElementById('pomodoro-widget');
+      widget.classList.remove('running', 'paused');
+
+      // Update preset buttons
+      document.querySelectorAll('.pomodoro-preset').forEach(btn => {
+        btn.classList.toggle('active', parseInt(btn.dataset.minutes) === minutes);
+      });
+
+      // Update start button to play icon
+      updateStartButton(false);
+      updatePomodoroDisplay();
+      savePomodoroState();
+    }
+
+    function updateStartButton(isRunning) {
+      const btn = document.getElementById('pomodoro-start-btn');
+      if (isRunning) {
+        btn.innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor">
+          <rect x="6" y="4" width="4" height="16" rx="1"/>
+          <rect x="14" y="4" width="4" height="16" rx="1"/>
+        </svg>`;
+      } else {
+        btn.innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor">
+          <polygon points="5,3 19,12 5,21"/>
+        </svg>`;
+      }
+    }
+
+    function playPomodoroSound(type) {
+      try {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+
+        if (type === 'start') {
+          // Rising tone for start
+          oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
+          oscillator.frequency.linearRampToValueAtTime(600, audioContext.currentTime + 0.15);
+        } else {
+          // Falling tone for pause
+          oscillator.frequency.setValueAtTime(500, audioContext.currentTime);
+          oscillator.frequency.linearRampToValueAtTime(350, audioContext.currentTime + 0.15);
+        }
+
+        oscillator.type = 'sine';
+        gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
+
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.15);
+      } catch (e) {
+        console.log('Audio not supported');
+      }
+    }
+
+    function startPomodoroInterval() {
+      if (pomodoroInterval) clearInterval(pomodoroInterval);
+
+      pomodoroInterval = setInterval(() => {
+        // Calculate remaining time from timestamp (handles background tabs)
+        if (pomodoroStartedAt) {
+          const elapsed = Math.floor((Date.now() - pomodoroStartedAt) / 1000);
+          const totalSeconds = pomodoroSelectedMinutes * 60;
+          pomodoroSeconds = Math.max(0, totalSeconds - elapsed);
+        }
+
+        updatePomodoroDisplay();
+
+        if (pomodoroSeconds <= 0) {
+          clearInterval(pomodoroInterval);
+          pomodoroInterval = null;
+          pomodoroRunning = false;
+          pomodoroStartedAt = null;
+          const widget = document.getElementById('pomodoro-widget');
+          widget.classList.remove('running');
+          updateStartButton(false);
+          savePomodoroState();
+          pomodoroComplete();
+        }
+      }, 1000);
+    }
+
+    function togglePomodoro() {
+      const widget = document.getElementById('pomodoro-widget');
+
+      if (pomodoroRunning) {
+        // Pause - calculate remaining seconds first
+        if (pomodoroStartedAt) {
+          const elapsed = Math.floor((Date.now() - pomodoroStartedAt) / 1000);
+          const totalSeconds = pomodoroSelectedMinutes * 60;
+          pomodoroSeconds = Math.max(0, totalSeconds - elapsed);
+        }
+        pomodoroRunning = false;
+        pomodoroStartedAt = null;
+        clearInterval(pomodoroInterval);
+        pomodoroInterval = null;
+        widget.classList.remove('running');
+        widget.classList.add('paused');
+        updateStartButton(false);
+        playPomodoroSound('pause');
+        savePomodoroState();
+      } else {
+        // Start
+        if (pomodoroSeconds <= 0) {
+          pomodoroSeconds = pomodoroSelectedMinutes * 60;
+        }
+        // Calculate startedAt based on remaining seconds
+        pomodoroStartedAt = Date.now() - ((pomodoroSelectedMinutes * 60 - pomodoroSeconds) * 1000);
+        pomodoroRunning = true;
+        widget.classList.remove('paused');
+        widget.classList.add('running');
+        updateStartButton(true);
+        playPomodoroSound('start');
+        savePomodoroState();
+        startPomodoroInterval();
+      }
+    }
+
+    function resetPomodoro() {
+      pomodoroRunning = false;
+      pomodoroStartedAt = null;
+      clearInterval(pomodoroInterval);
+      pomodoroInterval = null;
+      pomodoroSeconds = pomodoroSelectedMinutes * 60;
+
+      const widget = document.getElementById('pomodoro-widget');
+      widget.classList.remove('running', 'paused');
+      updateStartButton(false);
+      updatePomodoroDisplay();
+      savePomodoroState();
+    }
+
+    function pomodoroComplete() {
+      // Award tomato only for 25-minute pomodoros
+      if (pomodoroSelectedMinutes === 25) {
+        incrementTomato();
+      }
+
+      // Play notification sound
+      try {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+
+        oscillator.frequency.value = 800;
+        oscillator.type = 'sine';
+        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.5);
+
+        // Second beep
+        setTimeout(() => {
+          const osc2 = audioContext.createOscillator();
+          const gain2 = audioContext.createGain();
+          osc2.connect(gain2);
+          gain2.connect(audioContext.destination);
+          osc2.frequency.value = 800;
+          osc2.type = 'sine';
+          gain2.gain.setValueAtTime(0.3, audioContext.currentTime);
+          gain2.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+          osc2.start(audioContext.currentTime);
+          osc2.stop(audioContext.currentTime + 0.5);
+        }, 600);
+      } catch (e) {
+        console.log('Audio not supported');
+      }
+
+      // Show notification if permitted
+      const tomatoCount = loadDailyTomatoes();
+      const notifBody = pomodoroSelectedMinutes === 25
+        ? `Time for a break! 🍅 ${tomatoCount} today`
+        : 'Break complete!';
+
+      if (Notification.permission === 'granted') {
+        new Notification('Pomodoro Complete!', {
+          body: notifBody,
+          icon: 'icons/icon-192.png'
+        });
+      } else if (Notification.permission !== 'denied') {
+        Notification.requestPermission();
+      }
+    }
+
     // Register service worker for PWA support
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
@@ -4562,6 +5224,79 @@
           });
       });
     }
+  </script>
+
+  <!-- Pomodoro Timer Widget -->
+  <div class="pomodoro-widget" id="pomodoro-widget">
+    <div class="pomodoro-header" onclick="togglePomodoroExpand()">
+      <svg class="pomodoro-icon" viewBox="0 0 24 24" fill="currentColor">
+        <ellipse cx="12" cy="14" rx="9" ry="8" fill="#e74c3c" />
+        <ellipse cx="12" cy="14" rx="7" ry="6.5" fill="#c0392b" />
+        <ellipse cx="9" cy="12" rx="2" ry="1.5" fill="#e74c3c" opacity="0.5" />
+        <path d="M12 6 Q12 3 10 2" stroke="#27ae60" stroke-width="2" fill="none" stroke-linecap="round" />
+        <ellipse cx="12" cy="2" rx="2" ry="1" fill="#27ae60" />
+      </svg>
+      <span class="pomodoro-title">Pomodoro</span>
+      <svg class="pomodoro-expand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="18 15 12 9 6 15" />
+      </svg>
+    </div>
+    <div class="pomodoro-body">
+      <div class="pomodoro-display" id="pomodoro-display">25:00</div>
+      <div class="pomodoro-tomatoes" id="pomodoro-tomatoes" style="display: none;"></div>
+      <div class="pomodoro-presets">
+        <button class="pomodoro-preset active" data-minutes="25" onclick="setPomodoroTime(25)">25m</button>
+        <button class="pomodoro-preset" data-minutes="5" onclick="setPomodoroTime(5)">5m</button>
+        <button class="pomodoro-preset" data-minutes="15" onclick="setPomodoroTime(15)">15m</button>
+      </div>
+      <div class="pomodoro-controls">
+        <button class="pomodoro-btn pomodoro-start" id="pomodoro-start-btn" onclick="togglePomodoro()">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <polygon points="5,3 19,12 5,21" />
+          </svg>
+        </button>
+        <button class="pomodoro-btn pomodoro-reset" onclick="resetPomodoro()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+            <path d="M3 3v5h5" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Initialize pomodoro after widget is in DOM
+    (function initPomodoro() {
+      updatePomodoroDisplay();
+      updateTomatoDisplay();
+      loadPomodoroState();
+
+      // Update display after state is loaded
+      updatePomodoroDisplay();
+
+      // Update timer immediately when tab becomes visible again
+      document.addEventListener('visibilitychange', () => {
+        if (!document.hidden && pomodoroRunning && pomodoroStartedAt) {
+          const elapsed = Math.floor((Date.now() - pomodoroStartedAt) / 1000);
+          const totalSeconds = pomodoroSelectedMinutes * 60;
+          pomodoroSeconds = Math.max(0, totalSeconds - elapsed);
+          updatePomodoroDisplay();
+
+          if (pomodoroSeconds <= 0) {
+            clearInterval(pomodoroInterval);
+            pomodoroInterval = null;
+            pomodoroRunning = false;
+            pomodoroStartedAt = null;
+            const widget = document.getElementById('pomodoro-widget');
+            widget.classList.remove('running');
+            updateStartButton(false);
+            savePomodoroState();
+            pomodoroComplete();
+          }
+        }
+      });
+    })();
   </script>
 </body>
 
