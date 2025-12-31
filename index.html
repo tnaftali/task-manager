@@ -5,22 +5,22 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#c06842">
-  <meta name="description" content="A personal task management application with drag-and-drop functionality">
-  <title>Tobi's Task Manager</title>
+  <meta name="description" content="Flow — Simple, minimal task management">
+  <title>Flow</title>
   <link rel="icon" type="image/svg+xml"
-    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%23ffffff'/%3E%3Cpath d='M9 11l3 3l8-8' fill='none' stroke='%23c06842' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11' fill='none' stroke='%23c06842' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%23c06842'/%3E%3Cpath d='M5 12c2-3 4-4 7-4s5 2 7 4' fill='none' stroke='%23ffffff' stroke-width='2.5' stroke-linecap='round'/%3E%3Cpath d='M5 16c2-3 4-4 7-4s5 2 7 4' fill='none' stroke='%23ffffff' stroke-width='2.5' stroke-linecap='round' opacity='0.5'/%3E%3C/svg%3E">
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..600&display=swap');
 
     :root {
-      /* Modern Beige/Cream Color Scheme */
-      --background: #f0ebe3;
-      --surface: #f2efea;
-      --surface-elevated: #ffffff;
-      --border: #e5e0d7;
-      --border-hover: #d1ccc1;
+      /* Warm Beige/Cream Color Scheme */
+      --background: #f3ebe0;
+      --surface: #f9f4ec;
+      --surface-elevated: #fffcf7;
+      --border: #e6ddd0;
+      --border-hover: #d6cbbe;
 
       /* Text Colors */
       --text-primary: #2d2a26;
@@ -48,7 +48,7 @@
       --shadow-md: 0 4px 8px rgba(45, 42, 38, 0.08);
       --shadow-lg: 0 8px 16px rgba(45, 42, 38, 0.12);
 
-      /* Tag Colors - Muted orange accent */
+      /* Tag Colors - Muted orange (softer accent) */
       --tag-color: #d4956a;
     }
 
@@ -78,11 +78,13 @@
       justify-content: center;
       gap: 12px;
       margin-bottom: 48px;
-      position: relative;
+    }
+
+    .app-logo {
+      flex-shrink: 0;
     }
 
     h1 {
-      text-align: center;
       margin: 0;
       color: rgb(61, 61, 58);
       font-size: 2.25rem;
@@ -91,140 +93,117 @@
       letter-spacing: -0.01em;
     }
 
-    .title-edit-btn {
-      background: transparent;
+    .board-wrapper {
+      max-width: 1400px;
+      margin: 0 auto;
+      background: var(--surface);
+      border-radius: 16px;
       border: 1px solid var(--border);
-      color: var(--text-secondary);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .board-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface-elevated);
+      border-radius: 16px 16px 0 0;
+    }
+
+    .board-header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .board-container-selector {
+      position: relative;
+    }
+
+    .board-container-trigger {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: none;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 8px;
       cursor: pointer;
-      padding: 6px 10px;
-      border-radius: 6px;
-      font-size: 0.875rem;
-      transition: all 0.2s ease;
-      opacity: 0.6;
-      font-family: inherit;
+      transition: background 0.15s ease;
     }
 
-    .title-edit-btn:hover {
-      opacity: 1;
-      background-color: var(--surface-elevated);
-      color: var(--text-primary);
-      border-color: var(--border-hover);
+    .board-container-trigger:hover {
+      background: var(--surface);
     }
 
-    .title-edit-input {
-      background: transparent;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 4px 8px;
-      font-size: 2.25rem;
+    .board-container-trigger h2 {
+      margin: 0;
+      font-size: 1.5rem;
       font-weight: 500;
       font-family: 'Fraunces', Georgia, serif;
-      letter-spacing: -0.01em;
       color: rgb(61, 61, 58);
-      min-width: 300px;
-      max-width: 600px;
-      text-align: center;
-      outline: none;
     }
 
-    .title-edit-input:focus {
-      border-color: var(--accent);
+    .board-container-selector.open .container-chevron {
+      transform: rotate(180deg);
+    }
+
+    .board-container-selector.open .board-dropdown {
+      display: block;
+    }
+
+    .board-dropdown {
+      left: 0;
+      min-width: 200px;
+    }
+
+    .board-count {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
+    .board-filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 16px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      z-index: 50;
+      overflow: visible;
     }
 
     .board {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 24px;
-      max-width: 1400px;
-      margin: 0 auto;
+      padding: 24px;
     }
 
     .column {
-      background-color: var(--surface);
-      border-radius: 16px;
-      padding: 24px;
+      background: transparent;
+      padding: 0 8px;
       display: flex;
       flex-direction: column;
-      height: calc(150vh - 100px);
-      max-height: calc(150vh - 100px);
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow-sm);
-      transition: all 0.2s ease;
+      height: calc(100vh - 280px);
+      max-height: calc(100vh - 280px);
     }
 
-    .column[data-column="todo"] {
-      background-color: var(--todo-bg);
-      border-color: rgba(139, 115, 85, 0.2);
-    }
-
-    .column[data-column="in-progress"] {
-      background-color: var(--progress-bg);
-      border-color: rgba(107, 131, 148, 0.2);
-    }
-
-    .column[data-column="done"] {
-      background-color: var(--done-bg);
-      border-color: rgba(122, 148, 113, 0.2);
-    }
+    /* Column headers */
 
     .column-header {
-      font-size: 1rem;
+      font-size: 0.75rem;
       font-weight: 600;
-      margin-bottom: 24px;
+      margin-bottom: 16px;
       text-align: center;
-      padding: 12px 16px;
-      border-radius: 12px;
-      background-color: var(--surface-elevated);
-      cursor: pointer;
-      user-select: none;
-      transition: all 0.2s ease;
-      position: relative;
-      border: 1px solid var(--border);
+      padding: 8px 12px;
+      color: var(--text-muted);
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      font-size: 0.875rem;
-    }
-
-    .column-header:hover {
-      background-color: var(--surface-elevated);
-      border-color: var(--border-hover);
-      transform: translateY(-1px);
-      box-shadow: var(--shadow-md);
-    }
-
-    .column-header::after {
-      content: '▼';
-      position: absolute;
-      right: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 0.75rem;
-      opacity: 0.5;
-      transition: transform 0.2s ease;
-    }
-
-    .column.collapsed .column-header::after {
-      transform: translateY(-50%) rotate(-90deg);
-    }
-
-    .column.collapsed .tasks-container,
-    .column.collapsed .add-task-btn {
-      display: none;
-    }
-
-    .column-header.todo {
-      color: var(--todo-accent);
-      border-color: rgba(139, 115, 85, 0.3);
-    }
-
-    .column-header.in-progress {
-      color: var(--progress-accent);
-      border-color: rgba(107, 131, 148, 0.3);
-    }
-
-    .column-header.done {
-      color: var(--done-accent);
-      border-color: rgba(122, 148, 113, 0.3);
     }
 
     .tasks-container {
@@ -263,43 +242,71 @@
       box-shadow: var(--shadow-lg);
     }
 
-    .task-title {
-      font-weight: 500;
-      margin-bottom: 8px;
-      color: var(--text-primary);
-      word-wrap: break-word;
-      line-height: 1.4;
-      font-size: 0.95rem;
-    }
-
-    .task-url-container {
+    .task-content {
       display: flex;
-      align-items: center;
-      gap: 6px;
-      margin-top: 4px;
+      align-items: flex-start;
+      gap: 8px;
     }
 
-    .task-favicon {
-      width: 24px;
-      height: 24px;
+    .task-favicon-inline {
+      width: 16px;
+      height: 16px;
       flex-shrink: 0;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      background-color: var(--surface);
-      padding: 2px;
+      border-radius: 4px;
+      margin-top: 2px;
     }
 
-    .task-url {
-      color: var(--accent);
+    .task-title-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 6px;
+      line-height: 1.4;
+    }
+
+    .task-title-text {
+      font-weight: 500;
+      color: var(--text-primary);
+      font-size: 0.9rem;
+    }
+
+    .task-title-text a {
+      color: inherit;
       text-decoration: none;
-      font-size: 0.85rem;
-      word-break: break-all;
-      transition: color 0.2s ease;
     }
 
-    .task-url:hover {
-      color: var(--accent-hover);
-      text-decoration: underline;
+    .task-title-text a:hover {
+      color: var(--accent);
+    }
+
+    .task-tags-inline {
+      display: inline-flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-left: 4px;
+    }
+
+    .task-tag-inline {
+      background: var(--tag-color);
+      color: #ffffff;
+      padding: 1px 6px;
+      border-radius: 8px;
+      font-size: 0.65rem;
+      font-weight: 500;
+    }
+
+    .task-notes-inline {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      font-weight: 400;
+      margin-left: 6px;
+      font-style: italic;
+    }
+
+    .task-notes-inline::before {
+      content: '—';
+      margin-right: 6px;
+      opacity: 0.5;
     }
 
     .task-actions {
@@ -361,26 +368,6 @@
       background: #ffffff;
     }
 
-    .add-task-btn {
-      background-color: var(--surface-elevated);
-      color: var(--text-muted);
-      border: 1px dashed var(--border);
-      border-radius: 12px;
-      padding: 16px;
-      cursor: pointer;
-      text-align: center;
-      transition: all 0.2s ease;
-      font-size: 0.9rem;
-      font-weight: 500;
-    }
-
-    .add-task-btn:hover {
-      border-color: var(--accent);
-      color: var(--accent);
-      background-color: rgba(139, 115, 85, 0.05);
-      transform: translateY(-1px);
-    }
-
     .drag-over {
       border: 2px dashed var(--accent);
       background-color: rgba(139, 115, 85, 0.1);
@@ -421,6 +408,7 @@
 
     .form-group {
       margin-bottom: 20px;
+      position: relative;
     }
 
     .form-group label {
@@ -534,16 +522,16 @@
     .help-button {
       position: fixed;
       bottom: 24px;
-      right: 24px;
-      width: 48px;
-      height: 48px;
-      background-color: var(--accent);
-      color: var(--surface-elevated);
-      border: none;
+      left: 24px;
+      width: 32px;
+      height: 32px;
+      background-color: var(--surface-elevated);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
       border-radius: 50%;
-      font-size: 1.5rem;
+      font-size: 0.95rem;
       cursor: pointer;
-      box-shadow: var(--shadow-md);
+      box-shadow: var(--shadow-sm);
       transition: all 0.2s ease;
       display: flex;
       align-items: center;
@@ -552,9 +540,9 @@
     }
 
     .help-button:hover {
-      background-color: var(--accent-hover);
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-lg);
+      background-color: var(--surface);
+      border-color: var(--border-hover);
+      color: var(--text-primary);
     }
 
     .instructions-modal {
@@ -564,7 +552,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background-color: rgba(45, 42, 38, 0.6);
+      background-color: rgba(45, 42, 38, 0.5);
       backdrop-filter: blur(4px);
       z-index: 1001;
     }
@@ -575,10 +563,10 @@
       left: 50%;
       transform: translate(-50%, -50%);
       background-color: var(--surface-elevated);
-      padding: 32px;
+      padding: 28px 32px 32px;
       border-radius: 16px;
       width: 90%;
-      max-width: 700px;
+      max-width: 420px;
       max-height: 85vh;
       overflow-y: auto;
       border: 1px solid var(--border);
@@ -586,46 +574,79 @@
     }
 
     .instructions-content h2 {
-      margin-bottom: 24px;
+      margin-bottom: 20px;
       color: rgb(61, 61, 58);
-      font-size: 1.75rem;
+      font-size: 1.4rem;
       font-weight: 500;
       font-family: 'Fraunces', Georgia, serif;
     }
 
     .instructions-content h3 {
-      margin-top: 24px;
       margin-bottom: 12px;
-      color: var(--text-primary);
-      font-size: 1.1rem;
+      color: var(--text-muted);
+      font-size: 0.75rem;
       font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
-    .instructions-content p {
-      margin-bottom: 12px;
+    .help-section {
+      margin-bottom: 24px;
+    }
+
+    .help-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .help-shortcuts {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .help-shortcut {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .help-shortcut span {
       color: var(--text-secondary);
-      line-height: 1.6;
-    }
-
-    .instructions-content ul {
-      margin-bottom: 16px;
-      padding-left: 24px;
-    }
-
-    .instructions-content li {
-      margin-bottom: 8px;
-      color: var(--text-secondary);
-      line-height: 1.6;
+      font-size: 0.9rem;
+      margin-left: auto;
     }
 
     .instructions-content kbd {
       background-color: var(--surface);
       border: 1px solid var(--border);
       border-radius: 4px;
-      padding: 2px 6px;
-      font-family: 'Courier New', monospace;
-      font-size: 0.9em;
+      padding: 3px 7px;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 0.8rem;
       color: var(--text-primary);
+      min-width: 24px;
+      text-align: center;
+    }
+
+    .instructions-content ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    .instructions-content li {
+      margin-bottom: 6px;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .instructions-content li:last-child {
+      margin-bottom: 0;
+    }
+
+    .instructions-content li kbd {
+      font-size: 0.75rem;
+      padding: 2px 5px;
     }
 
     .instructions-close {
@@ -633,34 +654,43 @@
       top: 16px;
       right: 16px;
       background: transparent;
-      border: 1px solid var(--border);
-      color: var(--text-secondary);
+      border: none;
+      color: var(--text-muted);
       cursor: pointer;
-      padding: 8px 12px;
+      padding: 6px;
       border-radius: 6px;
-      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       transition: all 0.2s ease;
     }
 
     .instructions-close:hover {
       background-color: var(--surface);
       color: var(--text-primary);
-      border-color: var(--border-hover);
     }
 
     .sync-indicator {
       position: fixed;
-      bottom: 24px;
-      left: 24px;
+      top: 24px;
+      right: 24px;
       background-color: var(--surface-elevated);
-      padding: 8px 12px;
+      padding: 8px 14px;
       border-radius: 8px;
-      font-size: 0.75rem;
+      font-size: 0.8rem;
       border: 1px solid var(--border);
-      box-shadow: var(--shadow-sm);
-      opacity: 1;
-      transition: all 0.3s ease;
+      box-shadow: var(--shadow-md);
       color: var(--text-muted);
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      pointer-events: none;
+    }
+
+    .sync-indicator.visible {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
     }
 
     .sync-indicator.synced {
@@ -673,29 +703,9 @@
       border-color: var(--warning);
     }
 
-    .sync-indicator:hover {
-      opacity: 1;
-    }
-
-    .task-tags {
-      margin-top: 8px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-
-    .task-tag {
-      background-color: var(--surface);
-      color: var(--text-secondary);
-      padding: 4px 8px;
-      border-radius: 12px;
-      font-size: 0.75rem;
-      font-weight: 500;
-      border: 1px solid var(--border);
-    }
-
     .task-notes {
-      margin-top: 8px;
+      margin-top: 6px;
+      margin-left: 24px;
       font-size: 0.85rem;
       color: var(--text-secondary);
       font-style: italic;
@@ -704,18 +714,22 @@
     }
 
     .task.on-hold {
-      opacity: 0.6;
-      border-left: 4px solid var(--warning);
-      background: repeating-linear-gradient(45deg,
-          var(--surface-elevated),
-          var(--surface-elevated) 10px,
-          rgba(212, 165, 116, 0.05) 10px,
-          rgba(212, 165, 116, 0.05) 20px);
+      opacity: 0.75;
+      background: repeating-linear-gradient(
+        -45deg,
+        var(--surface-elevated),
+        var(--surface-elevated) 10px,
+        var(--surface) 10px,
+        var(--surface) 20px
+      );
     }
 
-    .task.on-hold .task-title::before {
-      content: '⏸ ';
-      opacity: 0.7;
+    .task.on-hold:hover {
+      opacity: 0.9;
+    }
+
+    .task.on-hold .task-title-text {
+      color: var(--text-secondary);
     }
 
     .action-btn.hold:hover {
@@ -752,20 +766,15 @@
     }
 
     .date-group {
-      margin-bottom: 20px;
+      margin-bottom: 12px;
     }
 
     .date-header {
-      font-size: 0.85rem;
+      font-size: 0.75rem;
       color: var(--text-muted);
-      margin-bottom: 12px;
-      padding: 8px 12px;
-      background-color: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
+      margin-bottom: 6px;
+      padding: 4px 0;
+      font-weight: 500;
     }
 
     .tags-input {
@@ -863,7 +872,7 @@
       box-shadow: var(--shadow-md);
       max-height: 150px;
       overflow-y: auto;
-      z-index: 100;
+      z-index: 1010;
       display: none;
     }
 
@@ -949,33 +958,26 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      padding: 10px 20px;
-      border: 1px solid var(--border);
-      background: var(--surface);
-      color: var(--text-secondary);
-      border-radius: 8px;
+      padding: 8px 16px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      border-radius: 6px;
       cursor: pointer;
       font-family: inherit;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       font-weight: 500;
-      transition: all 0.2s ease;
+      transition: all 0.15s ease;
     }
 
     .view-nav-btn:hover {
-      border-color: var(--border-hover);
-      color: var(--text-primary);
-      background: var(--surface-elevated);
+      color: var(--text-secondary);
     }
 
     .view-nav-btn.active {
-      background: var(--accent);
-      color: var(--surface-elevated);
-      border-color: var(--accent);
-    }
-
-    .view-nav-btn.active:hover {
-      background: var(--accent-hover);
-      border-color: var(--accent-hover);
+      color: var(--text-primary);
+      background: var(--surface-elevated);
+      box-shadow: var(--shadow-sm);
     }
 
     /* Simple List View */
@@ -1013,6 +1015,267 @@
       font-weight: 500;
       font-family: 'Fraunces', Georgia, serif;
       color: rgb(61, 61, 58);
+    }
+
+    /* Container Selector */
+    .container-selector {
+      position: relative;
+    }
+
+    .container-trigger {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px 8px 4px 0;
+      border-radius: 8px;
+      transition: background 0.15s ease;
+    }
+
+    .container-trigger:hover {
+      background: var(--surface);
+    }
+
+    .container-trigger h2 {
+      margin: 0;
+    }
+
+    .container-chevron {
+      width: 18px;
+      height: 18px;
+      color: var(--text-muted);
+      transition: transform 0.2s ease;
+    }
+
+    .container-selector.open .container-chevron {
+      transform: rotate(180deg);
+    }
+
+    .container-dropdown {
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 0;
+      min-width: 220px;
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: var(--shadow-lg);
+      z-index: 100;
+      display: none;
+      overflow: hidden;
+    }
+
+    .container-selector.open .container-dropdown {
+      display: block;
+    }
+
+    .container-list {
+      padding: 8px;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .container-item {
+      display: flex;
+      align-items: center;
+      padding: 10px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.15s ease, opacity 0.15s ease, transform 0.15s ease;
+      gap: 8px;
+    }
+
+    .container-item:hover {
+      background: var(--surface);
+    }
+
+    .container-item.active {
+      background: var(--surface);
+    }
+
+    .container-item.dragging {
+      opacity: 0.5;
+    }
+
+    .container-item.drag-over {
+      background: var(--surface);
+      box-shadow: inset 0 -2px 0 var(--accent);
+    }
+
+    .container-drag-handle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 18px;
+      height: 18px;
+      color: var(--border-hover);
+      cursor: grab;
+      flex-shrink: 0;
+      opacity: 0;
+      transition: opacity 0.15s ease, color 0.15s ease;
+    }
+
+    .container-item:hover .container-drag-handle {
+      opacity: 1;
+    }
+
+    .container-drag-handle:hover {
+      color: var(--text-muted);
+    }
+
+    .container-drag-handle:active {
+      cursor: grabbing;
+    }
+
+    .container-item-name {
+      flex: 1;
+      font-size: 0.95rem;
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    .container-item.active .container-item-name {
+      color: var(--accent);
+    }
+
+    .container-item-count {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      background: var(--surface);
+      padding: 2px 8px;
+      border-radius: 10px;
+    }
+
+    .container-item.active .container-item-count {
+      background: rgba(192, 104, 66, 0.1);
+      color: var(--accent);
+    }
+
+    .container-item-actions {
+      display: flex;
+      gap: 4px;
+      opacity: 0;
+      transition: opacity 0.15s ease;
+    }
+
+    .container-item:hover .container-item-actions {
+      opacity: 1;
+    }
+
+    .container-item-btn {
+      width: 24px;
+      height: 24px;
+      border: none;
+      background: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+    }
+
+    .container-item-btn:hover {
+      background: var(--border);
+      color: var(--text-primary);
+    }
+
+    .container-item-btn.delete:hover {
+      background: rgba(200, 90, 90, 0.1);
+      color: var(--danger);
+    }
+
+    .container-item-btn svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .container-dropdown-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 4px 12px;
+    }
+
+    .container-new-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: calc(100% - 16px);
+      margin: 8px;
+      padding: 10px 12px;
+      background: none;
+      border: 1px dashed var(--border);
+      border-radius: 8px;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .container-new-btn:hover {
+      background: var(--surface);
+      border-color: var(--border-hover);
+      color: var(--text-primary);
+    }
+
+    .container-new-btn svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .container-new-input {
+      display: flex;
+      gap: 8px;
+      padding: 8px 12px 12px;
+    }
+
+    .container-new-input input {
+      flex: 1;
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--surface);
+      font-size: 0.9rem;
+      color: var(--text-primary);
+    }
+
+    .container-new-input input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .container-new-input button {
+      padding: 8px 16px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+
+    .container-new-input button:hover {
+      background: var(--accent-hover);
+    }
+
+    /* Edit container name inline */
+    .container-item-edit {
+      flex: 1;
+      padding: 4px 8px;
+      border: 1px solid var(--accent);
+      border-radius: 4px;
+      background: var(--surface-elevated);
+      font-size: 0.95rem;
+      color: var(--text-primary);
+    }
+
+    .container-item-edit:focus {
+      outline: none;
     }
 
     .list-count {
@@ -1730,6 +1993,31 @@
       opacity: 1;
     }
 
+    .list-item.on-hold {
+      opacity: 0.6;
+      background: repeating-linear-gradient(
+        -45deg,
+        var(--surface-elevated),
+        var(--surface-elevated) 10px,
+        var(--surface) 10px,
+        var(--surface) 20px
+      );
+    }
+
+    .list-item.on-hold:hover {
+      opacity: 0.85;
+    }
+
+    .list-item.on-hold .title-text {
+      color: var(--text-muted);
+    }
+
+    .list-item-btn.hold.active {
+      background: var(--warning);
+      border-color: var(--warning);
+      color: white;
+    }
+
     .list-item .completed-time {
       font-size: 0.7rem;
       color: var(--text-muted);
@@ -2032,53 +2320,99 @@
 <body>
   <div class="container">
     <div class="title-container">
-      <h1 id="app-title">Tobi's Task Manager</h1>
-      <button class="title-edit-btn" id="title-edit-btn" onclick="toggleTitleEdit()">Edit</button>
+      <svg class="app-logo" viewBox="0 0 24 24" width="32" height="32">
+        <rect width="24" height="24" rx="6" fill="#c06842"/>
+        <path d="M5 12c2-3 4-4 7-4s5 2 7 4" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M5 16c2-3 4-4 7-4s5 2 7 4" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.5"/>
+      </svg>
+      <h1>Flow</h1>
     </div>
 
     <nav class="view-nav">
-      <button class="view-nav-btn active" data-view="kanban" onclick="switchView('kanban')">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"
-          stroke-linecap="round" stroke-linejoin="round">
-          <rect x="1" y="1" width="4" height="14" rx="1" />
-          <rect x="6" y="1" width="4" height="9" rx="1" />
-          <rect x="11" y="1" width="4" height="6" rx="1" />
-        </svg>
-        Kanban Board
-      </button>
-      <button class="view-nav-btn" data-view="list" onclick="switchView('list')">
+      <button class="view-nav-btn active" data-view="list" onclick="switchView('list')">
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"
           stroke-linecap="round" stroke-linejoin="round">
           <line x1="1" y1="3" x2="15" y2="3" />
           <line x1="1" y1="8" x2="15" y2="8" />
           <line x1="1" y1="13" x2="15" y2="13" />
         </svg>
-        Simple List
+        List
+      </button>
+      <button class="view-nav-btn" data-view="kanban" onclick="switchView('kanban')">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"
+          stroke-linecap="round" stroke-linejoin="round">
+          <rect x="1" y="1" width="4" height="14" rx="1" />
+          <rect x="6" y="1" width="4" height="9" rx="1" />
+          <rect x="11" y="1" width="4" height="6" rx="1" />
+        </svg>
+        Board
       </button>
     </nav>
 
-    <div class="board" id="board">
-      <div class="column" data-column="todo">
-        <div class="column-header todo" onclick="toggleColumn('todo')">To Do</div>
-        <div class="tasks-container" id="todo-tasks"></div>
-        <div class="add-task-btn" onclick="openTaskModal('todo')">
-          + Add Task
+    <div class="board-wrapper" id="board">
+      <div class="board-header">
+        <div class="board-header-left">
+          <div class="board-container-selector" id="board-container-selector">
+            <button class="board-container-trigger" id="board-container-trigger" onclick="toggleBoardContainerDropdown()">
+              <h2 id="board-container-name">My Tasks</h2>
+              <svg class="container-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </button>
+            <div class="container-dropdown board-dropdown" id="board-container-dropdown">
+              <div class="container-list" id="board-container-list"></div>
+            </div>
+          </div>
+          <span class="board-count" id="board-count"></span>
         </div>
+        <button class="add-list-item-btn" onclick="openTaskModal('todo')">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <line x1="8" y1="3" x2="8" y2="13" />
+            <line x1="3" y1="8" x2="13" y2="8" />
+          </svg>
+          Add Task
+        </button>
       </div>
-
-      <div class="column" data-column="in-progress">
-        <div class="column-header in-progress" onclick="toggleColumn('in-progress')">In Progress</div>
-        <div class="tasks-container" id="in-progress-tasks"></div>
-        <div class="add-task-btn" onclick="openTaskModal('in-progress')">
-          + Add Task
+      <div class="board-filter-bar" id="board-filter-bar">
+        <div class="list-search-box">
+          <svg class="list-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8" />
+            <path d="M21 21l-4.35-4.35" />
+          </svg>
+          <input type="text" id="board-search-input" placeholder="Search tasks..." oninput="filterBoardTasks()">
+          <button class="list-search-clear" id="board-search-clear" onclick="clearBoardSearch()"
+            style="display: none;">×</button>
         </div>
+        <div class="list-filter-multiselect" id="board-filter-multiselect">
+          <div class="list-filter-trigger" id="board-filter-trigger" onclick="toggleBoardFilterDropdown()">
+            <span class="list-filter-placeholder" id="board-filter-placeholder">Filter by tags...</span>
+            <div class="list-filter-selected" id="board-filter-selected"></div>
+            <svg class="list-filter-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </div>
+          <div class="list-filter-dropdown" id="board-filter-dropdown">
+            <div class="list-filter-options" id="board-filter-options"></div>
+          </div>
+        </div>
+        <button class="list-filter-clear" id="board-filter-clear" onclick="clearAllBoardTagFilters()"
+          style="display: none;">Clear</button>
       </div>
+      <div class="board">
+        <div class="column" data-column="todo">
+          <div class="column-header todo">To Do</div>
+          <div class="tasks-container" id="todo-tasks"></div>
+        </div>
 
-      <div class="column" data-column="done">
-        <div class="column-header done" onclick="toggleColumn('done')">Done</div>
-        <div class="tasks-container" id="done-tasks"></div>
-        <div class="add-task-btn" onclick="openTaskModal('done')">
-          + Add Task
+        <div class="column" data-column="in-progress">
+          <div class="column-header in-progress">In Progress</div>
+          <div class="tasks-container" id="in-progress-tasks"></div>
+        </div>
+
+        <div class="column" data-column="done">
+          <div class="column-header done">Done</div>
+          <div class="tasks-container" id="done-tasks"></div>
         </div>
       </div>
     </div>
@@ -2087,7 +2421,29 @@
       <div class="list-container">
         <div class="list-header">
           <div class="list-header-left">
-            <h2>My Tasks</h2>
+            <div class="container-selector" id="container-selector">
+              <button class="container-trigger" id="container-trigger" onclick="toggleContainerDropdown()">
+                <h2 id="current-container-name">My Tasks</h2>
+                <svg class="container-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </button>
+              <div class="container-dropdown" id="container-dropdown">
+                <div class="container-list" id="container-list"></div>
+                <div class="container-dropdown-divider"></div>
+                <button class="container-new-btn" onclick="showNewContainerInput()">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                  </svg>
+                  New Container
+                </button>
+                <div class="container-new-input" id="container-new-input" style="display: none;">
+                  <input type="text" id="new-container-name" placeholder="Container name..." onkeydown="handleNewContainerKeydown(event)">
+                  <button onclick="createNewContainer()">Add</button>
+                </div>
+              </div>
+            </div>
             <span class="list-count" id="list-count"></span>
           </div>
           <button class="add-list-item-btn" onclick="openListModal()">
@@ -2190,10 +2546,6 @@
         <label for="task-notes">Notes (optional)</label>
         <textarea id="task-notes" placeholder="Add any additional notes..."></textarea>
       </div>
-      <div class="form-group">
-        <label for="task-started">Started At (optional)</label>
-        <input type="datetime-local" id="task-started" placeholder="When did you start working on this?">
-      </div>
       <div class="modal-buttons">
         <button class="btn btn-secondary" onclick="closeTaskModal()">Cancel</button>
         <button class="btn btn-primary" onclick="saveTask()">Save</button>
@@ -2207,131 +2559,76 @@
 
   <div class="instructions-modal" id="instructions-modal">
     <div class="instructions-content">
-      <button class="instructions-close" onclick="closeInstructionsModal()">✕</button>
+      <button class="instructions-close" onclick="closeInstructionsModal()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
 
-      <!-- Kanban Board Instructions -->
+      <!-- Board Instructions -->
       <div id="kanban-instructions">
-        <h2>Kanban Board Instructions</h2>
+        <h2>Board</h2>
 
-        <h3>✨ Getting Started</h3>
-        <ul>
-          <li>Create tasks by clicking "+ Add Task" or pressing <kbd>N</kbd></li>
-          <li>Drag and drop tasks between columns to change their status</li>
-          <li>Paste URLs directly with <kbd>Cmd+V</kbd> / <kbd>Ctrl+V</kbd> to create tasks</li>
-        </ul>
+        <section class="help-section">
+          <h3>Keyboard Shortcuts</h3>
+          <div class="help-shortcuts">
+            <div class="help-shortcut"><kbd>N</kbd><span>New task</span></div>
+            <div class="help-shortcut"><kbd>↑</kbd> <kbd>↓</kbd><span>Navigate tasks</span></div>
+            <div class="help-shortcut"><kbd>←</kbd> <kbd>→</kbd><span>Switch columns</span></div>
+            <div class="help-shortcut"><kbd>Shift</kbd> + <kbd>↑</kbd> <kbd>↓</kbd><span>Reorder task</span></div>
+            <div class="help-shortcut"><kbd>Shift</kbd> + <kbd>←</kbd> <kbd>→</kbd><span>Move to column</span></div>
+            <div class="help-shortcut"><kbd>Enter</kbd><span>Edit task</span></div>
+            <div class="help-shortcut"><kbd>Delete</kbd><span>Delete task</span></div>
+            <div class="help-shortcut"><kbd>Esc</kbd><span>Close modal</span></div>
+          </div>
+        </section>
 
-        <h3>⌨️ Keyboard Shortcuts</h3>
-        <ul>
-          <li><kbd>N</kbd> - Create new task in To Do column</li>
-          <li><kbd>Arrow Keys</kbd> - Navigate between tasks</li>
-          <li><kbd>Shift + Arrow Keys</kbd> - Move task up/down or to different columns</li>
-          <li><kbd>Enter</kbd> - Edit selected task</li>
-          <li><kbd>Delete</kbd> / <kbd>Backspace</kbd> - Delete selected task</li>
-          <li><kbd>Cmd+V</kbd> / <kbd>Ctrl+V</kbd> - Paste URL to create task</li>
-        </ul>
-
-        <h3>🎯 Focus & Pomodoro Timer</h3>
-        <ul>
-          <li>Click the 🎯 button to mark a task as actively being worked on</li>
-          <li>Timer starts automatically and counts your focus time</li>
-          <li>Earn a 🍅 tomato for every 25 minutes of accumulated focus time</li>
-          <li>Click ⚪ button to deactivate focus (timer pauses but time is saved)</li>
-          <li>Only one task can be active at a time</li>
-        </ul>
-
-        <h3>📋 Task Actions</h3>
-        <p>Hover over any task to see action buttons:</p>
-        <ul>
-          <li>🎯 / ⚪ - Mark as actively working / Stop focus</li>
-          <li>⏸️ - Put task on hold (pauses work without deleting)</li>
-          <li>✏️ - Edit task details</li>
-          <li>📋 - Duplicate task</li>
-          <li>🗑️ - Delete task</li>
-        </ul>
-
-        <h3>🏷️ Tags & Organization</h3>
-        <ul>
-          <li>Add tags to categorize tasks (type and press Enter)</li>
-          <li>Tag suggestions appear based on previously used tags</li>
-          <li>Remove tags by clicking the × button</li>
-        </ul>
-
-        <h3>⏱ Time Tracking</h3>
-        <ul>
-          <li>Set a "Started At" time when creating or editing tasks</li>
-          <li>Click the start time to edit it later</li>
-          <li>Completed tasks show total duration</li>
-          <li>Focus timer tracks active work time separately</li>
-        </ul>
-
-        <h3>📊 Column Management</h3>
-        <ul>
-          <li>Click column headers to collapse/expand them</li>
-          <li>Done tasks are automatically grouped by completion date</li>
-          <li>Task order is maintained within To Do and In Progress columns</li>
-        </ul>
-
-        <h3>💾 Data & Sync</h3>
-        <ul>
-          <li>All data is saved automatically to localStorage</li>
-          <li>If using server mode, data syncs to tasks.json</li>
-          <li>Sync status shown in bottom-left corner</li>
-          <li>Customize the app title by clicking "Edit" next to the header</li>
-        </ul>
+        <section class="help-section">
+          <h3>Tips</h3>
+          <ul>
+            <li>Drag tasks between columns to change status</li>
+            <li>Paste URLs with <kbd>Cmd/Ctrl</kbd> + <kbd>V</kbd> to create tasks</li>
+            <li>Use tags to organize and filter tasks</li>
+          </ul>
+        </section>
       </div>
 
-      <!-- Simple List Instructions -->
+      <!-- List Instructions -->
       <div id="list-instructions" style="display: none;">
-        <h2>Simple List Instructions</h2>
+        <h2>List</h2>
 
-        <h3>✨ Getting Started</h3>
-        <ul>
-          <li>Add tasks by clicking "+ Add Task" or pressing <kbd>N</kbd></li>
-          <li>Each task has a URL that opens in a new tab when clicked</li>
-          <li>Drag and drop tasks to reorder them</li>
-        </ul>
+        <section class="help-section">
+          <h3>Keyboard Shortcuts</h3>
+          <div class="help-shortcuts">
+            <div class="help-shortcut"><kbd>N</kbd><span>New task</span></div>
+            <div class="help-shortcut"><kbd>↑</kbd> <kbd>↓</kbd><span>Navigate tasks</span></div>
+            <div class="help-shortcut"><kbd>Enter</kbd><span>Open URL</span></div>
+            <div class="help-shortcut"><kbd>E</kbd><span>Edit task</span></div>
+            <div class="help-shortcut"><kbd>Delete</kbd><span>Delete task</span></div>
+            <div class="help-shortcut"><kbd>Esc</kbd><span>Close modal</span></div>
+          </div>
+        </section>
 
-        <h3>⌨️ Keyboard Shortcuts</h3>
-        <ul>
-          <li><kbd>N</kbd> - Add new task</li>
-          <li><kbd>↑</kbd> / <kbd>↓</kbd> - Navigate between tasks</li>
-          <li><kbd>Enter</kbd> - Open selected task's URL in new tab</li>
-          <li><kbd>E</kbd> - Edit selected task</li>
-          <li><kbd>Delete</kbd> / <kbd>Backspace</kbd> - Delete selected task</li>
-        </ul>
-
-        <h3>📋 Task Actions</h3>
-        <p>Hover over any task to see action buttons:</p>
-        <ul>
-          <li>✏️ - Edit task title and URL</li>
-          <li>🗑️ - Delete task</li>
-        </ul>
-
-        <h3>🔗 URLs & Favicons</h3>
-        <ul>
-          <li>URL is optional - add one to make the task clickable</li>
-          <li>Favicons are automatically fetched from the URL</li>
-          <li>Click the task title to open the URL in a new tab</li>
-          <li>Paste a URL with <kbd>Cmd+V</kbd> / <kbd>Ctrl+V</kbd> to quickly add a task</li>
-        </ul>
-
-        <h3>💾 Data Storage</h3>
-        <ul>
-          <li>Simple List has its own separate task data</li>
-          <li>Data is saved automatically to localStorage</li>
-          <li>Tasks persist between sessions</li>
-        </ul>
+        <section class="help-section">
+          <h3>Tips</h3>
+          <ul>
+            <li>Click the title header to switch containers</li>
+            <li>Drag tasks to reorder them</li>
+            <li>Paste URLs with <kbd>Cmd/Ctrl</kbd> + <kbd>V</kbd> to add tasks</li>
+            <li>Use search and tags to filter tasks</li>
+          </ul>
+        </section>
       </div>
     </div>
   </div>
 
   <script>
-    let tasks = [];
+    // Unified state - listItems is the single source of truth for both views
+    let listItems = [];
     let selectedTaskId = null;
     let currentEditingTask = null;
     let currentColumn = 'todo';
     let currentTags = [];
-    let collapsedColumns = new Set();
     let selectedColumn = 0; // 0=todo, 1=in-progress, 2=done
     const columnNames = ['todo', 'in-progress', 'done'];
     let allTags = new Set();
@@ -2340,90 +2637,89 @@
     let lastSavedTime = null;
 
     // Simple List state
-    let listItems = [];
     let selectedListItemId = null;
     let currentEditingListItem = null;
-    let currentView = localStorage.getItem('taskManager_currentView') || 'kanban';
+    let currentView = localStorage.getItem('taskManager_currentView') || 'list';
     let currentListTags = [];
     let allListTags = new Set();
     let activeTagFilters = new Set();
 
-    // Clean up old time tracking data
-    function migrateTimeTrackingData(task) {
-      // Remove old time tracking fields
-      if (task.timeEntries) delete task.timeEntries;
-      if (task.isTracking) delete task.isTracking;
-      if (task.trackingStartedAt) delete task.trackingStartedAt;
-      if (task.totalTime) delete task.totalTime;
+    // Container state
+    let containers = [];
+    let currentContainerId = null;
 
-      return task;
-    }
+    // Migrate data to unified model with status field
+    function migrateToUnifiedModel() {
+      let migrated = false;
 
-    // Load tasks from server or localStorage
-    async function loadTasks() {
-      if (isServerMode) {
-        try {
-          const response = await fetch('/tasks.json');
-          if (response.ok) {
-            const serverTasks = await response.json();
-            tasks = serverTasks.map(migrateTimeTrackingData);
-            collectAllTags();
-            renderTasks();
-            // Also sync to localStorage as backup
-            localStorage.setItem('taskManager_tasks', JSON.stringify(tasks));
-            return;
+      // Migrate old listItems (completed boolean -> status field)
+      listItems.forEach(item => {
+        if (item.status === undefined) {
+          if (item.completed) {
+            item.status = 'done';
+          } else {
+            item.status = 'todo';
           }
-        } catch (error) {
-          console.log('Could not load from server, falling back to localStorage');
-        }
-      }
-
-      // Fallback to localStorage
-      const savedTasks = localStorage.getItem('taskManager_tasks');
-      if (savedTasks) {
-        tasks = JSON.parse(savedTasks).map(migrateTimeTrackingData);
-        collectAllTags();
-        renderTasks();
-      }
-    }
-
-    // Collect all unique tags from tasks
-    function collectAllTags() {
-      allTags.clear();
-      tasks.forEach(task => {
-        if (task.tags) {
-          task.tags.forEach(tag => allTags.add(tag));
+          delete item.completed;
+          migrated = true;
         }
       });
+
+      // Migrate old Kanban tasks into listItems
+      const oldTasks = localStorage.getItem('taskManager_tasks');
+      if (oldTasks) {
+        try {
+          const tasks = JSON.parse(oldTasks);
+          if (tasks.length > 0) {
+            tasks.forEach(task => {
+              // Map column to status
+              const status = task.column || 'todo';
+
+              // Create listItem from task
+              const newItem = {
+                id: task.id,
+                title: task.title,
+                url: task.url || '',
+                notes: task.notes || '',
+                tags: task.tags || [],
+                order: task.order || 0,
+                containerId: currentContainerId || 'default',
+                createdAt: task.createdAt || new Date().toISOString(),
+                status: status,
+                onHold: task.onHold || false
+              };
+
+              if (task.completedAt) {
+                newItem.completedAt = task.completedAt;
+              }
+
+              // Only add if not already exists
+              if (!listItems.find(i => i.id === task.id)) {
+                listItems.push(newItem);
+              }
+            });
+            migrated = true;
+          }
+        } catch (e) {
+          console.log('Could not migrate old tasks:', e);
+        }
+        // Remove old tasks storage after migration
+        localStorage.removeItem('taskManager_tasks');
+      }
+
+      if (migrated) {
+        saveListItems();
+      }
     }
 
-    // Save tasks to localStorage and server
-    async function saveTasks() {
-      localStorage.setItem('taskManager_tasks', JSON.stringify(tasks));
-      collectAllTags();
-
-      // Save to server if in server mode
-      if (isServerMode) {
-        try {
-          const response = await fetch('/save-tasks', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(tasks)
-          });
-
-          if (response.ok) {
-            updateSyncStatus('synced');
-          } else {
-            updateSyncStatus('error');
-          }
-        } catch (error) {
-          updateSyncStatus('error');
+    // Collect all unique tags from current container's items
+    function collectAllTags() {
+      allTags.clear();
+      getContainerItems().forEach(item => {
+        if (item.tags) {
+          item.tags.forEach(tag => allTags.add(tag));
         }
-      } else {
-        updateSyncStatus('synced');
-      }
+      });
     }
 
     // Format timestamp for display
@@ -2503,25 +2799,43 @@
       });
     }
 
+    // Sync indicator fade timeout
+    let syncFadeTimeout = null;
+
     // Update sync status indicator
     function updateSyncStatus(status) {
       const indicator = document.getElementById('sync-indicator');
       if (!indicator) return;
 
+      // Clear any pending fade timeout
+      if (syncFadeTimeout) {
+        clearTimeout(syncFadeTimeout);
+        syncFadeTimeout = null;
+      }
+
       indicator.className = 'sync-indicator';
 
       if (status === 'synced') {
         lastSavedTime = new Date();
-        indicator.classList.add('synced');
-        indicator.textContent = `✓ Saved ${formatLastSaved(lastSavedTime)}`;
+        indicator.classList.add('synced', 'visible');
+        indicator.textContent = `Saved`;
         localStorage.setItem('taskManager_lastSaved', lastSavedTime.toISOString());
+
+        // Fade out after 2 seconds
+        syncFadeTimeout = setTimeout(() => {
+          indicator.classList.remove('visible');
+        }, 2000);
       } else if (status === 'error') {
-        indicator.classList.add('error');
+        indicator.classList.add('error', 'visible');
         if (lastSavedTime) {
-          indicator.textContent = `⚠ Last saved ${formatLastSaved(lastSavedTime)} (local only)`;
+          indicator.textContent = `Local only`;
         } else {
-          indicator.textContent = '⚠ Not synced (local only)';
+          indicator.textContent = 'Not synced';
         }
+        // Keep error visible longer
+        syncFadeTimeout = setTimeout(() => {
+          indicator.classList.remove('visible');
+        }, 4000);
       }
     }
 
@@ -2547,22 +2861,27 @@
       return div.innerHTML;
     }
 
-    // Render all tasks
+    // Render all tasks (uses listItems as source of truth)
     function renderTasks() {
       const columns = ['todo', 'in-progress', 'done'];
+      let containerItems = getContainerItems();
+
+      // Apply board filters
+      containerItems = filterBoardBySearch(containerItems);
+      containerItems = filterBoardByTags(containerItems);
 
       columns.forEach(column => {
         const container = document.getElementById(`${column}-tasks`);
         container.innerHTML = '';
 
-        let columnTasks = tasks.filter(task => task.column === column);
+        let columnItems = containerItems.filter(item => item.status === column);
 
         if (column === 'done') {
-          // Group done tasks by completion date
-          const tasksByDate = groupTasksByDate(columnTasks);
+          // Group done items by completion date
+          const itemsByDate = groupTasksByDate(columnItems);
 
-          Object.keys(tasksByDate)
-            .sort((a, b) => new Date(b) - new Date(a)) // Sort dates descending
+          Object.keys(itemsByDate)
+            .sort((a, b) => new Date(b) - new Date(a))
             .forEach(date => {
               const dateGroup = document.createElement('div');
               dateGroup.className = 'date-group';
@@ -2572,26 +2891,27 @@
               dateHeader.textContent = formatDateHeader(date);
               dateGroup.appendChild(dateHeader);
 
-              // Sort tasks within date by completion time (descending)
-              tasksByDate[date]
+              itemsByDate[date]
                 .sort((a, b) => new Date(b.completedAt || b.createdAt) - new Date(a.completedAt || a.createdAt))
-                .forEach(task => {
-                  const taskElement = createTaskElement(task, tasks.indexOf(task));
+                .forEach(item => {
+                  const taskElement = createTaskElement(item);
                   dateGroup.appendChild(taskElement);
                 });
 
               container.appendChild(dateGroup);
             });
         } else {
-          // Sort by order field for todo and in-progress columns
-          columnTasks.sort((a, b) => (a.order || 0) - (b.order || 0));
-          columnTasks.forEach((task, index) => {
-            const taskElement = createTaskElement(task, tasks.indexOf(task));
+          columnItems.sort((a, b) => (a.order || 0) - (b.order || 0));
+          columnItems.forEach(item => {
+            const taskElement = createTaskElement(item);
             container.appendChild(taskElement);
           });
         }
-
       });
+
+      collectAllTags();
+      updateBoardCount();
+      renderBoardTagFilters();
     }
 
     // Update task order within column based on DOM order
@@ -2599,9 +2919,9 @@
       const taskElements = [...container.querySelectorAll('.task')];
       taskElements.forEach((element, index) => {
         const elementTaskId = element.dataset.taskId;
-        const task = tasks.find(t => t.id === elementTaskId);
-        if (task) {
-          task.order = index;
+        const item = listItems.find(i => i.id === elementTaskId);
+        if (item) {
+          item.order = index;
         }
       });
     }
@@ -2657,129 +2977,75 @@
       }
     }
 
-    // Toggle column collapse
-    function toggleColumn(columnName) {
-      const column = document.querySelector(`[data-column="${columnName}"]`);
-      if (collapsedColumns.has(columnName)) {
-        collapsedColumns.delete(columnName);
-        column.classList.remove('collapsed');
-      } else {
-        collapsedColumns.add(columnName);
-        column.classList.add('collapsed');
-      }
-      localStorage.setItem('taskManager_collapsedColumns', JSON.stringify([...collapsedColumns]));
-    }
-
-    // Load collapsed state
-    function loadCollapsedState() {
-      const saved = localStorage.getItem('taskManager_collapsedColumns');
-      if (saved) {
-        collapsedColumns = new Set(JSON.parse(saved));
-        collapsedColumns.forEach(columnName => {
-          const column = document.querySelector(`[data-column="${columnName}"]`);
-          if (column) column.classList.add('collapsed');
-        });
-      }
-    }
-
-    // Create task element
-    function createTaskElement(task, index) {
+    // Create task element (matches Simple List style)
+    function createTaskElement(item) {
       const taskDiv = document.createElement('div');
       taskDiv.className = 'task';
       taskDiv.draggable = true;
-      taskDiv.dataset.taskId = task.id;
-      taskDiv.dataset.index = index;
+      taskDiv.dataset.taskId = item.id;
 
-      const isDone = task.column === 'done';
-      const duration = calculateTaskDuration(task);
+      const isDone = item.status === 'done';
+      const hasUrl = item.url && item.url.trim();
 
-      // Build time info HTML
-      let timeInfoHTML = '';
-      if (task.startedAt) {
-        const startTimeDisplay = formatDateTime(task.startedAt);
-        timeInfoHTML = `
-          <div class="task-time-info">
-            <span class="time-started" onclick="editStartTime(event, '${task.id}')" title="Click to edit start time">
-              📅 Started: ${startTimeDisplay}
-            </span>
-          </div>
-        `;
-      }
+      // Build tags HTML inline with title (matching Simple List exactly)
+      const tagsHtml = item.tags && item.tags.length > 0
+        ? `<span class="task-tags-inline">${item.tags.map(tag =>
+            `<span class="task-tag-inline">${escapeHtml(tag)}</span>`
+          ).join('')}</span>`
+        : '';
 
-      // For done tasks, show duration
-      if (isDone && duration > 0) {
-        timeInfoHTML += `
-          <div class="task-total-time">
-            <span class="time-icon">⏱</span>
-            <span>Completed in ${formatTime(duration)}</span>
-          </div>
-        `;
-      }
+      // Build favicon HTML
+      const faviconHtml = hasUrl
+        ? `<img src="${getFaviconUrl(item.url)}" class="task-favicon-inline" onerror="this.style.display='none'" alt="">`
+        : '';
 
-      // Build focus timer HTML (show for all tasks except Done)
-      let focusTimerHTML = '';
-      if (!isDone) {
-        const focusTime = getCurrentFocusTime(task);
-        const tomatoCount = getTomatoCount(focusTime);
-        const tomatoes = formatTomatoes(tomatoCount);
-
-        // Show timer if there's accumulated time OR if task is currently active
-        if (focusTime > 0 || task.isActive) {
-          focusTimerHTML = `
-            <div class="task-focus-timer" data-task-id="${task.id}">
-              <div class="focus-timer-display">⏱ ${formatFocusTime(focusTime)}</div>
-              ${tomatoes ? `<div class="task-tomatoes">${tomatoes}</div>` : ''}
-            </div>
-          `;
-        }
-      } else {
-        // For done tasks, only show tomatoes if they exist
-        const focusTime = task.accumulatedFocusTime || 0;
-        const tomatoCount = getTomatoCount(focusTime);
-        const tomatoes = formatTomatoes(tomatoCount);
-
-        if (tomatoes) {
-          focusTimerHTML = `
-            <div class="task-focus-timer" data-task-id="${task.id}">
-              <div class="task-tomatoes">${tomatoes}</div>
-            </div>
-          `;
-        }
-      }
+      // Build notes HTML inline (matching Simple List)
+      const notesHtml = item.notes
+        ? `<span class="task-notes-inline">${escapeHtml(item.notes)}</span>`
+        : '';
 
       taskDiv.innerHTML = `
-                <div class="task-actions">
-                    <button class="action-btn active-btn ${task.isActive ? 'is-active' : ''}" onclick="toggleActive('${task.id}')" title="${task.isActive ? 'Mark as not active' : 'Mark as actively working'}">${task.isActive ? '⚪' : '🎯'}</button>
-                    <button class="action-btn hold" onclick="toggleHold('${task.id}')" title="${task.onHold ? 'Resume' : 'Put on Hold'}">${task.onHold ? '▶️' : '⏸️'}</button>
-                    <button class="action-btn edit" onclick="editTaskByIdFromButton('${task.id}')" title="Edit">✏️</button>
-                    <button class="action-btn duplicate" onclick="duplicateTaskByIdFromButton('${task.id}')" title="Duplicate">📋</button>
-                    <button class="action-btn delete" onclick="deleteTaskByIdFromButton('${task.id}')" title="Delete">🗑️</button>
-                </div>
-                <div class="task-title">${task.title}</div>
-                ${task.url ? `<div class="task-url-container"><img src="${getFaviconUrl(task.url)}" class="task-favicon" onerror="this.style.display='none'"><a href="${task.url}" target="_blank" class="task-url">${task.url}</a></div>` : ''}
-                ${task.tags && task.tags.length > 0 ? `<div class="task-tags">${task.tags.map(tag => `<span class="task-tag">${tag}</span>`).join('')}</div>` : ''}
-                ${task.notes ? `<div class="task-notes">${escapeHtml(task.notes)}</div>` : ''}
-                ${timeInfoHTML}
-                ${focusTimerHTML}
-            `;
+        <div class="task-actions">
+          <button class="action-btn hold" onclick="toggleHold('${item.id}')" title="${item.onHold ? 'Resume' : 'Put on Hold'}">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              ${item.onHold
+                ? '<polygon points="5 3 19 12 5 21 5 3"/>'
+                : '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>'}
+            </svg>
+          </button>
+          <button class="action-btn edit" onclick="editTaskByIdFromButton('${item.id}')" title="Edit">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+            </svg>
+          </button>
+          <button class="action-btn delete" onclick="deleteTaskByIdFromButton('${item.id}')" title="Delete">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="3 6 5 6 21 6"/>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+            </svg>
+          </button>
+        </div>
+        <div class="task-content">
+          ${faviconHtml}
+          <div class="task-title-row">
+            <span class="task-title-text">${hasUrl ? `<a href="${item.url}" target="_blank">${escapeHtml(item.title)}</a>` : escapeHtml(item.title)}</span>${tagsHtml}${notesHtml}
+          </div>
+        </div>
+      `;
 
-      // Add on-hold class if task is on hold
-      if (task.onHold) {
+      // Add on-hold class if item is on hold
+      if (item.onHold) {
         taskDiv.classList.add('on-hold');
       }
 
-      // Add active class if task is active
-      if (task.isActive) {
-        taskDiv.classList.add('active');
-      }
-
-      // Drag events (all tasks are draggable)
+      // Drag events
       taskDiv.addEventListener('dragstart', handleDragStart);
       taskDiv.addEventListener('dragend', handleDragEnd);
 
       // Click events
-      taskDiv.addEventListener('click', () => selectTask(task.id));
-      taskDiv.addEventListener('dblclick', () => editTaskByIdFromButton(task.id));
+      taskDiv.addEventListener('click', () => selectTask(item.id));
+      taskDiv.addEventListener('dblclick', () => editTaskByIdFromButton(item.id));
 
       return taskDiv;
     }
@@ -2811,14 +3077,14 @@
       if (!dragging) return;
 
       const container = e.currentTarget;
-      const newColumn = container.id.replace('-tasks', '');
-      const draggingTaskId = dragging.dataset.taskId;
-      const draggingTask = tasks.find(t => t.id === draggingTaskId);
+      const newStatus = container.id.replace('-tasks', '');
+      const draggingItemId = dragging.dataset.taskId;
+      const draggingItem = listItems.find(i => i.id === draggingItemId);
 
-      if (!draggingTask) return;
+      if (!draggingItem) return;
 
       // If dragging within the same column and it's not Done, allow reordering
-      if (draggingTask.column === newColumn && newColumn !== 'done') {
+      if (draggingItem.status === newStatus && newStatus !== 'done') {
         const afterElement = getDragAfterElement(container, e.clientY);
         if (afterElement == null) {
           container.appendChild(dragging);
@@ -2843,50 +3109,36 @@
       e.preventDefault();
       e.currentTarget.classList.remove('drag-over');
 
-      const taskId = e.dataTransfer.getData('text/plain');
-      const newColumn = e.currentTarget.id.replace('-tasks', '');
-      const dragging = document.querySelector('.dragging');
+      const itemId = e.dataTransfer.getData('text/plain');
+      const newStatus = e.currentTarget.id.replace('-tasks', '');
 
-      const taskIndex = tasks.findIndex(task => task.id === taskId);
-      if (taskIndex !== -1) {
-        const oldColumn = tasks[taskIndex].column;
+      const item = listItems.find(i => i.id === itemId);
+      if (item) {
+        const oldStatus = item.status;
 
-        // Check if we're moving between columns or reordering within column
-        if (oldColumn !== newColumn) {
+        if (oldStatus !== newStatus) {
           // Moving between columns
-          tasks[taskIndex].column = newColumn;
+          item.status = newStatus;
 
-          // If moving to done, set completion timestamp and reset focus timer
-          if (newColumn === 'done' && oldColumn !== 'done') {
-            tasks[taskIndex].completedAt = new Date().toISOString();
-            // Stop focus timer and reset accumulated time (keep tomatoes via accumulatedFocusTime)
-            if (tasks[taskIndex].focusStartTime) {
-              const elapsed = Date.now() - new Date(tasks[taskIndex].focusStartTime).getTime();
-              tasks[taskIndex].accumulatedFocusTime = (tasks[taskIndex].accumulatedFocusTime || 0) + elapsed;
-            }
-            delete tasks[taskIndex].focusStartTime;
-            tasks[taskIndex].isActive = false;
-          } else if (oldColumn === 'done' && newColumn !== 'done') {
-            // If moving out of done, remove completion timestamp and reset focus timer
-            delete tasks[taskIndex].completedAt;
-            // Reset accumulated time but keep the task's tomato count in the data
-            // (tomatoes are still visible but timer starts fresh)
-            delete tasks[taskIndex].focusStartTime;
-            tasks[taskIndex].accumulatedFocusTime = 0;
-            tasks[taskIndex].isActive = false;
+          // If moving to done, set completion timestamp
+          if (newStatus === 'done' && oldStatus !== 'done') {
+            item.completedAt = new Date().toISOString();
+          } else if (oldStatus === 'done' && newStatus !== 'done') {
+            // If moving out of done, remove completion timestamp
+            delete item.completedAt;
           }
 
           // Reset order when moving between columns
-          const columnTasks = tasks.filter(task => task.column === newColumn && task.id !== taskId);
-          tasks[taskIndex].order = columnTasks.length;
+          const columnItems = getContainerItems().filter(i => i.status === newStatus && i.id !== itemId);
+          item.order = columnItems.length;
         } else {
           // Reordering within same column (only allowed for todo and in-progress)
-          if (newColumn !== 'done') {
-            updateTaskOrder(e.currentTarget, newColumn);
+          if (newStatus !== 'done') {
+            updateTaskOrder(e.currentTarget, newStatus);
           }
         }
 
-        saveTasks();
+        saveListItems();
         renderTasks();
       }
     }
@@ -2900,7 +3152,6 @@
       document.getElementById('task-title').value = '';
       document.getElementById('task-url').value = '';
       document.getElementById('task-notes').value = '';
-      document.getElementById('task-started').value = '';
       renderTagsInput();
       document.getElementById('task-modal').style.display = 'block';
       document.getElementById('task-title').focus();
@@ -2931,172 +3182,109 @@
       document.getElementById('instructions-modal').style.display = 'none';
     }
 
-    function editTask(index) {
-      const task = tasks[index];
-      currentEditingTask = index;
-      currentColumn = task.column;
-      currentTags = task.tags ? [...task.tags] : [];
-      document.getElementById('modal-title').textContent = 'Edit Task';
-      document.getElementById('task-title').value = task.title;
-      document.getElementById('task-url').value = task.url || '';
-      document.getElementById('task-notes').value = task.notes || '';
+    function editTaskById(itemId) {
+      const item = listItems.find(i => i.id === itemId);
+      if (!item) return;
 
-      // Set started time if it exists
-      if (task.startedAt) {
-        const date = new Date(task.startedAt);
-        const localDateTime = new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
-        document.getElementById('task-started').value = localDateTime;
-      } else {
-        document.getElementById('task-started').value = '';
-      }
+      currentEditingTask = itemId;
+      currentColumn = item.status;
+      currentTags = item.tags ? [...item.tags] : [];
+      document.getElementById('modal-title').textContent = 'Edit Task';
+      document.getElementById('task-title').value = item.title;
+      document.getElementById('task-url').value = item.url || '';
+      document.getElementById('task-notes').value = item.notes || '';
 
       renderTagsInput();
       document.getElementById('task-modal').style.display = 'block';
       document.getElementById('task-title').focus();
     }
 
-    function deleteTask(index) {
+    function deleteTaskById(itemId) {
       if (confirm('Are you sure you want to delete this task?')) {
-        tasks.splice(index, 1);
-        saveTasks();
-        renderTasks();
-      }
-    }
-
-    // Helper functions for button clicks that use task IDs
-    function editTaskByIdFromButton(taskId) {
-      const taskIndex = tasks.findIndex(t => t.id === taskId);
-      if (taskIndex >= 0) {
-        editTask(taskIndex);
-      }
-    }
-
-    function deleteTaskByIdFromButton(taskId) {
-      const taskIndex = tasks.findIndex(t => t.id === taskId);
-      if (taskIndex >= 0) {
-        // Clear selection if deleting selected task
-        if (selectedTaskId === taskId) {
-          selectedTaskId = null;
+        const index = listItems.findIndex(i => i.id === itemId);
+        if (index >= 0) {
+          listItems.splice(index, 1);
+          saveListItems();
+          renderTasks();
         }
-        deleteTask(taskIndex);
       }
     }
 
-    function duplicateTaskByIdFromButton(taskId) {
-      const taskIndex = tasks.findIndex(t => t.id === taskId);
-      if (taskIndex >= 0) {
-        duplicateTask(taskIndex);
-      }
+    // Helper functions for button clicks
+    function editTaskByIdFromButton(itemId) {
+      editTaskById(itemId);
     }
 
-    function duplicateTask(index) {
-      const originalTask = tasks[index];
-
-      // Increment order of all existing tasks in the same column
-      tasks.forEach(task => {
-        if (task.column === originalTask.column) {
-          task.order = (task.order || 0) + 1;
-        }
-      });
-
-      // Create duplicate task
-      const duplicatedTask = {
-        id: generateId(),
-        title: originalTask.title,
-        url: originalTask.url || '',
-        notes: originalTask.notes || '',
-        tags: originalTask.tags ? [...originalTask.tags] : [],
-        column: originalTask.column,
-        order: 0,
-        createdAt: new Date().toISOString(),
-        onHold: originalTask.onHold || false
-      };
-
-      // Remove completedAt and startedAt for duplicated task
-      // (they are not copied, so they won't exist in the new task)
-
-      tasks.push(duplicatedTask);
-      saveTasks();
-      renderTasks();
-
-      // Select the newly duplicated task
-      selectTask(duplicatedTask.id);
+    function deleteTaskByIdFromButton(itemId) {
+      if (selectedTaskId === itemId) {
+        selectedTaskId = null;
+      }
+      deleteTaskById(itemId);
     }
 
     function saveTask() {
       const title = document.getElementById('task-title').value.trim();
       const url = document.getElementById('task-url').value.trim();
       const notes = document.getElementById('task-notes').value.trim();
-      const startedValue = document.getElementById('task-started').value;
 
       if (!title) {
         alert('Please enter a task title');
         return;
       }
 
-      // Convert local datetime to ISO string
-      const startedAt = startedValue ? new Date(startedValue).toISOString() : null;
-
       if (currentEditingTask !== null) {
-        // Edit existing task
-        tasks[currentEditingTask].title = title;
-        tasks[currentEditingTask].url = url;
-        tasks[currentEditingTask].notes = notes;
-        tasks[currentEditingTask].tags = currentTags;
-        if (startedAt) {
-          tasks[currentEditingTask].startedAt = startedAt;
-        } else {
-          delete tasks[currentEditingTask].startedAt;
+        // Edit existing item
+        const item = listItems.find(i => i.id === currentEditingTask);
+        if (item) {
+          item.title = title;
+          item.url = url;
+          item.notes = notes;
+          item.tags = currentTags;
         }
       } else {
-        // Create new task at the top (order 0)
-        // First, increment the order of all existing tasks in this column
-        tasks.forEach(task => {
-          if (task.column === currentColumn) {
-            task.order = (task.order || 0) + 1;
+        // Create new item at the top (order 0)
+        const containerItems = getContainerItems();
+        containerItems.forEach(item => {
+          if (item.status === currentColumn) {
+            item.order = (item.order || 0) + 1;
           }
         });
 
-        const task = {
+        const newItem = {
           id: generateId(),
           title: title,
           url: url,
           notes: notes,
           tags: currentTags,
-          column: currentColumn,
+          status: currentColumn,
           order: 0,
+          containerId: currentContainerId,
           createdAt: new Date().toISOString()
         };
 
-        if (startedAt) {
-          task.startedAt = startedAt;
-        }
-
-        tasks.push(task);
+        listItems.push(newItem);
       }
 
-      saveTasks();
+      saveListItems();
       renderTasks();
       closeTaskModal();
     }
 
     // Task selection for navigation
-    function selectTask(taskId) {
-      // Remove previous selection
-      document.querySelectorAll('.task.selected').forEach(task => {
-        task.classList.remove('selected');
+    function selectTask(itemId) {
+      document.querySelectorAll('.task.selected').forEach(el => {
+        el.classList.remove('selected');
       });
 
-      selectedTaskId = taskId;
-      const taskElement = document.querySelector(`[data-task-id="${taskId}"]`);
+      selectedTaskId = itemId;
+      const taskElement = document.querySelector(`[data-task-id="${itemId}"]`);
       if (taskElement) {
         taskElement.classList.add('selected');
         taskElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
-        // Update selected column based on task location
-        const task = tasks.find(t => t.id === taskId);
-        if (task) {
-          selectedColumn = columnNames.indexOf(task.column);
+        const item = listItems.find(i => i.id === itemId);
+        if (item) {
+          selectedColumn = columnNames.indexOf(item.status);
         }
       }
     }
@@ -3109,19 +3297,19 @@
     }
 
     function getSelectedTask() {
-      return selectedTaskId ? tasks.find(t => t.id === selectedTaskId) : null;
+      return selectedTaskId ? listItems.find(i => i.id === selectedTaskId) : null;
     }
 
-    // Get tasks in visual order for a column
+    // Get items in visual order for a column
     function getColumnTasksInOrder(columnName) {
       const container = document.getElementById(`${columnName}-tasks`);
       if (!container) return [];
 
       const taskElements = container.querySelectorAll('.task');
       return Array.from(taskElements).map(element => {
-        const taskId = element.dataset.taskId;
-        return tasks.find(task => task.id === taskId);
-      }).filter(task => task);
+        const itemId = element.dataset.taskId;
+        return listItems.find(i => i.id === itemId);
+      }).filter(item => item);
     }
 
     // Navigation functions
@@ -3221,75 +3409,53 @@
     }
 
     function moveTaskLeft() {
-      const task = getSelectedTask();
-      if (!task) return;
+      const item = getSelectedTask();
+      if (!item) return;
 
       const newColumnIndex = selectedColumn > 0 ? selectedColumn - 1 : columnNames.length - 1;
-      const newColumnName = columnNames[newColumnIndex];
-      const oldColumn = task.column;
+      const newStatus = columnNames[newColumnIndex];
+      const oldStatus = item.status;
 
-      task.column = newColumnName;
+      item.status = newStatus;
 
-      if (newColumnName === 'done' && oldColumn !== 'done') {
-        task.completedAt = new Date().toISOString();
-        // Stop focus timer and keep accumulated time for tomatoes
-        if (task.focusStartTime) {
-          const elapsed = Date.now() - new Date(task.focusStartTime).getTime();
-          task.accumulatedFocusTime = (task.accumulatedFocusTime || 0) + elapsed;
-        }
-        delete task.focusStartTime;
-        task.isActive = false;
-      } else if (oldColumn === 'done' && newColumnName !== 'done') {
-        delete task.completedAt;
-        // Reset focus timer but keep tomatoes
-        delete task.focusStartTime;
-        task.accumulatedFocusTime = 0;
-        task.isActive = false;
+      if (newStatus === 'done' && oldStatus !== 'done') {
+        item.completedAt = new Date().toISOString();
+      } else if (oldStatus === 'done' && newStatus !== 'done') {
+        delete item.completedAt;
       }
 
-      const newColumnTasks = tasks.filter(t => t.column === newColumnName && t.id !== task.id);
-      task.order = newColumnTasks.length;
+      const newColumnItems = getContainerItems().filter(i => i.status === newStatus && i.id !== item.id);
+      item.order = newColumnItems.length;
 
       selectedColumn = newColumnIndex;
-      saveTasks();
+      saveListItems();
       renderTasks();
-      selectTask(task.id);
+      selectTask(item.id);
     }
 
     function moveTaskRight() {
-      const task = getSelectedTask();
-      if (!task) return;
+      const item = getSelectedTask();
+      if (!item) return;
 
       const newColumnIndex = selectedColumn < columnNames.length - 1 ? selectedColumn + 1 : 0;
-      const newColumnName = columnNames[newColumnIndex];
-      const oldColumn = task.column;
+      const newStatus = columnNames[newColumnIndex];
+      const oldStatus = item.status;
 
-      task.column = newColumnName;
+      item.status = newStatus;
 
-      if (newColumnName === 'done' && oldColumn !== 'done') {
-        task.completedAt = new Date().toISOString();
-        // Stop focus timer and keep accumulated time for tomatoes
-        if (task.focusStartTime) {
-          const elapsed = Date.now() - new Date(task.focusStartTime).getTime();
-          task.accumulatedFocusTime = (task.accumulatedFocusTime || 0) + elapsed;
-        }
-        delete task.focusStartTime;
-        task.isActive = false;
-      } else if (oldColumn === 'done' && newColumnName !== 'done') {
-        delete task.completedAt;
-        // Reset focus timer but keep tomatoes
-        delete task.focusStartTime;
-        task.accumulatedFocusTime = 0;
-        task.isActive = false;
+      if (newStatus === 'done' && oldStatus !== 'done') {
+        item.completedAt = new Date().toISOString();
+      } else if (oldStatus === 'done' && newStatus !== 'done') {
+        delete item.completedAt;
       }
 
-      const newColumnTasks = tasks.filter(t => t.column === newColumnName && t.id !== task.id);
-      task.order = newColumnTasks.length;
+      const newColumnItems = getContainerItems().filter(i => i.status === newStatus && i.id !== item.id);
+      item.order = newColumnItems.length;
 
       selectedColumn = newColumnIndex;
-      saveTasks();
+      saveListItems();
       renderTasks();
-      selectTask(task.id);
+      selectTask(item.id);
     }
 
     // URL detection and title fetching
@@ -3328,7 +3494,33 @@
 
     // Keyboard shortcuts
     document.addEventListener('keydown', (e) => {
-      // Prevent shortcuts when modal is open or in input fields
+      // ESC closes any open modal
+      if (e.key === 'Escape') {
+        const taskModal = document.getElementById('task-modal');
+        const listModal = document.getElementById('list-modal');
+        const instructionsModal = document.getElementById('instructions-modal');
+
+        if (instructionsModal.style.display === 'block') {
+          closeInstructionsModal();
+          e.preventDefault();
+          return;
+        }
+        if (taskModal.style.display === 'block') {
+          closeTaskModal();
+          e.preventDefault();
+          return;
+        }
+        if (listModal.style.display === 'block') {
+          closeListModal();
+          e.preventDefault();
+          return;
+        }
+        // Close container dropdown if open
+        closeContainerDropdown();
+        return;
+      }
+
+      // Prevent other shortcuts when modal is open or in input fields
       if (document.getElementById('task-modal').style.display === 'block' ||
         document.getElementById('list-modal').style.display === 'block' ||
         e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
@@ -3417,20 +3609,14 @@
             break;
           case 'Enter':
             if (selectedTaskId) {
-              const taskIndex = tasks.findIndex(t => t.id === selectedTaskId);
-              if (taskIndex >= 0) {
-                editTask(taskIndex);
-              }
+              editTaskById(selectedTaskId);
             }
             e.preventDefault();
             break;
           case 'Delete':
           case 'Backspace':
             if (selectedTaskId) {
-              const taskIndex = tasks.findIndex(t => t.id === selectedTaskId);
-              if (taskIndex >= 0) {
-                deleteTask(taskIndex);
-              }
+              deleteTaskById(selectedTaskId);
             }
             e.preventDefault();
             break;
@@ -3710,193 +3896,15 @@
     }
 
     // Toggle on hold status
-    function toggleHold(taskId) {
-      const task = tasks.find(t => t.id === taskId);
-      if (task) {
-        task.onHold = !task.onHold;
-        saveTasks();
+    function toggleHold(itemId) {
+      const item = listItems.find(i => i.id === itemId);
+      if (item) {
+        item.onHold = !item.onHold;
+        saveListItems();
         renderTasks();
-        // Restore selection after render
-        if (selectedTaskId === taskId) {
-          selectTask(taskId);
+        if (selectedTaskId === itemId) {
+          selectTask(itemId);
         }
-      }
-    }
-
-    // Toggle active status (only one task can be active at a time)
-    function toggleActive(taskId) {
-      const task = tasks.find(t => t.id === taskId);
-      if (!task) return;
-
-      // If this task is already active, deactivate it and stop timer
-      if (task.isActive) {
-        // Stop the timer and accumulate the time
-        if (task.focusStartTime) {
-          const elapsed = Date.now() - new Date(task.focusStartTime).getTime();
-          task.accumulatedFocusTime = (task.accumulatedFocusTime || 0) + elapsed;
-          delete task.focusStartTime;
-        }
-        task.isActive = false;
-      } else {
-        // Deactivate all other tasks and stop their timers
-        tasks.forEach(t => {
-          if (t.isActive) {
-            if (t.focusStartTime) {
-              const elapsed = Date.now() - new Date(t.focusStartTime).getTime();
-              t.accumulatedFocusTime = (t.accumulatedFocusTime || 0) + elapsed;
-              delete t.focusStartTime;
-            }
-            t.isActive = false;
-          }
-        });
-        // Activate this task and start timer
-        task.isActive = true;
-        task.focusStartTime = new Date().toISOString();
-        if (!task.accumulatedFocusTime) {
-          task.accumulatedFocusTime = 0;
-        }
-      }
-
-      saveTasks();
-      renderTasks();
-      // Restore selection after render
-      if (selectedTaskId === taskId) {
-        selectTask(taskId);
-      }
-    }
-
-    // Edit start time function
-    function editStartTime(event, taskId) {
-      event.stopPropagation();
-
-      const task = tasks.find(t => t.id === taskId);
-      if (!task) return;
-
-      const currentValue = task.startedAt ? new Date(task.startedAt) : new Date();
-      const localDateTime = new Date(currentValue.getTime() - currentValue.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
-
-      const newValue = prompt('Edit start time (leave empty to remove):', localDateTime);
-
-      if (newValue === null) return; // User clicked cancel
-
-      if (newValue.trim() === '') {
-        // Remove start time
-        delete task.startedAt;
-      } else {
-        // Update start time
-        try {
-          task.startedAt = new Date(newValue).toISOString();
-        } catch (e) {
-          alert('Invalid date format');
-          return;
-        }
-      }
-
-      saveTasks();
-      renderTasks();
-
-      // Restore selection after render
-      if (selectedTaskId === taskId) {
-        selectTask(taskId);
-      }
-    }
-
-    // Title editing functions
-    function toggleTitleEdit() {
-      const editBtn = document.getElementById('title-edit-btn');
-      const titleElement = document.getElementById('app-title');
-      const container = document.querySelector('.title-container');
-
-      if (editBtn.textContent === 'Edit') {
-        // Switch to edit mode
-        const currentTitle = titleElement ? titleElement.textContent : "Tobi's Task Manager";
-        const editInput = document.createElement('input');
-        editInput.type = 'text';
-        editInput.className = 'title-edit-input';
-        editInput.value = currentTitle;
-        editInput.id = 'title-edit-input';
-
-        // Replace h1 with input
-        if (titleElement) {
-          container.replaceChild(editInput, titleElement);
-        } else {
-          container.insertBefore(editInput, editBtn);
-        }
-        editBtn.textContent = 'Save';
-
-        // Focus and select the input
-        editInput.focus();
-        editInput.select();
-
-        // Handle Enter key and Escape key
-        editInput.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter') {
-            saveTitle();
-          } else if (e.key === 'Escape') {
-            cancelTitleEdit();
-          }
-        });
-      } else {
-        // Save mode
-        saveTitle();
-      }
-    }
-
-    function saveTitle() {
-      const input = document.getElementById('title-edit-input');
-      const editBtn = document.getElementById('title-edit-btn');
-      const container = document.querySelector('.title-container');
-
-      if (!input) return;
-
-      const newTitle = input.value.trim();
-      if (newTitle === '') {
-        alert('Title cannot be empty');
-        return;
-      }
-
-      // Create new h1 element
-      const titleElement = document.createElement('h1');
-      titleElement.id = 'app-title';
-      titleElement.textContent = newTitle;
-
-      // Replace input with h1
-      container.replaceChild(titleElement, input);
-      editBtn.textContent = 'Edit';
-
-      // Save to localStorage
-      localStorage.setItem('taskManager_appName', newTitle);
-
-      // Update document title
-      document.title = newTitle;
-    }
-
-    function cancelTitleEdit() {
-      const input = document.getElementById('title-edit-input');
-      const editBtn = document.getElementById('title-edit-btn');
-      const container = document.querySelector('.title-container');
-
-      if (!input) return;
-
-      // Restore the original title
-      const savedTitle = localStorage.getItem('taskManager_appName') || "Tobi's Task Manager";
-      const titleElement = document.createElement('h1');
-      titleElement.id = 'app-title';
-      titleElement.textContent = savedTitle;
-
-      // Replace input with h1
-      container.replaceChild(titleElement, input);
-      editBtn.textContent = 'Edit';
-    }
-
-    function loadAppName() {
-      const savedName = localStorage.getItem('taskManager_appName');
-      if (savedName) {
-        const titleElement = document.getElementById('app-title');
-        if (titleElement) {
-          titleElement.textContent = savedName;
-        }
-        document.title = savedName;
       }
     }
 
@@ -3909,19 +3917,407 @@
       const saved = localStorage.getItem('taskManager_listItems');
       if (saved) {
         listItems = JSON.parse(saved);
-        // Populate allListTags from existing items
-        listItems.forEach(item => {
-          if (item.tags) {
-            item.tags.forEach(tag => allListTags.add(tag));
-          }
-        });
       }
+      // Migrate old data to unified model
+      migrateToUnifiedModel();
+      // Note: allListTags is rebuilt per container in loadContainers()
     }
 
     // Save list items to localStorage
     function saveListItems() {
       localStorage.setItem('taskManager_listItems', JSON.stringify(listItems));
+      updateSyncStatus('synced');
     }
+
+    // ==========================================
+    // CONTAINER FUNCTIONS
+    // ==========================================
+
+    // Load containers from localStorage
+    function loadContainers() {
+      const saved = localStorage.getItem('taskManager_containers');
+      if (saved) {
+        containers = JSON.parse(saved);
+      }
+      // Ensure we have at least one default container
+      if (containers.length === 0) {
+        containers = [{ id: 'default', name: 'My Tasks' }];
+        saveContainers();
+      }
+      // Load current container
+      const savedCurrentId = localStorage.getItem('taskManager_currentContainerId');
+      if (savedCurrentId && containers.find(c => c.id === savedCurrentId)) {
+        currentContainerId = savedCurrentId;
+      } else {
+        currentContainerId = containers[0].id;
+      }
+      // Rebuild allListTags for current container (lowercase)
+      allListTags.clear();
+      getContainerItems().forEach(item => {
+        if (item.tags) {
+          item.tags.forEach(tag => allListTags.add(tag.toLowerCase()));
+        }
+      });
+      updateContainerUI();
+    }
+
+    // Save containers to localStorage
+    function saveContainers() {
+      localStorage.setItem('taskManager_containers', JSON.stringify(containers));
+      localStorage.setItem('taskManager_currentContainerId', currentContainerId);
+    }
+
+    // Generate unique ID for containers
+    function generateContainerId() {
+      return 'c_' + Date.now().toString(36) + Math.random().toString(36).substr(2);
+    }
+
+    // Get current container
+    function getCurrentContainer() {
+      return containers.find(c => c.id === currentContainerId) || containers[0];
+    }
+
+    // Get items for current container
+    function getContainerItems() {
+      return listItems.filter(item => item.containerId === currentContainerId ||
+        (!item.containerId && currentContainerId === 'default'));
+    }
+
+    // Update container UI
+    function updateContainerUI() {
+      const container = getCurrentContainer();
+
+      // Update Simple List header
+      const nameEl = document.getElementById('current-container-name');
+      if (nameEl && container) {
+        nameEl.textContent = container.name;
+      }
+
+      // Update Kanban header
+      const boardNameEl = document.getElementById('board-container-name');
+      if (boardNameEl && container) {
+        boardNameEl.textContent = container.name;
+      }
+
+      // Update board count
+      updateBoardCount();
+
+      renderContainerList();
+      renderBoardContainerList();
+    }
+
+    // Update board task count
+    function updateBoardCount() {
+      const countEl = document.getElementById('board-count');
+      if (!countEl) return;
+
+      const containerItems = getContainerItems();
+      const doneCount = containerItems.filter(item => item.status === 'done').length;
+      const totalCount = containerItems.length;
+      countEl.textContent = `${doneCount}/${totalCount} done`;
+    }
+
+    // Toggle container dropdown
+    function toggleContainerDropdown() {
+      const selector = document.getElementById('container-selector');
+      selector.classList.toggle('open');
+      if (selector.classList.contains('open')) {
+        renderContainerList();
+        // Hide the new input when opening
+        document.getElementById('container-new-input').style.display = 'none';
+        document.querySelector('.container-new-btn').style.display = 'flex';
+      }
+    }
+
+    // Close container dropdown
+    function closeContainerDropdown() {
+      const selector = document.getElementById('container-selector');
+      selector.classList.remove('open');
+    }
+
+    // Toggle board container dropdown
+    function toggleBoardContainerDropdown() {
+      const selector = document.getElementById('board-container-selector');
+      selector.classList.toggle('open');
+      if (selector.classList.contains('open')) {
+        renderBoardContainerList();
+      }
+    }
+
+    // Close board container dropdown
+    function closeBoardContainerDropdown() {
+      const selector = document.getElementById('board-container-selector');
+      if (selector) selector.classList.remove('open');
+    }
+
+    // Render board container list in dropdown
+    function renderBoardContainerList() {
+      const listEl = document.getElementById('board-container-list');
+      if (!listEl) return;
+
+      listEl.innerHTML = containers.map((container, index) => {
+        const count = listItems.filter(item =>
+          item.containerId === container.id ||
+          (!item.containerId && container.id === 'default')
+        ).length;
+        const isActive = container.id === currentContainerId;
+        const isDefault = container.id === 'default';
+
+        return `
+          <div class="container-item ${isActive ? 'active' : ''}" data-container-id="${container.id}">
+            <span class="container-item-name" onclick="switchContainer('${container.id}')">${escapeHtml(container.name)}</span>
+            <span class="container-item-count">${count}</span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Render container list in dropdown
+    function renderContainerList() {
+      const listEl = document.getElementById('container-list');
+      if (!listEl) return;
+
+      listEl.innerHTML = containers.map((container, index) => {
+        const count = listItems.filter(item =>
+          item.containerId === container.id ||
+          (!item.containerId && container.id === 'default')
+        ).length;
+        const isActive = container.id === currentContainerId;
+        const isDefault = container.id === 'default';
+
+        return `
+          <div class="container-item ${isActive ? 'active' : ''}" data-container-id="${container.id}" data-index="${index}" draggable="true">
+            <span class="container-drag-handle" title="Drag to reorder">
+              <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14">
+                <circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="6" r="1.5"/>
+                <circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/>
+                <circle cx="9" cy="18" r="1.5"/><circle cx="15" cy="18" r="1.5"/>
+              </svg>
+            </span>
+            <span class="container-item-name" onclick="switchContainer('${container.id}')">${escapeHtml(container.name)}</span>
+            <span class="container-item-count">${count}</span>
+            <div class="container-item-actions">
+              <button class="container-item-btn" onclick="event.stopPropagation(); editContainerName('${container.id}')" title="Rename">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                </svg>
+              </button>
+              ${!isDefault ? `
+                <button class="container-item-btn delete" onclick="event.stopPropagation(); deleteContainer('${container.id}')" title="Delete">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="3 6 5 6 21 6"/>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                  </svg>
+                </button>
+              ` : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Setup drag and drop for containers
+      setupContainerDragAndDrop();
+    }
+
+    // Container drag state
+    let draggedContainerIndex = null;
+
+    // Setup drag and drop for container items
+    function setupContainerDragAndDrop() {
+      const listEl = document.getElementById('container-list');
+      const items = listEl.querySelectorAll('.container-item');
+
+      items.forEach(item => {
+        item.addEventListener('dragstart', handleContainerDragStart);
+        item.addEventListener('dragend', handleContainerDragEnd);
+        item.addEventListener('dragover', handleContainerDragOver);
+        item.addEventListener('drop', handleContainerDrop);
+        item.addEventListener('dragleave', handleContainerDragLeave);
+      });
+    }
+
+    function handleContainerDragStart(e) {
+      draggedContainerIndex = parseInt(this.dataset.index);
+      this.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+    }
+
+    function handleContainerDragEnd(e) {
+      this.classList.remove('dragging');
+      document.querySelectorAll('.container-item').forEach(item => {
+        item.classList.remove('drag-over');
+      });
+      draggedContainerIndex = null;
+    }
+
+    function handleContainerDragOver(e) {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      const targetIndex = parseInt(this.dataset.index);
+      if (targetIndex !== draggedContainerIndex) {
+        this.classList.add('drag-over');
+      }
+    }
+
+    function handleContainerDragLeave(e) {
+      this.classList.remove('drag-over');
+    }
+
+    function handleContainerDrop(e) {
+      e.preventDefault();
+      this.classList.remove('drag-over');
+
+      const targetIndex = parseInt(this.dataset.index);
+      if (draggedContainerIndex === null || targetIndex === draggedContainerIndex) return;
+
+      // Reorder containers array
+      const [movedContainer] = containers.splice(draggedContainerIndex, 1);
+      containers.splice(targetIndex, 0, movedContainer);
+
+      saveContainers();
+      renderContainerList();
+      updateContainerUI();
+    }
+
+    // Switch to a different container
+    function switchContainer(containerId) {
+      currentContainerId = containerId;
+      saveContainers();
+      updateContainerUI();
+      closeContainerDropdown();
+      closeBoardContainerDropdown();
+      // Reset filters and search when switching containers
+      activeTagFilters.clear();
+      listSearchQuery = '';
+      const searchInput = document.getElementById('list-search-input');
+      if (searchInput) searchInput.value = '';
+      document.getElementById('list-search-clear').style.display = 'none';
+      // Rebuild allListTags for the new container (lowercase)
+      allListTags.clear();
+      getContainerItems().forEach(item => {
+        if (item.tags) {
+          item.tags.forEach(tag => allListTags.add(tag.toLowerCase()));
+        }
+      });
+      renderListItems();
+      renderTasks();
+    }
+
+    // Show new container input
+    function showNewContainerInput() {
+      document.querySelector('.container-new-btn').style.display = 'none';
+      const inputDiv = document.getElementById('container-new-input');
+      inputDiv.style.display = 'flex';
+      const input = document.getElementById('new-container-name');
+      input.value = '';
+      input.focus();
+    }
+
+    // Handle keydown in new container input
+    function handleNewContainerKeydown(event) {
+      if (event.key === 'Enter') {
+        createNewContainer();
+      } else if (event.key === 'Escape') {
+        document.getElementById('container-new-input').style.display = 'none';
+        document.querySelector('.container-new-btn').style.display = 'flex';
+      }
+    }
+
+    // Create new container
+    function createNewContainer() {
+      const input = document.getElementById('new-container-name');
+      const name = input.value.trim();
+      if (!name) return;
+
+      const newContainer = {
+        id: generateContainerId(),
+        name: name
+      };
+      containers.push(newContainer);
+      saveContainers();
+
+      // Switch to the new container
+      switchContainer(newContainer.id);
+    }
+
+    // Edit container name
+    function editContainerName(containerId) {
+      const container = containers.find(c => c.id === containerId);
+      if (!container) return;
+
+      const itemEl = document.querySelector(`.container-item[data-container-id="${containerId}"]`);
+      const nameEl = itemEl.querySelector('.container-item-name');
+
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.className = 'container-item-edit';
+      input.value = container.name;
+
+      const saveName = () => {
+        const newName = input.value.trim();
+        if (newName && newName !== container.name) {
+          container.name = newName;
+          saveContainers();
+          updateContainerUI();
+        }
+        renderContainerList();
+      };
+
+      input.onblur = saveName;
+      input.onkeydown = (e) => {
+        if (e.key === 'Enter') {
+          saveName();
+        } else if (e.key === 'Escape') {
+          renderContainerList();
+        }
+      };
+
+      nameEl.replaceWith(input);
+      input.focus();
+      input.select();
+    }
+
+    // Delete container
+    function deleteContainer(containerId) {
+      const container = containers.find(c => c.id === containerId);
+      if (!container || containerId === 'default') return;
+
+      const itemCount = listItems.filter(item => item.containerId === containerId).length;
+      const message = itemCount > 0
+        ? `Delete "${container.name}" and its ${itemCount} task${itemCount > 1 ? 's' : ''}?`
+        : `Delete "${container.name}"?`;
+
+      if (confirm(message)) {
+        // Remove all items in this container
+        listItems = listItems.filter(item => item.containerId !== containerId);
+        saveListItems();
+
+        // Remove container
+        containers = containers.filter(c => c.id !== containerId);
+        saveContainers();
+
+        // Switch to default if we deleted the current container
+        if (currentContainerId === containerId) {
+          switchContainer('default');
+        } else {
+          renderContainerList();
+        }
+      }
+    }
+
+    // Close container dropdowns when clicking outside
+    document.addEventListener('click', (e) => {
+      const selector = document.getElementById('container-selector');
+      if (selector && !selector.contains(e.target)) {
+        closeContainerDropdown();
+      }
+
+      const boardSelector = document.getElementById('board-container-selector');
+      if (boardSelector && !boardSelector.contains(e.target)) {
+        closeBoardContainerDropdown();
+      }
+    });
 
     // Generate unique ID for list items
     function generateListItemId() {
@@ -3938,8 +4334,9 @@
       const listView = document.getElementById('list-view');
 
       if (view === 'kanban') {
-        board.style.display = 'grid';
+        board.style.display = 'block';
         listView.style.display = 'none';
+        renderTasks();
       } else {
         board.style.display = 'none';
         listView.style.display = 'block';
@@ -3958,9 +4355,7 @@
 
     // Initialize view on page load
     function initializeView() {
-      if (currentView === 'list') {
-        switchView('list');
-      }
+      switchView(currentView);
     }
 
     // State for collapsed completed section
@@ -3977,9 +4372,12 @@
       // Render tag filter bar
       renderTagFilterBar();
 
-      // Separate active and completed items
-      let activeItems = listItems.filter(i => !i.completed).sort((a, b) => (a.order || 0) - (b.order || 0));
-      let completedItems = listItems.filter(i => i.completed).sort((a, b) => {
+      // Get items for current container
+      const containerItems = getContainerItems();
+
+      // Separate active and completed items (status !== 'done' means active)
+      let activeItems = containerItems.filter(i => i.status !== 'done').sort((a, b) => (a.order || 0) - (b.order || 0));
+      let completedItems = containerItems.filter(i => i.status === 'done').sort((a, b) => {
         // Sort by completedAt descending (most recent first)
         return new Date(b.completedAt || 0) - new Date(a.completedAt || 0);
       });
@@ -3996,19 +4394,19 @@
       const hasFilters = activeTagFilters.size > 0 || listSearchQuery;
 
       // Update count badge
-      if (listItems.length > 0) {
+      if (containerItems.length > 0) {
         if (hasFilters) {
-          countBadge.textContent = `${totalFiltered} of ${listItems.length} shown`;
+          countBadge.textContent = `${totalFiltered} of ${containerItems.length} shown`;
         } else if (completedItems.length > 0) {
-          countBadge.textContent = `${completedItems.length}/${listItems.length} done`;
+          countBadge.textContent = `${completedItems.length}/${containerItems.length} done`;
         } else {
-          countBadge.textContent = `${listItems.length} task${listItems.length !== 1 ? 's' : ''}`;
+          countBadge.textContent = `${containerItems.length} task${containerItems.length !== 1 ? 's' : ''}`;
         }
       } else {
         countBadge.textContent = '';
       }
 
-      if (listItems.length === 0) {
+      if (containerItems.length === 0) {
         emptyState.style.display = 'block';
         container.style.display = 'none';
         return;
@@ -4228,6 +4626,11 @@
       if (multiselect && !multiselect.contains(e.target)) {
         multiselect.classList.remove('open');
       }
+
+      const boardMultiselect = document.getElementById('board-filter-multiselect');
+      if (boardMultiselect && !boardMultiselect.contains(e.target)) {
+        boardMultiselect.classList.remove('open');
+      }
     });
 
     // Toggle a tag filter
@@ -4303,11 +4706,125 @@
       });
     }
 
+    // Board search/filter state
+    let boardSearchQuery = '';
+    let activeBoardTagFilters = new Set();
+
+    function filterBoardTasks() {
+      const searchInput = document.getElementById('board-search-input');
+      const clearBtn = document.getElementById('board-search-clear');
+
+      boardSearchQuery = searchInput.value.toLowerCase().trim();
+      clearBtn.style.display = boardSearchQuery ? 'flex' : 'none';
+
+      renderTasks();
+    }
+
+    function clearBoardSearch() {
+      const searchInput = document.getElementById('board-search-input');
+      searchInput.value = '';
+      boardSearchQuery = '';
+      document.getElementById('board-search-clear').style.display = 'none';
+      renderTasks();
+    }
+
+    // Filter board items by search query
+    function filterBoardBySearch(items) {
+      if (!boardSearchQuery) return items;
+
+      return items.filter(item => {
+        const titleMatch = item.title && item.title.toLowerCase().includes(boardSearchQuery);
+        const notesMatch = item.notes && item.notes.toLowerCase().includes(boardSearchQuery);
+        return titleMatch || notesMatch;
+      });
+    }
+
+    // Filter board items by active tags (OR logic)
+    function filterBoardByTags(items) {
+      if (activeBoardTagFilters.size === 0) return items;
+
+      return items.filter(item => {
+        if (!item.tags || item.tags.length === 0) return false;
+        return item.tags.some(tag => activeBoardTagFilters.has(tag.toLowerCase()));
+      });
+    }
+
+    function toggleBoardFilterDropdown() {
+      const multiselect = document.getElementById('board-filter-multiselect');
+      multiselect.classList.toggle('open');
+    }
+
+    function toggleBoardTagFilter(tag) {
+      if (activeBoardTagFilters.has(tag)) {
+        activeBoardTagFilters.delete(tag);
+      } else {
+        activeBoardTagFilters.add(tag);
+      }
+      renderBoardTagFilters();
+      renderTasks();
+    }
+
+    function clearAllBoardTagFilters() {
+      activeBoardTagFilters.clear();
+      renderBoardTagFilters();
+      renderTasks();
+    }
+
+    function renderBoardTagFilters() {
+      const multiselect = document.getElementById('board-filter-multiselect');
+      const placeholder = document.getElementById('board-filter-placeholder');
+      const selectedContainer = document.getElementById('board-filter-selected');
+      const optionsContainer = document.getElementById('board-filter-options');
+      const clearBtn = document.getElementById('board-filter-clear');
+
+      if (!multiselect) return;
+
+      // Hide if no tags
+      multiselect.style.display = allListTags.size === 0 ? 'none' : 'block';
+
+      // Render selected tags in trigger
+      selectedContainer.innerHTML = '';
+      activeBoardTagFilters.forEach(tag => {
+        const tagEl = document.createElement('span');
+        tagEl.className = 'list-filter-tag';
+        tagEl.style.background = getTagColor(tag);
+        tagEl.innerHTML = `${escapeHtml(tag)}<button onclick="event.stopPropagation(); toggleBoardTagFilter('${escapeHtml(tag)}')">&times;</button>`;
+        selectedContainer.appendChild(tagEl);
+      });
+
+      // Show/hide placeholder and clear button
+      placeholder.style.display = activeBoardTagFilters.size > 0 ? 'none' : 'block';
+      clearBtn.style.display = activeBoardTagFilters.size > 0 ? 'block' : 'none';
+
+      // Render options (alphabetically sorted)
+      const sortedTags = [...allListTags].sort();
+      optionsContainer.innerHTML = '';
+      sortedTags.forEach(tag => {
+        const isSelected = activeBoardTagFilters.has(tag);
+        const optionEl = document.createElement('div');
+        optionEl.className = `list-filter-option ${isSelected ? 'selected' : ''}`;
+        optionEl.onclick = (e) => {
+          e.stopPropagation();
+          toggleBoardTagFilter(tag);
+        };
+        optionEl.innerHTML = `
+          <span class="list-filter-option-color" style="background: ${getTagColor(tag)}"></span>
+          <span>${escapeHtml(tag)}</span>
+          <svg class="list-filter-option-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        `;
+        optionsContainer.appendChild(optionEl);
+      });
+    }
+
     // Create a list item element
     function createListItemElement(item) {
       const div = document.createElement('div');
       div.className = 'list-item';
-      if (item.completed) div.classList.add('completed');
+      const isCompleted = item.status === 'done';
+      if (isCompleted) div.classList.add('completed');
+      if (item.onHold) div.classList.add('on-hold');
       div.draggable = true;
       div.dataset.itemId = item.id;
 
@@ -4320,7 +4837,7 @@
 
       // Build title content
       let titleContent;
-      const completedTimeHtml = item.completed && item.completedAt
+      const completedTimeHtml = isCompleted && item.completedAt
         ? `<div class="completed-time">Completed ${formatCompletedTime(item.completedAt)}</div>`
         : '';
 
@@ -4371,7 +4888,7 @@
           <span class="drag-handle-dot"></span>
           <span class="drag-handle-dot"></span>
         </div>
-        <div class="list-checkbox ${item.completed ? 'checked' : ''}" onclick="toggleListItemComplete('${item.id}')">
+        <div class="list-checkbox ${isCompleted ? 'checked' : ''}" onclick="toggleListItemComplete('${item.id}')">
           <svg viewBox="0 0 12 12">
             <polyline points="2,6 5,9 10,3"/>
           </svg>
@@ -4381,6 +4898,11 @@
           ${titleContent}
         </div>
         <div class="list-item-actions">
+          <button class="list-item-btn hold ${item.onHold ? 'active' : ''}" onclick="toggleListItemOnHold('${item.id}')" title="${item.onHold ? 'Resume' : 'Put on hold'}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>
+            </svg>
+          </button>
           <button class="list-item-btn edit" onclick="editListItem('${item.id}')" title="Edit">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
@@ -4417,11 +4939,12 @@
     function toggleListItemComplete(itemId) {
       const item = listItems.find(i => i.id === itemId);
       if (item) {
-        item.completed = !item.completed;
-        if (item.completed) {
-          item.completedAt = new Date().toISOString();
-        } else {
+        if (item.status === 'done') {
+          item.status = 'todo';
           delete item.completedAt;
+        } else {
+          item.status = 'done';
+          item.completedAt = new Date().toISOString();
         }
         saveListItems();
         renderListItems();
@@ -4590,6 +5113,16 @@
       }
     }
 
+    // Toggle on-hold status
+    function toggleListItemOnHold(itemId) {
+      const item = listItems.find(i => i.id === itemId);
+      if (item) {
+        item.onHold = !item.onHold;
+        saveListItems();
+        renderListItems();
+      }
+    }
+
     // Save list item (add or edit)
     function saveListItem() {
       const title = document.getElementById('list-item-title').value.trim();
@@ -4616,9 +5149,11 @@
           item.tags = [...currentListTags];
         }
       } else {
-        // Add new item at the top
+        // Add new item at the top (only adjust order for items in same container)
         listItems.forEach(item => {
-          item.order = (item.order || 0) + 1;
+          if (item.containerId === currentContainerId || (!item.containerId && currentContainerId === 'default')) {
+            item.order = (item.order || 0) + 1;
+          }
         });
 
         const newItem = {
@@ -4628,7 +5163,9 @@
           notes: notes,
           tags: [...currentListTags],
           order: 0,
-          createdAt: new Date().toISOString()
+          containerId: currentContainerId,
+          createdAt: new Date().toISOString(),
+          status: 'todo'
         };
         listItems.push(newItem);
       }
@@ -4791,67 +5328,24 @@
     });
 
     // Initialize the app
-    loadAppName();
-    loadTasks();
     loadListItems();
-    loadCollapsedState();
+    loadContainers();
     setupDropZones();
     initializeView();
 
-    // Load last saved time from localStorage
+    // Load last saved time from localStorage (indicator hidden by default, shows on save)
     const savedTime = localStorage.getItem('taskManager_lastSaved');
     if (savedTime) {
       lastSavedTime = new Date(savedTime);
-      updateSyncStatus('synced');
-    } else {
-      // Show initial state if no saved time exists
-      const indicator = document.getElementById('sync-indicator');
-      if (indicator) {
-        indicator.textContent = 'Not yet saved';
-        indicator.className = 'sync-indicator';
-      }
     }
 
     // Update timestamp display every minute
     setInterval(refreshSyncTimestamp, 60000);
 
-    // Update focus timer display every second
-    function updateFocusTimers() {
-      const activeTask = tasks.find(t => t.isActive);
-      if (activeTask) {
-        const timerElements = document.querySelectorAll('.task-focus-timer');
-        timerElements.forEach(element => {
-          const taskId = element.dataset.taskId;
-          const task = tasks.find(t => t.id === taskId);
-          if (task && task.isActive) {
-            const focusTime = getCurrentFocusTime(task);
-            const tomatoCount = getTomatoCount(focusTime);
-            const tomatoes = formatTomatoes(tomatoCount);
-
-            const timerDisplay = element.querySelector('.focus-timer-display');
-            if (timerDisplay) {
-              timerDisplay.textContent = `⏱ ${formatFocusTime(focusTime)}`;
-            }
-
-            // Update tomatoes if count changed
-            const tomatoDisplay = element.querySelector('.task-tomatoes');
-            if (tomatoes && !tomatoDisplay) {
-              // Add tomato display if it doesn't exist
-              element.innerHTML += `<div class="task-tomatoes">${tomatoes}</div>`;
-            } else if (tomatoes && tomatoDisplay) {
-              // Update existing tomato display
-              tomatoDisplay.textContent = tomatoes;
-            }
-          }
-        });
-      }
-    }
-    setInterval(updateFocusTimers, 1000);
-
     // Set initial column focus
     setTimeout(() => {
-      if (!selectedTaskId && tasks.length > 0) {
-        // Find first column with tasks
+      if (!selectedTaskId && getContainerItems().length > 0) {
+        // Find first column with items
         for (let i = 0; i < columnNames.length; i++) {
           const columnTasks = getColumnTasksInOrder(columnNames[i]);
           if (columnTasks.length > 0) {
@@ -5010,6 +5504,14 @@
     function togglePomodoroExpand() {
       const widget = document.getElementById('pomodoro-widget');
       widget.classList.toggle('collapsed');
+      localStorage.setItem('pomodoroCollapsed', widget.classList.contains('collapsed'));
+    }
+
+    function loadPomodoroCollapsedState() {
+      const collapsed = localStorage.getItem('pomodoroCollapsed') === 'true';
+      if (collapsed) {
+        document.getElementById('pomodoro-widget').classList.add('collapsed');
+      }
     }
 
     function setPomodoroTime(minutes) {
@@ -5271,6 +5773,7 @@
       updatePomodoroDisplay();
       updateTomatoDisplay();
       loadPomodoroState();
+      loadPomodoroCollapsedState();
 
       // Update display after state is loaded
       updatePomodoroDisplay();
