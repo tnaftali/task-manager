@@ -997,24 +997,23 @@ h1 {
 }
 
 .container-drag-handle {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 18px;
-  height: 18px;
-  color: var(--border-hover);
+  display: grid;
+  grid-template-columns: repeat(2, 3px);
+  gap: 2px;
+  padding: 3px 2px;
   cursor: grab;
   flex-shrink: 0;
-  opacity: 0;
-  transition: opacity 0.15s ease, color 0.15s ease;
+  opacity: 0.4;
+  transition: opacity 0.2s ease;
+}
+
+.container-drag-handle .drag-handle-dot {
+  width: 3px;
+  height: 3px;
 }
 
 .container-item:hover .container-drag-handle {
-  opacity: 1;
-}
-
-.container-drag-handle:hover {
-  color: var(--text-muted);
+  opacity: 0.7;
 }
 
 .container-drag-handle:active {
