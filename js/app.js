@@ -1427,7 +1427,7 @@ function renderContainerListItems(listId, view) {
   const listEl = document.getElementById(listId);
   if (!listEl) return;
 
-  listEl.innerHTML = containers.map((container) => {
+  listEl.innerHTML = containers.map((container, index) => {
     const count = tasks.filter(item =>
       item.containerId === container.id ||
       (!item.containerId && container.id === 'default')
@@ -1436,7 +1436,14 @@ function renderContainerListItems(listId, view) {
     const isDefault = container.id === 'default';
 
     return `
-      <div class="container-item ${isActive ? 'active' : ''}" data-container-id="${container.id}">
+      <div class="container-item ${isActive ? 'active' : ''}" data-container-id="${container.id}" data-index="${index}" draggable="true">
+        <span class="container-drag-handle" title="Drag to reorder">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14">
+            <circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="6" r="1.5"/>
+            <circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/>
+            <circle cx="9" cy="18" r="1.5"/><circle cx="15" cy="18" r="1.5"/>
+          </svg>
+        </span>
         <span class="container-item-name" onclick="switchContainer('${container.id}')">${escapeHtml(container.name)}</span>
         <span class="container-item-count">${count}</span>
         <div class="container-item-actions">
@@ -1458,6 +1465,74 @@ function renderContainerListItems(listId, view) {
       </div>
     `;
   }).join('');
+
+  setupContainerDragAndDrop(listId);
+}
+
+// Container drag state
+let draggedContainerIndex = null;
+let draggedContainerListId = null;
+
+// Setup drag and drop for container items
+function setupContainerDragAndDrop(listId) {
+  const listEl = document.getElementById(listId);
+  if (!listEl) return;
+
+  const items = listEl.querySelectorAll('.container-item');
+
+  items.forEach(item => {
+    item.addEventListener('dragstart', handleContainerDragStart);
+    item.addEventListener('dragend', handleContainerDragEnd);
+    item.addEventListener('dragover', handleContainerDragOver);
+    item.addEventListener('drop', handleContainerDrop);
+    item.addEventListener('dragleave', handleContainerDragLeave);
+  });
+}
+
+function handleContainerDragStart(e) {
+  draggedContainerIndex = parseInt(this.dataset.index);
+  draggedContainerListId = this.closest('.container-list').id;
+  this.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+}
+
+function handleContainerDragEnd(e) {
+  this.classList.remove('dragging');
+  document.querySelectorAll('.container-item').forEach(item => {
+    item.classList.remove('drag-over');
+  });
+  draggedContainerIndex = null;
+  draggedContainerListId = null;
+}
+
+function handleContainerDragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  const targetIndex = parseInt(this.dataset.index);
+  if (targetIndex !== draggedContainerIndex) {
+    this.classList.add('drag-over');
+  }
+}
+
+function handleContainerDragLeave(e) {
+  this.classList.remove('drag-over');
+}
+
+function handleContainerDrop(e) {
+  e.preventDefault();
+  this.classList.remove('drag-over');
+
+  const targetIndex = parseInt(this.dataset.index);
+  if (draggedContainerIndex === null || targetIndex === draggedContainerIndex) return;
+
+  // Reorder containers array
+  const [movedContainer] = containers.splice(draggedContainerIndex, 1);
+  containers.splice(targetIndex, 0, movedContainer);
+
+  saveContainers();
+  renderContainerList();
+  renderBoardContainerList();
+  updateContainerUI();
 }
 
 // Render board container list in dropdown
