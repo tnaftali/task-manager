@@ -703,16 +703,6 @@
       border-color: var(--warning);
     }
 
-    .task-notes {
-      margin-top: 6px;
-      margin-left: 24px;
-      font-size: 0.85rem;
-      color: var(--text-secondary);
-      font-style: italic;
-      line-height: 1.4;
-      white-space: pre-wrap;
-    }
-
     .task.on-hold {
       opacity: 0.75;
       background: repeating-linear-gradient(
@@ -736,33 +726,6 @@
       color: var(--warning);
       border-color: var(--warning);
       background: #ffffff;
-    }
-
-    .task.active {
-      border-left: 4px solid var(--accent);
-      background: linear-gradient(to right,
-          rgba(139, 115, 85, 0.08),
-          var(--surface-elevated) 20px);
-      box-shadow: var(--shadow-md);
-    }
-
-    .task.active .task-title::before {
-      content: '▶ ';
-      color: var(--accent);
-      opacity: 0.9;
-      font-weight: 600;
-    }
-
-    .action-btn.active-btn:hover {
-      color: var(--accent);
-      border-color: var(--accent);
-      background: #ffffff;
-    }
-
-    .action-btn.active-btn.is-active {
-      background: #ffffff;
-      color: var(--accent);
-      border-color: var(--accent);
     }
 
     .date-group {
@@ -887,63 +850,6 @@
     .tag-suggestion:hover,
     .tag-suggestion.selected {
       background-color: var(--surface);
-    }
-
-    .task-time-info {
-      margin-top: 12px;
-      padding-top: 8px;
-      border-top: 1px solid var(--border);
-    }
-
-    .time-started {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      cursor: pointer;
-      transition: color 0.2s ease;
-      display: inline-block;
-    }
-
-    .time-started:hover {
-      color: var(--accent);
-      text-decoration: underline;
-    }
-
-    .task-total-time {
-      margin-top: 8px;
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      font-style: italic;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .task-total-time .time-icon {
-      font-size: 0.9rem;
-    }
-
-    .task-focus-timer {
-      margin-top: 12px;
-      padding-top: 8px;
-      border-top: 1px solid var(--border);
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .focus-timer-display {
-      font-size: 0.9rem;
-      color: var(--accent);
-      font-weight: 600;
-      font-family: 'Courier New', monospace;
-      letter-spacing: 0.5px;
-    }
-
-    .task-tomatoes {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 1.1rem;
     }
 
     /* View Navigation */
@@ -2623,14 +2529,40 @@
   </div>
 
   <script>
+    // ===========================================
+    // CONSTANTS
+    // ===========================================
+    const STATUS = {
+      TODO: 'todo',
+      IN_PROGRESS: 'in-progress',
+      DONE: 'done'
+    };
+
+    const STORAGE_KEYS = {
+      ITEMS: 'taskManager_listItems',
+      CONTAINERS: 'taskManager_containers',
+      CURRENT_CONTAINER: 'taskManager_currentContainerId',
+      CURRENT_VIEW: 'taskManager_currentView',
+      LAST_SAVED: 'taskManager_lastSaved'
+    };
+
+    const VIEWS = {
+      LIST: 'list',
+      BOARD: 'kanban'
+    };
+
+    const COLUMN_NAMES = [STATUS.TODO, STATUS.IN_PROGRESS, STATUS.DONE];
+
+    // ===========================================
+    // STATE
+    // ===========================================
     // Unified state - listItems is the single source of truth for both views
     let listItems = [];
     let selectedTaskId = null;
     let currentEditingTask = null;
-    let currentColumn = 'todo';
+    let currentColumn = STATUS.TODO;
     let currentTags = [];
     let selectedColumn = 0; // 0=todo, 1=in-progress, 2=done
-    const columnNames = ['todo', 'in-progress', 'done'];
     let allTags = new Set();
     let tagSuggestions = [];
     let isServerMode = window.location.protocol !== 'file:';
@@ -2639,7 +2571,7 @@
     // Simple List state
     let selectedListItemId = null;
     let currentEditingListItem = null;
-    let currentView = localStorage.getItem('taskManager_currentView') || 'list';
+    let currentView = localStorage.getItem(STORAGE_KEYS.CURRENT_VIEW) || VIEWS.LIST;
     let currentListTags = [];
     let allListTags = new Set();
     let activeTagFilters = new Set();
@@ -2656,9 +2588,9 @@
       listItems.forEach(item => {
         if (item.status === undefined) {
           if (item.completed) {
-            item.status = 'done';
+            item.status = STATUS.DONE;
           } else {
-            item.status = 'todo';
+            item.status = STATUS.TODO;
           }
           delete item.completed;
           migrated = true;
@@ -2673,7 +2605,7 @@
           if (tasks.length > 0) {
             tasks.forEach(task => {
               // Map column to status
-              const status = task.column || 'todo';
+              const status = task.column || STATUS.TODO;
 
               // Create listItem from task
               const newItem = {
@@ -2819,7 +2751,7 @@
         lastSavedTime = new Date();
         indicator.classList.add('synced', 'visible');
         indicator.textContent = `Saved`;
-        localStorage.setItem('taskManager_lastSaved', lastSavedTime.toISOString());
+        localStorage.setItem(STORAGE_KEYS.LAST_SAVED, lastSavedTime.toISOString());
 
         // Fade out after 2 seconds
         syncFadeTimeout = setTimeout(() => {
@@ -3284,7 +3216,7 @@
 
         const item = listItems.find(i => i.id === itemId);
         if (item) {
-          selectedColumn = columnNames.indexOf(item.status);
+          selectedColumn = COLUMN_NAMES.indexOf(item.status);
         }
       }
     }
@@ -3314,7 +3246,7 @@
 
     // Navigation functions
     function navigateUp() {
-      const columnName = columnNames[selectedColumn];
+      const columnName = COLUMN_NAMES[selectedColumn];
       const columnTasks = getColumnTasksInOrder(columnName);
       if (columnTasks.length === 0) return;
 
@@ -3332,7 +3264,7 @@
     }
 
     function navigateDown() {
-      const columnName = columnNames[selectedColumn];
+      const columnName = COLUMN_NAMES[selectedColumn];
       const columnTasks = getColumnTasksInOrder(columnName);
       if (columnTasks.length === 0) return;
 
@@ -3350,8 +3282,8 @@
     }
 
     function navigateLeft() {
-      selectedColumn = selectedColumn > 0 ? selectedColumn - 1 : columnNames.length - 1;
-      const columnTasks = getColumnTasksInOrder(columnNames[selectedColumn]);
+      selectedColumn = selectedColumn > 0 ? selectedColumn - 1 : COLUMN_NAMES.length - 1;
+      const columnTasks = getColumnTasksInOrder(COLUMN_NAMES[selectedColumn]);
       if (columnTasks.length > 0) {
         selectTask(columnTasks[0].id);
       } else {
@@ -3360,8 +3292,8 @@
     }
 
     function navigateRight() {
-      selectedColumn = selectedColumn < columnNames.length - 1 ? selectedColumn + 1 : 0;
-      const columnTasks = getColumnTasksInOrder(columnNames[selectedColumn]);
+      selectedColumn = selectedColumn < COLUMN_NAMES.length - 1 ? selectedColumn + 1 : 0;
+      const columnTasks = getColumnTasksInOrder(COLUMN_NAMES[selectedColumn]);
       if (columnTasks.length > 0) {
         selectTask(columnTasks[0].id);
       } else {
@@ -3412,8 +3344,8 @@
       const item = getSelectedTask();
       if (!item) return;
 
-      const newColumnIndex = selectedColumn > 0 ? selectedColumn - 1 : columnNames.length - 1;
-      const newStatus = columnNames[newColumnIndex];
+      const newColumnIndex = selectedColumn > 0 ? selectedColumn - 1 : COLUMN_NAMES.length - 1;
+      const newStatus = COLUMN_NAMES[newColumnIndex];
       const oldStatus = item.status;
 
       item.status = newStatus;
@@ -3437,8 +3369,8 @@
       const item = getSelectedTask();
       if (!item) return;
 
-      const newColumnIndex = selectedColumn < columnNames.length - 1 ? selectedColumn + 1 : 0;
-      const newStatus = columnNames[newColumnIndex];
+      const newColumnIndex = selectedColumn < COLUMN_NAMES.length - 1 ? selectedColumn + 1 : 0;
+      const newStatus = COLUMN_NAMES[newColumnIndex];
       const oldStatus = item.status;
 
       item.status = newStatus;
@@ -3914,7 +3846,7 @@
 
     // Load list items from localStorage
     function loadListItems() {
-      const saved = localStorage.getItem('taskManager_listItems');
+      const saved = localStorage.getItem(STORAGE_KEYS.ITEMS);
       if (saved) {
         listItems = JSON.parse(saved);
       }
@@ -3925,7 +3857,7 @@
 
     // Save list items to localStorage
     function saveListItems() {
-      localStorage.setItem('taskManager_listItems', JSON.stringify(listItems));
+      localStorage.setItem(STORAGE_KEYS.ITEMS, JSON.stringify(listItems));
       updateSyncStatus('synced');
     }
 
@@ -3935,7 +3867,7 @@
 
     // Load containers from localStorage
     function loadContainers() {
-      const saved = localStorage.getItem('taskManager_containers');
+      const saved = localStorage.getItem(STORAGE_KEYS.CONTAINERS);
       if (saved) {
         containers = JSON.parse(saved);
       }
@@ -3945,7 +3877,7 @@
         saveContainers();
       }
       // Load current container
-      const savedCurrentId = localStorage.getItem('taskManager_currentContainerId');
+      const savedCurrentId = localStorage.getItem(STORAGE_KEYS.CURRENT_CONTAINER);
       if (savedCurrentId && containers.find(c => c.id === savedCurrentId)) {
         currentContainerId = savedCurrentId;
       } else {
@@ -3963,8 +3895,8 @@
 
     // Save containers to localStorage
     function saveContainers() {
-      localStorage.setItem('taskManager_containers', JSON.stringify(containers));
-      localStorage.setItem('taskManager_currentContainerId', currentContainerId);
+      localStorage.setItem(STORAGE_KEYS.CONTAINERS, JSON.stringify(containers));
+      localStorage.setItem(STORAGE_KEYS.CURRENT_CONTAINER, currentContainerId);
     }
 
     // Generate unique ID for containers
@@ -4324,16 +4256,16 @@
       return 'li_' + Date.now().toString(36) + Math.random().toString(36).substr(2);
     }
 
-    // Switch between Kanban and List views
+    // Switch between Board and List views
     function switchView(view) {
       currentView = view;
-      localStorage.setItem('taskManager_currentView', view);
+      localStorage.setItem(STORAGE_KEYS.CURRENT_VIEW, view);
 
       // Toggle visibility
       const board = document.getElementById('board');
       const listView = document.getElementById('list-view');
 
-      if (view === 'kanban') {
+      if (view === VIEWS.BOARD) {
         board.style.display = 'block';
         listView.style.display = 'none';
         renderTasks();
@@ -5334,7 +5266,7 @@
     initializeView();
 
     // Load last saved time from localStorage (indicator hidden by default, shows on save)
-    const savedTime = localStorage.getItem('taskManager_lastSaved');
+    const savedTime = localStorage.getItem(STORAGE_KEYS.LAST_SAVED);
     if (savedTime) {
       lastSavedTime = new Date(savedTime);
     }
@@ -5346,8 +5278,8 @@
     setTimeout(() => {
       if (!selectedTaskId && getContainerItems().length > 0) {
         // Find first column with items
-        for (let i = 0; i < columnNames.length; i++) {
-          const columnTasks = getColumnTasksInOrder(columnNames[i]);
+        for (let i = 0; i < COLUMN_NAMES.length; i++) {
+          const columnTasks = getColumnTasksInOrder(COLUMN_NAMES[i]);
           if (columnTasks.length > 0) {
             selectedColumn = i;
             break;
