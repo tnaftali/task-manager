@@ -58,6 +58,18 @@
             </button>
             <div class="container-dropdown board-dropdown" id="board-container-dropdown">
               <div class="container-list" id="board-container-list"></div>
+              <div class="container-dropdown-divider"></div>
+              <button class="container-new-btn" onclick="showNewContainerInput('board')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                  <line x1="12" y1="5" x2="12" y2="19" />
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+                New Container
+              </button>
+              <div class="container-new-input" id="board-container-new-input" style="display: none;">
+                <input type="text" id="board-new-container-name" placeholder="Container name..." onkeydown="handleNewContainerKeydown(event, 'board')">
+                <button onclick="createNewContainer('board')">Add</button>
+              </div>
             </div>
           </div>
           <span class="board-count" id="board-count"></span>
@@ -322,12 +334,11 @@
   <!-- Pomodoro Timer Widget -->
   <div class="pomodoro-widget" id="pomodoro-widget">
     <div class="pomodoro-header" onclick="togglePomodoroExpand()">
-      <svg class="pomodoro-icon" viewBox="0 0 24 24" fill="currentColor">
-        <ellipse cx="12" cy="14" rx="9" ry="8" fill="#e74c3c" />
-        <ellipse cx="12" cy="14" rx="7" ry="6.5" fill="#c0392b" />
-        <ellipse cx="9" cy="12" rx="2" ry="1.5" fill="#e74c3c" opacity="0.5" />
-        <path d="M12 6 Q12 3 10 2" stroke="#27ae60" stroke-width="2" fill="none" stroke-linecap="round" />
-        <ellipse cx="12" cy="2" rx="2" ry="1" fill="#27ae60" />
+      <svg class="pomodoro-icon" viewBox="0 0 24 24">
+        <path d="M12 6c-5 0-9 3.5-9 8.5S7 23 12 23s9-3.5 9-8.5S17 6 12 6z" fill="#e53935"/>
+        <path d="M12 6c-3 0-5.5 1.5-7 4 1.5-1.5 4-2.5 7-2.5s5.5 1 7 2.5c-1.5-2.5-4-4-7-4z" fill="#ef5350"/>
+        <path d="M12 2c-1.5 0-2.5 1-3 2 .5-.5 1.5-.8 2.5-.5 1 .3 1.5 1 1.5 2v.5h1c1 0 2-.5 2-1.5S14 2 12 2z" fill="#43a047"/>
+        <path d="M11.5 4c0-.5.3-1 .8-1.2-.3 0-.5.1-.8.2-.8.4-1.2 1-1.2 1.5 0 .3.1.5.3.7.2-.5.5-1 .9-1.2z" fill="#66bb6a"/>
       </svg>
       <span class="pomodoro-title">Pomodoro</span>
       <svg class="pomodoro-expand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

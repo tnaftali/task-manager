@@ -1481,6 +1481,22 @@ function renderBoardContainerList() {
       <div class="container-item ${isActive ? 'active' : ''}" data-container-id="${container.id}">
         <span class="container-item-name" onclick="switchContainer('${container.id}')">${escapeHtml(container.name)}</span>
         <span class="container-item-count">${count}</span>
+        <div class="container-item-actions">
+          <button class="container-item-btn" onclick="event.stopPropagation(); editContainerName('${container.id}', 'board')" title="Rename">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+            </svg>
+          </button>
+          ${!isDefault ? `
+            <button class="container-item-btn delete" onclick="event.stopPropagation(); deleteContainer('${container.id}')" title="Delete">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"/>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+              </svg>
+            </button>
+          ` : ''}
+        </div>
       </div>
     `;
   }).join('');
@@ -1619,28 +1635,35 @@ function switchContainer(containerId) {
 }
 
 // Show new container input
-function showNewContainerInput() {
-  document.querySelector('.container-new-btn').style.display = 'none';
-  const inputDiv = document.getElementById('container-new-input');
+function showNewContainerInput(view = 'list') {
+  const prefix = view === 'board' ? 'board-' : '';
+  const dropdown = view === 'board' ? document.getElementById('board-container-dropdown') : document.querySelector('.container-dropdown:not(.board-dropdown)');
+  const btn = dropdown.querySelector('.container-new-btn');
+  const inputDiv = document.getElementById(`${prefix}container-new-input`);
+  const input = document.getElementById(`${prefix}new-container-name`);
+
+  btn.style.display = 'none';
   inputDiv.style.display = 'flex';
-  const input = document.getElementById('new-container-name');
   input.value = '';
   input.focus();
 }
 
 // Handle keydown in new container input
-function handleNewContainerKeydown(event) {
+function handleNewContainerKeydown(event, view = 'list') {
   if (event.key === 'Enter') {
-    createNewContainer();
+    createNewContainer(view);
   } else if (event.key === 'Escape') {
-    document.getElementById('container-new-input').style.display = 'none';
-    document.querySelector('.container-new-btn').style.display = 'flex';
+    const prefix = view === 'board' ? 'board-' : '';
+    const dropdown = view === 'board' ? document.getElementById('board-container-dropdown') : document.querySelector('.container-dropdown:not(.board-dropdown)');
+    document.getElementById(`${prefix}container-new-input`).style.display = 'none';
+    dropdown.querySelector('.container-new-btn').style.display = 'flex';
   }
 }
 
 // Create new container
-function createNewContainer() {
-  const input = document.getElementById('new-container-name');
+function createNewContainer(view = 'list') {
+  const prefix = view === 'board' ? 'board-' : '';
+  const input = document.getElementById(`${prefix}new-container-name`);
   const name = input.value.trim();
   if (!name) return;
 
@@ -1656,11 +1679,15 @@ function createNewContainer() {
 }
 
 // Edit container name
-function editContainerName(containerId) {
+function editContainerName(containerId, view = 'list') {
   const container = containers.find(c => c.id === containerId);
   if (!container) return;
 
-  const itemEl = document.querySelector(`.container-item[data-container-id="${containerId}"]`);
+  const listId = view === 'board' ? 'board-container-list' : 'container-list';
+  const listEl = document.getElementById(listId);
+  const itemEl = listEl.querySelector(`.container-item[data-container-id="${containerId}"]`);
+  if (!itemEl) return;
+
   const nameEl = itemEl.querySelector('.container-item-name');
 
   const input = document.createElement('input');
@@ -1676,14 +1703,17 @@ function editContainerName(containerId) {
       updateContainerUI();
     }
     renderContainerList();
+    renderBoardContainerList();
   };
 
   input.onblur = saveName;
   input.onkeydown = (e) => {
     if (e.key === 'Enter') {
+      e.preventDefault();
       saveName();
     } else if (e.key === 'Escape') {
       renderContainerList();
+      renderBoardContainerList();
     }
   };
 
@@ -1716,6 +1746,7 @@ function deleteContainer(containerId) {
       switchContainer('default');
     } else {
       renderContainerList();
+      renderBoardContainerList();
     }
   }
 }

@@ -1,96 +1,73 @@
-# Tobi's Task Manager
+# Flow
 
-A beautiful, modern task management application built with vanilla HTML, CSS, and JavaScript. Features a clean beige/cream theme, drag-and-drop functionality, and comprehensive keyboard navigation.
+A minimal, beautiful task management app with List and Board views. Built with vanilla HTML, CSS, and JavaScript.
 
-## ✨ Features
+## Features
 
-- Three-column Kanban board (To Do, In Progress, Done)
-- Drag & drop task management
+**Two Views**
+- **List** - Simple checklist with active/completed sections
+- **Board** - Kanban-style with To Do, In Progress, and Done columns
+
+**Task Management**
+- Create tasks with title, URL, tags, and notes
+- Drag and drop to reorder or change status
+- Put tasks on hold (visual indicator)
 - Smart URL paste (auto-fetches page titles)
-- Rich task details (URLs, tags, notes, timestamps)
-- Time tracking and completion duration
-- Task hold/resume functionality
-- Keyboard navigation and shortcuts
-- Collapsible columns
-- Tag autocomplete
-- Personalizable app name
+- Tag filtering and search
 
-## 🚀 Getting Started
+**Containers**
+- Organize tasks into separate containers
+- Switch between containers in either view
+- Drag to reorder containers
 
-### Recommended: Server Mode (with file persistence)
+**Pomodoro Timer**
+- Built-in focus timer (25/5/15 minute presets)
+- Daily tomato count tracking
+- Desktop notifications on completion
 
-1. Run the Python server:
-   ```bash
-   python3 server.py
-   ```
-   Or: `python server.py`
+**Keyboard Shortcuts**
+| Key | Action |
+|-----|--------|
+| `N` | New task |
+| `↑` `↓` | Navigate tasks |
+| `←` `→` | Switch columns (Board) |
+| `Shift + ↑` `↓` | Reorder task |
+| `Shift + ←` `→` | Move between columns (Board) |
+| `Enter` | Edit task / Open URL (List) |
+| `E` | Edit task (List) |
+| `Delete` | Delete task |
+| `Esc` | Close modal |
+| `Cmd/Ctrl + V` | Paste URL to create task |
 
-2. Open `http://localhost:8765` in your web browser
+## Getting Started
 
-3. Start adding tasks! All data is saved to `tasks.json` on disk
+**Option 1: Direct file access**
+```
+Open index.html in your browser
+```
 
-The server provides real file-based persistence, allowing data to be saved and loaded from disk instead of just browser storage.
+**Option 2: Local server (recommended for PWA features)**
+```bash
+python3 -m http.server 8000
+# Open http://localhost:8000
+```
 
-### Alternative: File Mode (browser-only)
+Data is stored in browser localStorage.
 
-1. Open `index.html` directly in your web browser
-2. Data is stored in browser's localStorage (not synced across devices)
+## Project Structure
 
-**Note**: Server mode is recommended as it provides proper file persistence.
+```
+flow/
+├── index.html          # App markup
+├── css/styles.css      # All styles
+├── js/app.js           # Application logic
+├── manifest.json       # PWA manifest
+└── service-worker.js   # Offline support
+```
 
-## 📝 Adding Tasks
-
-**Manual creation**: Click "+ Add Task" in any column and fill in the details (title, URL, tags, notes, start time).
-
-**Quick paste**: Copy any URL and paste (`Cmd+V` / `Ctrl+V`) anywhere in the app to auto-create a task with the page title.
-
-**Personalize name**: Click "Edit" next to the app title to customize it.
-
-## ⌨️ Keyboard Shortcuts
-
-- `↑/↓` - Navigate tasks
-- `←/→` - Switch columns
-- `Shift + ↑/↓` - Move task within column
-- `Shift + ←/→` - Move task between columns
-- `Enter` - Edit selected task
-- `N` - New task
-- `Delete/Backspace` - Delete task
-- `Escape` - Close modal/cancel
-- `Cmd+V` / `Ctrl+V` - Paste URL to create task
-
-## 🎯 Task Management
-
-- **Edit**: Double-click or press `Enter` on selected task
-- **Delete**: Click delete button (🗑️) or press `Delete/Backspace`
-- **Hold/Resume**: Click hold button (⏸/▶️) to pause tasks
-- **Time tracking**: Set start time when creating/editing tasks; completed tasks show duration
-- **Tags**: Type and press `Enter` to add; autocomplete suggestions appear
-
-## 📅 Done Column
-
-Tasks moved to "Done" get completion timestamps and are grouped by date. Done tasks can be moved back to other columns or edited, but cannot be reordered (preserves chronological history).
-
-## 💾 Data Persistence
-
-**Server mode** (recommended): All data is saved to `tasks.json` on disk, providing real file persistence. Data persists even if you clear browser storage.
-
-**File mode**: Data is saved to your browser's local storage and persists between sessions, but won't sync across devices.
-
-All data (tasks, order, column states, app name) is automatically saved.
-
-## 🎨 Design
-
-Modern beige/cream color scheme with subtle column differentiation. Uses Fraunces serif for titles and Inter sans-serif for UI elements.
-
-## 🔧 Technical
+## Tech
 
 - Vanilla HTML, CSS, JavaScript (no dependencies)
-- Google Fonts (Inter, Fraunces) via CDN
-- Python 3 server for file persistence (optional, recommended)
-- localStorage fallback for browser-only mode
-- PWA support with service worker
-- Modern browsers with ES6+ support
-
----
-
-**Enjoy organizing your tasks!** 🎉
+- CSS custom properties for theming
+- Fraunces font for headings
+- PWA with service worker
