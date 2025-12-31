@@ -53,6 +53,19 @@ let currentContainerId = null;
 function migrateToUnifiedModel() {
   let migrated = false;
 
+  // Migrate from old storage key (taskManager_listItems -> taskManager_tasks)
+  const oldListItems = localStorage.getItem('taskManager_listItems');
+  if (oldListItems && !localStorage.getItem(STORAGE_KEYS.ITEMS)) {
+    localStorage.setItem(STORAGE_KEYS.ITEMS, oldListItems);
+    localStorage.removeItem('taskManager_listItems');
+    // Reload tasks from the migrated data
+    const saved = localStorage.getItem(STORAGE_KEYS.ITEMS);
+    if (saved) {
+      tasks = JSON.parse(saved);
+    }
+    migrated = true;
+  }
+
   // Migrate old tasks (completed boolean -> status field)
   tasks.forEach(item => {
     if (item.status === undefined) {
