@@ -1694,7 +1694,7 @@ function renderListView() {
   completedItems = filterByTags(completedItems);
 
   const totalFiltered = activeItems.length + completedItems.length;
-  const hasFilters = activeTagFilters.size > 0 || listSearchQuery;
+  const hasFilters = activeTagFilters.size > 0 || searchQuery;
 
   // Update count badge
   if (containerItems.length > 0) {
@@ -1722,9 +1722,9 @@ function renderListView() {
   if (totalFiltered === 0 && hasFilters) {
     const noResults = document.createElement('div');
     noResults.className = 'list-no-results';
-    const message = listSearchQuery && activeTagFilters.size > 0
+    const message = searchQuery && activeTagFilters.size > 0
       ? 'No tasks match your search and filters'
-      : listSearchQuery
+      : searchQuery
         ? 'No tasks match your search'
         : 'No tasks match the selected tags';
     noResults.innerHTML = `
