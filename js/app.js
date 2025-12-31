@@ -280,9 +280,9 @@ function renderBoardView() {
   const columns = ['todo', 'in-progress', 'done'];
   let containerItems = getContainerItems();
 
-  // Apply board filters
-  containerItems = filterBoardBySearch(containerItems);
-  containerItems = filterBoardByTags(containerItems);
+  // Apply filters (shared with list view)
+  containerItems = filterBySearch(containerItems);
+  containerItems = filterByTags(containerItems);
 
   columns.forEach(column => {
     const container = document.getElementById(`${column}-tasks`);
@@ -1464,12 +1464,12 @@ function closeBoardContainerDropdown() {
   if (selector) selector.classList.remove('open');
 }
 
-// Render board container list in dropdown
-function renderBoardContainerList() {
-  const listEl = document.getElementById('board-container-list');
+// Shared function to render container list items
+function renderContainerListItems(listId, view) {
+  const listEl = document.getElementById(listId);
   if (!listEl) return;
 
-  listEl.innerHTML = containers.map((container, index) => {
+  listEl.innerHTML = containers.map((container) => {
     const count = tasks.filter(item =>
       item.containerId === container.id ||
       (!item.containerId && container.id === 'default')
@@ -1482,7 +1482,7 @@ function renderBoardContainerList() {
         <span class="container-item-name" onclick="switchContainer('${container.id}')">${escapeHtml(container.name)}</span>
         <span class="container-item-count">${count}</span>
         <div class="container-item-actions">
-          <button class="container-item-btn" onclick="event.stopPropagation(); editContainerName('${container.id}', 'board')" title="Rename">
+          <button class="container-item-btn" onclick="event.stopPropagation(); editContainerName('${container.id}', '${view}')" title="Rename">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
               <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
@@ -1500,114 +1500,16 @@ function renderBoardContainerList() {
       </div>
     `;
   }).join('');
+}
+
+// Render board container list in dropdown
+function renderBoardContainerList() {
+  renderContainerListItems('board-container-list', 'board');
 }
 
 // Render container list in dropdown
 function renderContainerList() {
-  const listEl = document.getElementById('container-list');
-  if (!listEl) return;
-
-  listEl.innerHTML = containers.map((container, index) => {
-    const count = tasks.filter(item =>
-      item.containerId === container.id ||
-      (!item.containerId && container.id === 'default')
-    ).length;
-    const isActive = container.id === currentContainerId;
-    const isDefault = container.id === 'default';
-
-    return `
-      <div class="container-item ${isActive ? 'active' : ''}" data-container-id="${container.id}" data-index="${index}" draggable="true">
-        <span class="container-drag-handle" title="Drag to reorder">
-          <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14">
-            <circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="6" r="1.5"/>
-            <circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/>
-            <circle cx="9" cy="18" r="1.5"/><circle cx="15" cy="18" r="1.5"/>
-          </svg>
-        </span>
-        <span class="container-item-name" onclick="switchContainer('${container.id}')">${escapeHtml(container.name)}</span>
-        <span class="container-item-count">${count}</span>
-        <div class="container-item-actions">
-          <button class="container-item-btn" onclick="event.stopPropagation(); editContainerName('${container.id}')" title="Rename">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-            </svg>
-          </button>
-          ${!isDefault ? `
-            <button class="container-item-btn delete" onclick="event.stopPropagation(); deleteContainer('${container.id}')" title="Delete">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="3 6 5 6 21 6"/>
-                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-              </svg>
-            </button>
-          ` : ''}
-        </div>
-      </div>
-    `;
-  }).join('');
-
-  // Setup drag and drop for containers
-  setupContainerDragAndDrop();
-}
-
-// Container drag state
-let draggedContainerIndex = null;
-
-// Setup drag and drop for container items
-function setupContainerDragAndDrop() {
-  const listEl = document.getElementById('container-list');
-  const items = listEl.querySelectorAll('.container-item');
-
-  items.forEach(item => {
-    item.addEventListener('dragstart', handleContainerDragStart);
-    item.addEventListener('dragend', handleContainerDragEnd);
-    item.addEventListener('dragover', handleContainerDragOver);
-    item.addEventListener('drop', handleContainerDrop);
-    item.addEventListener('dragleave', handleContainerDragLeave);
-  });
-}
-
-function handleContainerDragStart(e) {
-  draggedContainerIndex = parseInt(this.dataset.index);
-  this.classList.add('dragging');
-  e.dataTransfer.effectAllowed = 'move';
-}
-
-function handleContainerDragEnd(e) {
-  this.classList.remove('dragging');
-  document.querySelectorAll('.container-item').forEach(item => {
-    item.classList.remove('drag-over');
-  });
-  draggedContainerIndex = null;
-}
-
-function handleContainerDragOver(e) {
-  e.preventDefault();
-  e.dataTransfer.dropEffect = 'move';
-  const targetIndex = parseInt(this.dataset.index);
-  if (targetIndex !== draggedContainerIndex) {
-    this.classList.add('drag-over');
-  }
-}
-
-function handleContainerDragLeave(e) {
-  this.classList.remove('drag-over');
-}
-
-function handleContainerDrop(e) {
-  e.preventDefault();
-  this.classList.remove('drag-over');
-
-  const targetIndex = parseInt(this.dataset.index);
-  if (draggedContainerIndex === null || targetIndex === draggedContainerIndex) return;
-
-  // Reorder containers array
-  const [movedContainer] = containers.splice(draggedContainerIndex, 1);
-  containers.splice(targetIndex, 0, movedContainer);
-
-  saveContainers();
-  renderContainerList();
-  updateContainerUI();
+  renderContainerListItems('container-list', 'list');
 }
 
 // Switch to a different container
@@ -1619,10 +1521,8 @@ function switchContainer(containerId) {
   closeBoardContainerDropdown();
   // Reset filters and search when switching containers
   activeTagFilters.clear();
-  listSearchQuery = '';
-  const searchInput = document.getElementById('list-search-input');
-  if (searchInput) searchInput.value = '';
-  document.getElementById('list-search-clear').style.display = 'none';
+  searchQuery = '';
+  syncSearchUI();
   // Rebuild allListTags for the new container (lowercase)
   allListTags.clear();
   getContainerItems().forEach(item => {
@@ -2096,132 +1996,85 @@ function clearTagFilters() {
   renderListView();
 }
 
-// List search state
-let listSearchQuery = '';
-
-function filterListTasks() {
-  const searchInput = document.getElementById('list-search-input');
-  const clearBtn = document.getElementById('list-search-clear');
-
-  listSearchQuery = searchInput.value.toLowerCase().trim();
-  clearBtn.style.display = listSearchQuery ? 'flex' : 'none';
-
-  renderListView();
-}
-
-function clearListSearch() {
-  const searchInput = document.getElementById('list-search-input');
-  searchInput.value = '';
-  listSearchQuery = '';
-  document.getElementById('list-search-clear').style.display = 'none';
-  renderListView();
-}
-
-function clearAllListFilters() {
-  // Clear search
-  const searchInput = document.getElementById('list-search-input');
-  if (searchInput) {
-    searchInput.value = '';
-    listSearchQuery = '';
-    document.getElementById('list-search-clear').style.display = 'none';
-  }
-  // Clear tag filters
-  activeTagFilters.clear();
-  renderListView();
-}
-
 // ===========================================
-// SHARED FILTER FUNCTIONS
+// UNIFIED SEARCH & FILTER (shared between views)
 // ===========================================
 
-// Filter items by search query (shared between views)
-function filterItemsBySearch(items, query) {
-  if (!query) return items;
+let searchQuery = '';
 
-  return items.filter(item => {
-    const titleMatch = item.title && item.title.toLowerCase().includes(query);
-    const notesMatch = item.notes && item.notes.toLowerCase().includes(query);
-    return titleMatch || notesMatch;
-  });
+// Handle search input from either view
+function handleSearchInput(view) {
+  const inputId = view === 'board' ? 'board-search-input' : 'list-search-input';
+  const input = document.getElementById(inputId);
+  searchQuery = input.value.toLowerCase().trim();
+  syncSearchUI();
+  renderCurrentView();
 }
 
-// Filter items by active tags - OR logic (shared between views)
-function filterItemsByTags(items, activeFilters) {
-  if (activeFilters.size === 0) return items;
-
-  return items.filter(item => {
-    if (!item.tags || item.tags.length === 0) return false;
-    return item.tags.some(tag => activeFilters.has(tag.toLowerCase()));
-  });
+// Clear search from either view
+function clearSearch() {
+  searchQuery = '';
+  syncSearchUI();
+  renderCurrentView();
 }
 
-// List filter wrappers
-function filterBySearch(items) {
-  return filterItemsBySearch(items, listSearchQuery);
+// Sync search inputs and clear buttons between views
+function syncSearchUI() {
+  const listInput = document.getElementById('list-search-input');
+  const boardInput = document.getElementById('board-search-input');
+  const listClear = document.getElementById('list-search-clear');
+  const boardClear = document.getElementById('board-search-clear');
+
+  if (listInput) listInput.value = searchQuery ? listInput.value || searchQuery : '';
+  if (boardInput) boardInput.value = searchQuery ? boardInput.value || searchQuery : '';
+
+  // Sync the actual value
+  if (listInput && listInput !== document.activeElement) listInput.value = searchQuery;
+  if (boardInput && boardInput !== document.activeElement) boardInput.value = searchQuery;
+
+  const showClear = searchQuery ? 'flex' : 'none';
+  if (listClear) listClear.style.display = showClear;
+  if (boardClear) boardClear.style.display = showClear;
 }
 
-function filterByTags(items) {
-  return filterItemsByTags(items, activeTagFilters);
-}
-
-// Board search/filter state
-let boardSearchQuery = '';
-let activeBoardTagFilters = new Set();
-
-function filterBoardTasks() {
-  const searchInput = document.getElementById('board-search-input');
-  const clearBtn = document.getElementById('board-search-clear');
-
-  boardSearchQuery = searchInput.value.toLowerCase().trim();
-  clearBtn.style.display = boardSearchQuery ? 'flex' : 'none';
-
-  renderBoardView();
-}
-
-function clearBoardSearch() {
-  const searchInput = document.getElementById('board-search-input');
-  searchInput.value = '';
-  boardSearchQuery = '';
-  document.getElementById('board-search-clear').style.display = 'none';
-  renderBoardView();
-}
-
-// Board filter wrappers
-function filterBoardBySearch(items) {
-  return filterItemsBySearch(items, boardSearchQuery);
-}
-
-function filterBoardByTags(items) {
-  return filterItemsByTags(items, activeBoardTagFilters);
-}
-
-function toggleBoardFilterDropdown() {
-  const multiselect = document.getElementById('board-filter-multiselect');
-  multiselect.classList.toggle('open');
-}
-
-function toggleBoardTagFilter(tag) {
-  if (activeBoardTagFilters.has(tag)) {
-    activeBoardTagFilters.delete(tag);
+// Toggle tag filter
+function toggleTagFilter(tag) {
+  if (activeTagFilters.has(tag)) {
+    activeTagFilters.delete(tag);
   } else {
-    activeBoardTagFilters.add(tag);
+    activeTagFilters.add(tag);
   }
-  renderBoardTagFilters();
-  renderBoardView();
+  renderTagFilters();
+  renderCurrentView();
 }
 
-function clearAllBoardTagFilters() {
-  activeBoardTagFilters.clear();
-  renderBoardTagFilters();
-  renderBoardView();
+// Clear all tag filters
+function clearAllTagFilters() {
+  activeTagFilters.clear();
+  renderTagFilters();
+  renderCurrentView();
 }
 
-function renderBoardTagFilters() {
-  const multiselect = document.getElementById('board-filter-multiselect');
-  const placeholder = document.getElementById('board-filter-placeholder');
-  const selectedContainer = document.getElementById('board-filter-selected');
-  const optionsContainer = document.getElementById('board-filter-options');
-  const clearBtn = document.getElementById('board-filter-clear');
+// Toggle filter dropdown
+function toggleFilterDropdown(view) {
+  const id = view === 'board' ? 'board-filter-multiselect' : 'list-filter-multiselect';
+  const multiselect = document.getElementById(id);
+  if (multiselect) multiselect.classList.toggle('open');
+}
+
+// Render tag filters for both views
+function renderTagFilters() {
+  renderTagFilterUI('list');
+  renderTagFilterUI('board');
+}
+
+function renderTagFilterUI(view) {
+  const prefix = view === 'board' ? 'board-' : 'list-';
+  const multiselect = document.getElementById(`${prefix}filter-multiselect`);
+  const placeholder = document.getElementById(`${prefix}filter-placeholder`);
+  const selectedContainer = document.getElementById(`${prefix}filter-selected`);
+  const optionsContainer = document.getElementById(`${prefix}filter-options`);
+  const clearBtn = document.getElementById(`${prefix}filter-clear`);
 
   if (!multiselect) return;
 
@@ -2230,28 +2083,28 @@ function renderBoardTagFilters() {
 
   // Render selected tags in trigger
   selectedContainer.innerHTML = '';
-  activeBoardTagFilters.forEach(tag => {
+  activeTagFilters.forEach(tag => {
     const tagEl = document.createElement('span');
     tagEl.className = 'list-filter-tag';
     tagEl.style.background = getTagColor(tag);
-    tagEl.innerHTML = `${escapeHtml(tag)}<button onclick="event.stopPropagation(); toggleBoardTagFilter('${escapeHtml(tag)}')">&times;</button>`;
+    tagEl.innerHTML = `${escapeHtml(tag)}<button onclick="event.stopPropagation(); toggleTagFilter('${escapeHtml(tag)}')">&times;</button>`;
     selectedContainer.appendChild(tagEl);
   });
 
   // Show/hide placeholder and clear button
-  placeholder.style.display = activeBoardTagFilters.size > 0 ? 'none' : 'block';
-  clearBtn.style.display = activeBoardTagFilters.size > 0 ? 'block' : 'none';
+  placeholder.style.display = activeTagFilters.size > 0 ? 'none' : 'block';
+  clearBtn.style.display = activeTagFilters.size > 0 ? 'block' : 'none';
 
   // Render options (alphabetically sorted)
   const sortedTags = [...allListTags].sort();
   optionsContainer.innerHTML = '';
   sortedTags.forEach(tag => {
-    const isSelected = activeBoardTagFilters.has(tag);
+    const isSelected = activeTagFilters.has(tag);
     const optionEl = document.createElement('div');
     optionEl.className = `list-filter-option ${isSelected ? 'selected' : ''}`;
     optionEl.onclick = (e) => {
       e.stopPropagation();
-      toggleBoardTagFilter(tag);
+      toggleTagFilter(tag);
     };
     optionEl.innerHTML = `
       <span class="list-filter-option-color" style="background: ${getTagColor(tag)}"></span>
@@ -2263,6 +2116,44 @@ function renderBoardTagFilters() {
     optionsContainer.appendChild(optionEl);
   });
 }
+
+// Render current view based on currentView state
+function renderCurrentView() {
+  if (currentView === VIEWS.BOARD) {
+    renderBoardView();
+  } else {
+    renderListView();
+  }
+}
+
+// Filter items by search query
+function filterBySearch(items) {
+  if (!searchQuery) return items;
+  return items.filter(item => {
+    const titleMatch = item.title && item.title.toLowerCase().includes(searchQuery);
+    const notesMatch = item.notes && item.notes.toLowerCase().includes(searchQuery);
+    return titleMatch || notesMatch;
+  });
+}
+
+// Filter items by active tags - OR logic
+function filterByTags(items) {
+  if (activeTagFilters.size === 0) return items;
+  return items.filter(item => {
+    if (!item.tags || item.tags.length === 0) return false;
+    return item.tags.some(tag => activeTagFilters.has(tag.toLowerCase()));
+  });
+}
+
+// Legacy function names for compatibility
+function filterListTasks() { handleSearchInput('list'); }
+function filterBoardTasks() { handleSearchInput('board'); }
+function clearListSearch() { clearSearch(); }
+function clearBoardSearch() { clearSearch(); }
+function clearAllBoardTagFilters() { clearAllTagFilters(); }
+function toggleBoardFilterDropdown() { toggleFilterDropdown('board'); }
+function toggleBoardTagFilter(tag) { toggleTagFilter(tag); }
+function renderBoardTagFilters() { renderTagFilters(); }
 
 // Create a list item element
 function createListItemElement(item) {
