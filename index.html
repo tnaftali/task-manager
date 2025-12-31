@@ -2539,7 +2539,7 @@
     };
 
     const STORAGE_KEYS = {
-      ITEMS: 'taskManager_listItems',
+      ITEMS: 'taskManager_tasks',
       CONTAINERS: 'taskManager_containers',
       CURRENT_CONTAINER: 'taskManager_currentContainerId',
       CURRENT_VIEW: 'taskManager_currentView',
@@ -2556,8 +2556,8 @@
     // ===========================================
     // STATE
     // ===========================================
-    // Unified state - listItems is the single source of truth for both views
-    let listItems = [];
+    // Unified state - tasks is the single source of truth for both views
+    let tasks = [];
     let selectedTaskId = null;
     let currentEditingTask = null;
     let currentColumn = STATUS.TODO;
@@ -2584,8 +2584,8 @@
     function migrateToUnifiedModel() {
       let migrated = false;
 
-      // Migrate old listItems (completed boolean -> status field)
-      listItems.forEach(item => {
+      // Migrate old tasks (completed boolean -> status field)
+      tasks.forEach(item => {
         if (item.status === undefined) {
           if (item.completed) {
             item.status = STATUS.DONE;
@@ -2597,7 +2597,7 @@
         }
       });
 
-      // Migrate old Kanban tasks into listItems
+      // Migrate old Kanban tasks into tasks
       const oldTasks = localStorage.getItem('taskManager_tasks');
       if (oldTasks) {
         try {
@@ -2626,8 +2626,8 @@
               }
 
               // Only add if not already exists
-              if (!listItems.find(i => i.id === task.id)) {
-                listItems.push(newItem);
+              if (!tasks.find(i => i.id === task.id)) {
+                tasks.push(newItem);
               }
             });
             migrated = true;
@@ -2640,7 +2640,7 @@
       }
 
       if (migrated) {
-        saveListItems();
+        saveTasks();
       }
     }
 
@@ -2793,8 +2793,8 @@
       return div.innerHTML;
     }
 
-    // Render all tasks (uses listItems as source of truth)
-    function renderTasks() {
+    // Render all tasks (uses tasks as source of truth)
+    function renderBoardView() {
       const columns = ['todo', 'in-progress', 'done'];
       let containerItems = getContainerItems();
 
@@ -2851,7 +2851,7 @@
       const taskElements = [...container.querySelectorAll('.task')];
       taskElements.forEach((element, index) => {
         const elementTaskId = element.dataset.taskId;
-        const item = listItems.find(i => i.id === elementTaskId);
+        const item = tasks.find(i => i.id === elementTaskId);
         if (item) {
           item.order = index;
         }
@@ -3011,7 +3011,7 @@
       const container = e.currentTarget;
       const newStatus = container.id.replace('-tasks', '');
       const draggingItemId = dragging.dataset.taskId;
-      const draggingItem = listItems.find(i => i.id === draggingItemId);
+      const draggingItem = tasks.find(i => i.id === draggingItemId);
 
       if (!draggingItem) return;
 
@@ -3044,7 +3044,7 @@
       const itemId = e.dataTransfer.getData('text/plain');
       const newStatus = e.currentTarget.id.replace('-tasks', '');
 
-      const item = listItems.find(i => i.id === itemId);
+      const item = tasks.find(i => i.id === itemId);
       if (item) {
         const oldStatus = item.status;
 
@@ -3070,8 +3070,8 @@
           }
         }
 
-        saveListItems();
-        renderTasks();
+        saveTasks();
+        renderBoardView();
       }
     }
 
@@ -3115,7 +3115,7 @@
     }
 
     function editTaskById(itemId) {
-      const item = listItems.find(i => i.id === itemId);
+      const item = tasks.find(i => i.id === itemId);
       if (!item) return;
 
       currentEditingTask = itemId;
@@ -3133,11 +3133,11 @@
 
     function deleteTaskById(itemId) {
       if (confirm('Are you sure you want to delete this task?')) {
-        const index = listItems.findIndex(i => i.id === itemId);
+        const index = tasks.findIndex(i => i.id === itemId);
         if (index >= 0) {
-          listItems.splice(index, 1);
-          saveListItems();
-          renderTasks();
+          tasks.splice(index, 1);
+          saveTasks();
+          renderBoardView();
         }
       }
     }
@@ -3166,7 +3166,7 @@
 
       if (currentEditingTask !== null) {
         // Edit existing item
-        const item = listItems.find(i => i.id === currentEditingTask);
+        const item = tasks.find(i => i.id === currentEditingTask);
         if (item) {
           item.title = title;
           item.url = url;
@@ -3194,11 +3194,11 @@
           createdAt: new Date().toISOString()
         };
 
-        listItems.push(newItem);
+        tasks.push(newItem);
       }
 
-      saveListItems();
-      renderTasks();
+      saveTasks();
+      renderBoardView();
       closeTaskModal();
     }
 
@@ -3214,7 +3214,7 @@
         taskElement.classList.add('selected');
         taskElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
-        const item = listItems.find(i => i.id === itemId);
+        const item = tasks.find(i => i.id === itemId);
         if (item) {
           selectedColumn = COLUMN_NAMES.indexOf(item.status);
         }
@@ -3229,7 +3229,7 @@
     }
 
     function getSelectedTask() {
-      return selectedTaskId ? listItems.find(i => i.id === selectedTaskId) : null;
+      return selectedTaskId ? tasks.find(i => i.id === selectedTaskId) : null;
     }
 
     // Get items in visual order for a column
@@ -3240,7 +3240,7 @@
       const taskElements = container.querySelectorAll('.task');
       return Array.from(taskElements).map(element => {
         const itemId = element.dataset.taskId;
-        return listItems.find(i => i.id === itemId);
+        return tasks.find(i => i.id === itemId);
       }).filter(item => item);
     }
 
@@ -3316,7 +3316,7 @@
         targetTask.order = tempOrder;
 
         saveTasks();
-        renderTasks();
+        renderBoardView();
         selectTask(task.id);
       }
     }
@@ -3335,7 +3335,7 @@
         targetTask.order = tempOrder;
 
         saveTasks();
-        renderTasks();
+        renderBoardView();
         selectTask(task.id);
       }
     }
@@ -3360,8 +3360,8 @@
       item.order = newColumnItems.length;
 
       selectedColumn = newColumnIndex;
-      saveListItems();
-      renderTasks();
+      saveTasks();
+      renderBoardView();
       selectTask(item.id);
     }
 
@@ -3385,8 +3385,8 @@
       item.order = newColumnItems.length;
 
       selectedColumn = newColumnIndex;
-      saveListItems();
-      renderTasks();
+      saveTasks();
+      renderBoardView();
       selectTask(item.id);
     }
 
@@ -3829,11 +3829,11 @@
 
     // Toggle on hold status
     function toggleHold(itemId) {
-      const item = listItems.find(i => i.id === itemId);
+      const item = tasks.find(i => i.id === itemId);
       if (item) {
         item.onHold = !item.onHold;
-        saveListItems();
-        renderTasks();
+        saveTasks();
+        renderBoardView();
         if (selectedTaskId === itemId) {
           selectTask(itemId);
         }
@@ -3844,20 +3844,20 @@
     // SIMPLE LIST FUNCTIONS
     // ==========================================
 
-    // Load list items from localStorage
-    function loadListItems() {
+    // Load tasks from localStorage
+    function loadTasks() {
       const saved = localStorage.getItem(STORAGE_KEYS.ITEMS);
       if (saved) {
-        listItems = JSON.parse(saved);
+        tasks = JSON.parse(saved);
       }
       // Migrate old data to unified model
       migrateToUnifiedModel();
       // Note: allListTags is rebuilt per container in loadContainers()
     }
 
-    // Save list items to localStorage
-    function saveListItems() {
-      localStorage.setItem(STORAGE_KEYS.ITEMS, JSON.stringify(listItems));
+    // Save tasks to localStorage
+    function saveTasks() {
+      localStorage.setItem(STORAGE_KEYS.ITEMS, JSON.stringify(tasks));
       updateSyncStatus('synced');
     }
 
@@ -3911,7 +3911,7 @@
 
     // Get items for current container
     function getContainerItems() {
-      return listItems.filter(item => item.containerId === currentContainerId ||
+      return tasks.filter(item => item.containerId === currentContainerId ||
         (!item.containerId && currentContainerId === 'default'));
     }
 
@@ -3988,7 +3988,7 @@
       if (!listEl) return;
 
       listEl.innerHTML = containers.map((container, index) => {
-        const count = listItems.filter(item =>
+        const count = tasks.filter(item =>
           item.containerId === container.id ||
           (!item.containerId && container.id === 'default')
         ).length;
@@ -4010,7 +4010,7 @@
       if (!listEl) return;
 
       listEl.innerHTML = containers.map((container, index) => {
-        const count = listItems.filter(item =>
+        const count = tasks.filter(item =>
           item.containerId === container.id ||
           (!item.containerId && container.id === 'default')
         ).length;
@@ -4132,8 +4132,8 @@
           item.tags.forEach(tag => allListTags.add(tag.toLowerCase()));
         }
       });
-      renderListItems();
-      renderTasks();
+      renderListView();
+      renderBoardView();
     }
 
     // Show new container input
@@ -4215,15 +4215,15 @@
       const container = containers.find(c => c.id === containerId);
       if (!container || containerId === 'default') return;
 
-      const itemCount = listItems.filter(item => item.containerId === containerId).length;
+      const itemCount = tasks.filter(item => item.containerId === containerId).length;
       const message = itemCount > 0
         ? `Delete "${container.name}" and its ${itemCount} task${itemCount > 1 ? 's' : ''}?`
         : `Delete "${container.name}"?`;
 
       if (confirm(message)) {
         // Remove all items in this container
-        listItems = listItems.filter(item => item.containerId !== containerId);
-        saveListItems();
+        tasks = tasks.filter(item => item.containerId !== containerId);
+        saveTasks();
 
         // Remove container
         containers = containers.filter(c => c.id !== containerId);
@@ -4252,7 +4252,7 @@
     });
 
     // Generate unique ID for list items
-    function generateListItemId() {
+    function generateTaskId() {
       return 'li_' + Date.now().toString(36) + Math.random().toString(36).substr(2);
     }
 
@@ -4268,11 +4268,11 @@
       if (view === VIEWS.BOARD) {
         board.style.display = 'block';
         listView.style.display = 'none';
-        renderTasks();
+        renderBoardView();
       } else {
         board.style.display = 'none';
         listView.style.display = 'block';
-        renderListItems();
+        renderListView();
       }
 
       // Update nav buttons
@@ -4294,7 +4294,7 @@
     let listCompletedCollapsed = localStorage.getItem('taskManager_listCompletedCollapsed') === 'true';
 
     // Render all list items
-    function renderListItems() {
+    function renderListView() {
       const container = document.getElementById('list-items');
       const emptyState = document.getElementById('list-empty');
       const countBadge = document.getElementById('list-count');
@@ -4543,7 +4543,7 @@
     function clearAllTagFilters() {
       activeTagFilters.clear();
       renderTagFilterBar();
-      renderListItems();
+      renderListView();
     }
 
     // Toggle filter dropdown open/close
@@ -4573,14 +4573,14 @@
         activeTagFilters.add(tag);
       }
       renderTagFilterBar();
-      renderListItems();
+      renderListView();
     }
 
     // Clear all tag filters
     function clearTagFilters() {
       activeTagFilters.clear();
       renderTagFilterBar();
-      renderListItems();
+      renderListView();
     }
 
     // List search state
@@ -4593,7 +4593,7 @@
       listSearchQuery = searchInput.value.toLowerCase().trim();
       clearBtn.style.display = listSearchQuery ? 'flex' : 'none';
 
-      renderListItems();
+      renderListView();
     }
 
     function clearListSearch() {
@@ -4601,7 +4601,7 @@
       searchInput.value = '';
       listSearchQuery = '';
       document.getElementById('list-search-clear').style.display = 'none';
-      renderListItems();
+      renderListView();
     }
 
     function clearAllListFilters() {
@@ -4614,28 +4614,41 @@
       }
       // Clear tag filters
       activeTagFilters.clear();
-      renderListItems();
+      renderListView();
     }
 
-    // Filter items by search query
-    function filterBySearch(items) {
-      if (!listSearchQuery) return items;
+    // ===========================================
+    // SHARED FILTER FUNCTIONS
+    // ===========================================
+
+    // Filter items by search query (shared between views)
+    function filterItemsBySearch(items, query) {
+      if (!query) return items;
 
       return items.filter(item => {
-        const titleMatch = item.title && item.title.toLowerCase().includes(listSearchQuery);
-        const notesMatch = item.notes && item.notes.toLowerCase().includes(listSearchQuery);
+        const titleMatch = item.title && item.title.toLowerCase().includes(query);
+        const notesMatch = item.notes && item.notes.toLowerCase().includes(query);
         return titleMatch || notesMatch;
       });
     }
 
-    // Filter items by active tags (OR logic)
-    function filterByTags(items) {
-      if (activeTagFilters.size === 0) return items;
+    // Filter items by active tags - OR logic (shared between views)
+    function filterItemsByTags(items, activeFilters) {
+      if (activeFilters.size === 0) return items;
 
       return items.filter(item => {
         if (!item.tags || item.tags.length === 0) return false;
-        return item.tags.some(tag => activeTagFilters.has(tag));
+        return item.tags.some(tag => activeFilters.has(tag.toLowerCase()));
       });
+    }
+
+    // List filter wrappers
+    function filterBySearch(items) {
+      return filterItemsBySearch(items, listSearchQuery);
+    }
+
+    function filterByTags(items) {
+      return filterItemsByTags(items, activeTagFilters);
     }
 
     // Board search/filter state
@@ -4649,7 +4662,7 @@
       boardSearchQuery = searchInput.value.toLowerCase().trim();
       clearBtn.style.display = boardSearchQuery ? 'flex' : 'none';
 
-      renderTasks();
+      renderBoardView();
     }
 
     function clearBoardSearch() {
@@ -4657,28 +4670,16 @@
       searchInput.value = '';
       boardSearchQuery = '';
       document.getElementById('board-search-clear').style.display = 'none';
-      renderTasks();
+      renderBoardView();
     }
 
-    // Filter board items by search query
+    // Board filter wrappers
     function filterBoardBySearch(items) {
-      if (!boardSearchQuery) return items;
-
-      return items.filter(item => {
-        const titleMatch = item.title && item.title.toLowerCase().includes(boardSearchQuery);
-        const notesMatch = item.notes && item.notes.toLowerCase().includes(boardSearchQuery);
-        return titleMatch || notesMatch;
-      });
+      return filterItemsBySearch(items, boardSearchQuery);
     }
 
-    // Filter board items by active tags (OR logic)
     function filterBoardByTags(items) {
-      if (activeBoardTagFilters.size === 0) return items;
-
-      return items.filter(item => {
-        if (!item.tags || item.tags.length === 0) return false;
-        return item.tags.some(tag => activeBoardTagFilters.has(tag.toLowerCase()));
-      });
+      return filterItemsByTags(items, activeBoardTagFilters);
     }
 
     function toggleBoardFilterDropdown() {
@@ -4693,13 +4694,13 @@
         activeBoardTagFilters.add(tag);
       }
       renderBoardTagFilters();
-      renderTasks();
+      renderBoardView();
     }
 
     function clearAllBoardTagFilters() {
       activeBoardTagFilters.clear();
       renderBoardTagFilters();
-      renderTasks();
+      renderBoardView();
     }
 
     function renderBoardTagFilters() {
@@ -4869,7 +4870,7 @@
 
     // Toggle list item completion
     function toggleListItemComplete(itemId) {
-      const item = listItems.find(i => i.id === itemId);
+      const item = tasks.find(i => i.id === itemId);
       if (item) {
         if (item.status === 'done') {
           item.status = 'todo';
@@ -4878,8 +4879,8 @@
           item.status = 'done';
           item.completedAt = new Date().toISOString();
         }
-        saveListItems();
-        renderListItems();
+        saveTasks();
+        renderListView();
       }
     }
 
@@ -5018,7 +5019,7 @@
 
     // Edit a list item
     function editListItem(itemId) {
-      const item = listItems.find(i => i.id === itemId);
+      const item = tasks.find(i => i.id === itemId);
       if (!item) return;
 
       currentEditingListItem = itemId;
@@ -5036,22 +5037,22 @@
     // Delete a list item
     function deleteListItem(itemId) {
       if (confirm('Are you sure you want to delete this task?')) {
-        listItems = listItems.filter(i => i.id !== itemId);
+        tasks = tasks.filter(i => i.id !== itemId);
         if (selectedListItemId === itemId) {
           selectedListItemId = null;
         }
-        saveListItems();
-        renderListItems();
+        saveTasks();
+        renderListView();
       }
     }
 
     // Toggle on-hold status
     function toggleListItemOnHold(itemId) {
-      const item = listItems.find(i => i.id === itemId);
+      const item = tasks.find(i => i.id === itemId);
       if (item) {
         item.onHold = !item.onHold;
-        saveListItems();
-        renderListItems();
+        saveTasks();
+        renderListView();
       }
     }
 
@@ -5073,7 +5074,7 @@
 
       if (currentEditingListItem) {
         // Edit existing item
-        const item = listItems.find(i => i.id === currentEditingListItem);
+        const item = tasks.find(i => i.id === currentEditingListItem);
         if (item) {
           item.title = title;
           item.url = url;
@@ -5082,14 +5083,14 @@
         }
       } else {
         // Add new item at the top (only adjust order for items in same container)
-        listItems.forEach(item => {
+        tasks.forEach(item => {
           if (item.containerId === currentContainerId || (!item.containerId && currentContainerId === 'default')) {
             item.order = (item.order || 0) + 1;
           }
         });
 
         const newItem = {
-          id: generateListItemId(),
+          id: generateTaskId(),
           title: title,
           url: url,
           notes: notes,
@@ -5099,11 +5100,11 @@
           createdAt: new Date().toISOString(),
           status: 'todo'
         };
-        listItems.push(newItem);
+        tasks.push(newItem);
       }
 
-      saveListItems();
-      renderListItems();
+      saveTasks();
+      renderListView();
       closeListModal();
     }
 
@@ -5169,18 +5170,18 @@
 
       items.forEach((element, index) => {
         const itemId = element.dataset.itemId;
-        const item = listItems.find(i => i.id === itemId);
+        const item = tasks.find(i => i.id === itemId);
         if (item) {
           item.order = index;
         }
       });
 
-      saveListItems();
+      saveTasks();
     }
 
     // Navigate list items with keyboard
     function navigateListUp() {
-      const sortedItems = [...listItems].sort((a, b) => (a.order || 0) - (b.order || 0));
+      const sortedItems = [...tasks].sort((a, b) => (a.order || 0) - (b.order || 0));
       if (sortedItems.length === 0) return;
 
       if (!selectedListItemId) {
@@ -5197,7 +5198,7 @@
     }
 
     function navigateListDown() {
-      const sortedItems = [...listItems].sort((a, b) => (a.order || 0) - (b.order || 0));
+      const sortedItems = [...tasks].sort((a, b) => (a.order || 0) - (b.order || 0));
       if (sortedItems.length === 0) return;
 
       if (!selectedListItemId) {
@@ -5216,7 +5217,7 @@
     // Open selected list item's URL
     function openSelectedListItemUrl() {
       if (!selectedListItemId) return;
-      const item = listItems.find(i => i.id === selectedListItemId);
+      const item = tasks.find(i => i.id === selectedListItemId);
       if (item && item.url && item.url.trim()) {
         window.open(item.url, '_blank');
       }
@@ -5260,7 +5261,7 @@
     });
 
     // Initialize the app
-    loadListItems();
+    loadTasks();
     loadContainers();
     setupDropZones();
     initializeView();
