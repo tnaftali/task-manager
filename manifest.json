@@ -1,7 +1,7 @@
 {
-  "name": "Tobi's Task Manager",
-  "short_name": "Task Manager",
-  "description": "A personal task management application with drag-and-drop functionality",
+  "name": "Flow",
+  "short_name": "Flow",
+  "description": "A minimal, beautiful task management app with List and Board views",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#f0ebe3",

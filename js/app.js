@@ -1299,6 +1299,20 @@ function loadTasks() {
 function saveTasks() {
   localStorage.setItem(STORAGE_KEYS.ITEMS, JSON.stringify(tasks));
   updateSyncStatus('synced');
+
+  // Also backup to server file when in server mode
+  if (isServerMode) {
+    saveTasksToServer();
+  }
+}
+
+// Save tasks to server for local file backup
+function saveTasksToServer() {
+  fetch('/save-tasks', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(tasks)
+  }).catch(err => console.log('Backup to server failed:', err));
 }
 
 // ==========================================
