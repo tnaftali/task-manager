@@ -79,48 +79,6 @@ function migrateToUnifiedModel() {
     }
   });
 
-  // Migrate old Kanban tasks into tasks
-  const oldTasks = localStorage.getItem('taskManager_tasks');
-  if (oldTasks) {
-    try {
-      const tasks = JSON.parse(oldTasks);
-      if (tasks.length > 0) {
-        tasks.forEach(task => {
-          // Map column to status
-          const status = task.column || STATUS.TODO;
-
-          // Create listItem from task
-          const newItem = {
-            id: task.id,
-            title: task.title,
-            url: task.url || '',
-            notes: task.notes || '',
-            tags: task.tags || [],
-            order: task.order || 0,
-            containerId: currentContainerId || 'default',
-            createdAt: task.createdAt || new Date().toISOString(),
-            status: status,
-            onHold: task.onHold || false
-          };
-
-          if (task.completedAt) {
-            newItem.completedAt = task.completedAt;
-          }
-
-          // Only add if not already exists
-          if (!tasks.find(i => i.id === task.id)) {
-            tasks.push(newItem);
-          }
-        });
-        migrated = true;
-      }
-    } catch (e) {
-      console.log('Could not migrate old tasks:', e);
-    }
-    // Remove old tasks storage after migration
-    localStorage.removeItem('taskManager_tasks');
-  }
-
   if (migrated) {
     saveTasks();
   }
